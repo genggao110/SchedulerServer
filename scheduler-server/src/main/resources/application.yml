@@ -1,0 +1,46 @@
+swagger:
+  title: Scheduler Server
+  description: Scheduler Server API Document
+  version: 1.0.0
+  contact:
+    name: wangming
+    url: http://geomodeling.njnu.edu.cn/
+    email: wangminggis@163.com
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  resources:
+    static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/", "file:${prop.task-uploadr}"]
+  data:
+    mongodb:
+      uri: mongodb://222.192.7.75:27017/Task
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+      location: D:/portal/task/
+  mvc:
+    static-path-pattern: /**
+
+prop:
+  task-upload: D:/portal/task/
+  managerServerIpAndPort: 127.0.0.1:8084/GeoModeling
+
+server:
+  port: 8072
+  compression:
+    enabled: true
+    mime-types:
+      - application/json
+      - application/xml
+      - text/css
+      - text/xml
+      - text/plain
+      - application/javascript
+    min-response-size: 1024
+  servlet:
+    session:
+      timeout: 60
