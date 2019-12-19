@@ -1,6 +1,6 @@
 swagger:
-  title: Scheduler Server
-  description: Scheduler Server API Document
+  title: Manager Server
+  description: Manager Server API Document
   version: 1.0.0
   contact:
     name: wangming
@@ -16,7 +16,7 @@ spring:
     static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/", "file:${prop.task-uploadr}"]
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/Task
+      uri: mongodb://127.0.0.1:27017/Manager
   servlet:
     multipart:
       max-file-size: 1000MB
@@ -25,12 +25,8 @@ spring:
   mvc:
     static-path-pattern: /**
 
-prop:
-  task-upload: D:/portal/task/
-  managerServerIpAndPort: 127.0.0.1:8084/GeoModeling
-
 server:
-  port: 8072
+  port: 8090
   compression:
     enabled: true
     mime-types:
