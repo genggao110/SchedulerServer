@@ -9,8 +9,10 @@ import com.scheduler.managerserver.annotation.PassToken;
 import com.scheduler.managerserver.annotation.UserLoginToken;
 import com.scheduler.managerserver.po.User;
 import com.scheduler.managerserver.service.UserService;
+import com.scheduler.managerserver.utils.JwtTokenUtil;
 import com.scheduler.webCommons.enums.ResultEnum;
 import com.scheduler.webCommons.exception.MyException;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,7 +34,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("token");
+        String token = JwtTokenUtil.getTokenFromRequest(request);
         //如果不是映射到方法直接通过
         if(!(handler instanceof HandlerMethod)){
             return true;
@@ -51,27 +53,18 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
             if(userLoginToken.required()){
                 //执行认证,错误抛出
-                if (token == null) {
+                if (token == null || !token.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
                     response.setStatus(401);
                     throw new MyException(ResultEnum.NO_TOKEN);
                 }
+                Claims claims = JwtTokenUtil.getTokenBody(token);
                 //获取token中的user id
-                String userId;
-                try{
-                    userId = JWT.decode(token).getAudience().get(0);
-                }catch (JWTDecodeException e){
-                    response.setStatus(401);
-                    throw new MyException(ResultEnum.TOKEN_WRONG);
-                }
+                String userId = (String) claims.get("id");
                 //如果查询不存在，错误已经被处理
                 User user = userService.findUserById(userId);
-                // 验证token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
-                try{
-                    jwtVerifier.verify(token);
-                }catch (JWTVerificationException e){
+                if(!user.getPassword().equals((String)claims.get("password"))){
                     response.setStatus(401);
-                    throw new MyException(ResultEnum.TOKEN_WRONG);
+                    throw new MyException(ResultEnum.USER_PASSWORD_NOT_MATCH);
                 }
                 return true;
             }

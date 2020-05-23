@@ -13,17 +13,32 @@ spring:
       force: true
       enabled: true
   resources:
-    static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/", "file:${prop.task-uploadr}"]
+    static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/", "file:${spring.servlet.multipart.location}"]
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/Manager
+      uri: mongodb://172.21.213.33:27017/Manager
   servlet:
     multipart:
       max-file-size: 1000MB
       max-request-size: 1000MB
       location: D:/portal/temp
   mvc:
-    static-path-pattern: /**
+    static-path-pattern: /static/**
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  mail:
+    host: smtp.163.com
+    username: nj_gis@163.com
+    password: 1qaz2wsx
+    default-encoding: UTF-8
+    protocol: smtp
+    port: 25
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
 
 server:
   port: 8090
@@ -40,3 +55,9 @@ server:
   servlet:
     session:
       timeout: 60
+
+prop:
+  portalAddress: http://127.0.0.1:8080
+#  portalAddress: http://geomodeling.njnu.edu.cn
+  managerAddress: http://127.0.0.1:8084
+

@@ -28,4 +28,5 @@ public class ResultUtils {
         jsonResult.setData(null);
         return jsonResult;
     }
+
 }

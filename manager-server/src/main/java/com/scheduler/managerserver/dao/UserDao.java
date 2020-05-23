@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface UserDao extends MongoRepository<User,String> {
 
     Optional<User> findUserByName(String name);
+    Optional<User> findUserByNameOrEmail(String name, String email);
+    User findUserByEmail(String email);
 }

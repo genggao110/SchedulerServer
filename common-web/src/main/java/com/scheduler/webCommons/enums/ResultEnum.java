@@ -12,7 +12,10 @@ public enum ResultEnum {
     UPLOAD_TYPE_ERROR(-7,"上传文件的类型不支持"),
     QUERY_TYPE_ERROR(-8,"查询类型不支持"),
     REMOTE_SERVICE_ERROR(-9,"远程服务调用出错"),
-    CERTIFICATE_ERROR(-10,"证书生成出错")
+    CERTIFICATE_ERROR(-10,"证书生成出错"),
+    TOKEN_EXPIRED(-11, "Token 过期"),
+    VERIFICATION_CODE_INVALID(-12, "验证码过期"),
+    PASSWORD_NOT_MATCH(-13, "密码不匹配")
     ;
 
     private Integer code;

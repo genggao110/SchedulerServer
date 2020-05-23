@@ -11,9 +11,10 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 public class SignInDTO {
-    @NotEmpty(message = "账户不能为空")
+    @NotEmpty(message = "账户或者邮箱不能为空")
     private String name;
 
     @NotEmpty (message = "密码不能为空")
     private String password;
+
 }
