@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Adaptor</title>
+
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/list.css">
+    <link rel="stylesheet" href="/static/css/model_items.css">
+
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+
+    <style>
+        .el-menu a{
+            color:white;
+        }
+        body{
+            margin: 0;
+        }
+
+        .mainBarLogo{
+            width: 220px !important;
+            height: 52px !important;
+            margin-left: 20px;
+            margin-right: auto;
+            background-image: url("/static/img/logo.png");
+            background-size: auto 45px !important;
+            background-repeat: no-repeat;
+            padding: 0px !important;
+            display: inline-block;
+            float: left;
+            margin-top: 5px;
+        }
+
+        .badge {
+            padding: 5px 7px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .cell{
+            text-align: center;
+        }
+
+        .el-card__body {
+            padding: 0;
+        }
+
+        .serverCard{
+            margin:15px 0;
+            padding:0 15px;
+            border-top:8px solid #373D41;
+        }
+
+        .serverCard .content{
+            padding:10px 0 0 0;
+        }
+
+        .serverCard:hover{
+            border-top: 8px solid #00C1DE;
+        }
+    </style>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.css">
+
+
+</head>
+<body>
+<div id="app">
+
+    <div th:replace="fragment/navbar :: menu"></div>
+
+    <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 20px;margin-bottom: 20px">
+        <div class="el-col-6" style="height:700px">
+            <el-tabs type="border-card" stretch="true" style="height: 100%;">
+                <el-tab-pane label="Participant User">
+                    <el-table
+
+                            :show-header="false"
+                            :data="tableData1"
+                            style="width: 100%">
+                        <el-table-column style="text-align: right;">
+                            <template slot-scope="scope">
+                                <img style="border-radius: 50%;height:40px;width:40px;border: 1px solid #C0C4CC;" src="/static/img/icon/default.png">
+                            </template>
+                        </el-table-column>
+                        <el-table-column>
+                            <template slot-scope="scope">
+
+                                <el-tag size="medium">{{ scope.row.name }}</el-tag>
+
+                            </template>
+                        </el-table-column>
+                        <!--<el-table-column label="操作">-->
+                        <!--<template slot-scope="scope">-->
+                        <!--<el-button-->
+                        <!--size="mini"-->
+                        <!--@click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
+                        <!--<el-button-->
+                        <!--size="mini"-->
+                        <!--type="danger"-->
+                        <!--@click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
+                        <!--</template>-->
+                        <!--</el-table-column>-->
+                    </el-table>
+                </el-tab-pane>
+                <el-tab-pane label="Model List"><el-table
+
+                        :show-header="false"
+                        :data="tableData2"
+                        style="width: 100%">
+                    <el-table-column
+                            prop="name">
+
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    @click="handleEdit(scope.$index, scope.row)">Select</el-button>
+
+                        </template>
+                    </el-table-column>
+                </el-table></el-tab-pane>
+
+            </el-tabs>
+        </div>
+        <div class="el-col-18" style="height:700px">
+            <el-tabs type="border-card" stretch="true" style="margin-left: 10px;">
+                <el-tab-pane label="Computable Resource">
+                    <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length!=0" v-for="(container,index) in modelContainerList">
+                        <el-card class="box-card serverCard" >
+                            <div class="content">
+                                <div class="clearfix">
+                                    <div class="pull-left">
+                                        <h4 style="margin-bottom: 10px;font-weight: bold">
+                                            {{container.hardware.hostName}}
+
+                                        </h4>
+                                        <p style="margin-bottom:5px">{{container.hardware.platform}} {{container.hardware.version}}</p>
+                                        <p>{{container.hardware.cpu_Core}} Core - {{container.hardware.totalMemory}} RAM - {{container.hardware.diskAll}} Hard Disk</p>
+                                    </div>
+                                </div>
+                                <div class="clearfix">
+                                    <div class="serverStatus pull-left">
+                                        <a>
+                                            <img src="/static/img/icon/default.png"
+                                                 class="round_icon"
+                                                 style="margin-top:-5px;width:20px;height: 20px;display: inline-block;border:1px solid #ccc;border-radius: 50%">
+                                        </a>
+
+                                        <a @click="open"
+                                           style="display: inline-block;margin-left: 5px;font-size:15px;"><h4>
+                                            {{container.user}}</h4></a>
+                                    </div>
+                                    <div class="serverIp pull-right" style="color:red;font-size: 20px">
+                                        <!--{{container.score}}-->
+                                    </div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="Model Info">
+                    <div class="modelPanel">
+                        <div class="content-body">
+                            <div v-cloak class="list-item" style="border:none">
+                                <div class="detail_title">
+                                    <a target="_blank" @click="open">SWAT_Model</a>
+                                    <el-button type="primary" class="pull-right" style="margin-top: -5px;" @click="getComputerForDeploy()">Adapting</el-button>
+                                </div>
+                                <div>
+
+                                    <div class="detail_overview">
+                                        <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                            <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="90"
+                                                    :rounded="false"></avatar>
+                                            <img v-if="modelItem.image!=''" :src="modelItem.image"
+                                                 style="width:90px;height: 90px;">
+
+                                        </a>
+
+                                        <div class="info">
+                                            <p :style="{'-webkit-line-clamp':(modelItem.keywords.length>0?2:4)}">{{modelItem.description}}</p>
+                                            <div class="tags" v-if="modelItem.keywords.length>0">
+                                                <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="runtime_table" class="table table-bordered text-center">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Type</th>
+                                        <th class="text-center">Property</th>
+                                        <th class="text-center">Value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <div >
+                                        <tr >
+                                            <td rowspan="4">Basic Info</td>
+                                            <td>name</td>
+                                            <td>SWATModelAllInOne</td>
+                                        </tr>
+                                        <tr >
+                                            <td>version</td>
+                                            <td>1.1.0.0</td>
+                                        </tr>
+                                        <tr >
+                                            <td>baseDir</td>
+                                            <td>$(ModelServicePath)\SWATModelAllInOne</td>
+                                        </tr>
+                                        <tr >
+                                            <td>entry</td>
+                                            <td>SWATModelAllInOne.exe</td>
+                                        </tr>
+                                    </div>
+                                    <div >
+                                        <tr >
+                                            <td rowspan="3">Hardware Dependencies</td>
+                                            <td>CPU_Frequency</td>
+                                            <td>2.8GHz</td>
+                                        </tr>
+                                        <tr >
+                                            <td>Memory_Size</td>
+                                            <td>50M</td>
+                                        </tr>
+                                        <tr >
+                                            <td>Disk_Size</td>
+                                            <td>100MB</td>
+                                        </tr>
+                                    </div>
+                                    <div >
+
+                                        <tr >
+                                            <td rowspan="2">Software Dependencies</td>
+                                            <td>Operation System</td>
+                                            <td>Windows | x64</td>
+                                        </tr>
+                                        <tr >
+                                            <td>Third-Party Software</td>
+                                            <td>MapWindows 4.8 | x64</td>
+                                        </tr>
+                                    </div>
+                                    <div >
+                                        <tr >
+                                            <td rowspan="3">Assemblies</td>
+                                            <td>GDALRasterMapping</td>
+                                            <td>${MappingPath}\GDALRasterMapping\</td>
+                                        </tr>
+                                        <tr >
+                                            <td>OGRVectorMapping</td>
+                                            <td>${MappingPath}\OGRVectorMapping\</td>
+                                        </tr>
+                                        <tr >
+                                            <td>TauDEM_Path</td>
+                                            <td>$(ModelServicePath)\TauDEM5Exe\</td>
+                                        </tr>
+
+                                    </div>
+
+
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <div class="detail_bottom">
+                                    <div style="display:inline-block;float: left;">
+                                        <a :href="'/user/'+ user.oid">
+                                            <img :src="user.image==''?'/static/img/icon/default.png':user.image"
+                                                 class="round_icon"
+                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                        </a>
+
+                                        <a @click="open"
+                                           style="display: inline-block;margin-left: 5px;"><h4>
+                                            {{user.name}}</h4></a>
+
+                                        <h4 class="screen_view">
+                                            contributed at {{modelItem.createTime.substring(0,10)}} </h4>
+                                        <h4 class="mobile_view">
+                                            {{modelItem.createTime.substring(0,10)}} </h4>
+                                    </div>
+                                    <div class="detail_option">
+                                        <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
+                                        <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </el-tab-pane>
+
+            </el-tabs>
+
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/adaptor.js"></script>
+</html>

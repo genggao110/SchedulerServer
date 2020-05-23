@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Model Resource List</title>
+
+
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/list.css">
+    <link rel="stylesheet" href="/static/css/model_items.css">
+    <script src="/static/js/common/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <style>
+        .el-menu a {
+            color: white;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .mainBarLogo {
+            width: 220px !important;
+            height: 52px !important;
+            margin-left: 20px;
+            margin-right: auto;
+            background-image: url("/static/img/logo.png");
+            background-size: auto 45px !important;
+            background-repeat: no-repeat;
+            padding: 0px !important;
+            display: inline-block;
+            float: left;
+            margin-top: 5px;
+        }
+
+        .badge {
+            padding: 5px 7px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.css">
+    <script src="../static/js/model_list.js"></script>
+</head>
+<body>
+<div id="app">
+
+    <div th:replace="fragment/navbar :: menu"></div>
+
+    <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 20px;margin-bottom: 20px">
+        <h1 align="center">
+            Model Resource List
+        </h1>
+        <el-divider></el-divider>
+
+        <div class="searcherPanel">
+            <div class="searcherInputPanel" @keydown.enter="searchResult()">
+                <input id="searchBox" type="text" placeholder="Model Resource Name..." v-model="searchText">
+                <button @click="searchResult()"><i class="glyphicon glyphicon-search"></i> Search</button>
+            </div>
+        </div>
+
+        <div class="progressPanel">
+            <span class="barControl">
+                <div class="barContro_space">
+                    <span class="progress_line" :class="{active:pageOption.progressBar}"></span>
+                </div>
+            </span>
+        </div>
+
+        <div class="modelPanel">
+            <div class="content-body">
+                <div v-cloak class="list-item" v-for="(modelItem,key) in pageOption.searchResult">
+                    <div class="detail_title">
+                        <a :href="'/list/modelInfo/' + modelItem.oid"
+                           target="_blank">{{modelItem.name}}&nbsp&nbsp</a>
+                    </div>
+                    <div>
+
+                        <div class="detail_overview">
+                            <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="90"
+                                        :rounded="false"></avatar>
+                                <img v-if="modelItem.image!=''" :src="modelItem.image"
+                                     style="width:90px;height: 90px;">
+
+                            </a>
+
+                            <div class="info">
+                                <p :style="{'-webkit-line-clamp':4}">
+                                    {{modelItem.description}}</p>
+                                <div class="tags">
+                                    <span class="badge badge-info" >PACKAGE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="detail_bottom">
+                        <div style="display:inline-block;float: left;">
+                            <a :href="'https://geomodeling.njnu.edu.cn/user/'+ pageOption.users[key].oid">
+                                <img :src="(pageOption.users[key].image=='' || pageOption.users[key].image== undefined)?'/static/img/icon/default.png':pageOption.users[key].image"
+                                     class="round_icon"
+                                     style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                            </a>
+
+                            <a :href="'https://geomodeling.njnu.edu.cn/user/'+ pageOption.users[key].oid" target="_blank"
+                               style="display: inline-block;margin-left: 5px;"><h4>
+                                {{pageOption.users[key].name}}</h4></a>
+
+                            <h4 class="screen_view">
+                                contributed at {{modelItem.createTime.substring(0,10)}} </h4>
+                            <h4 class="mobile_view">
+                                {{modelItem.createTime.substring(0,10)}} </h4>
+                        </div>
+                        <div class="detail_option">
+                            <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
+                            <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                        </div>
+                        <br>
+                    </div>
+                </div>
+
+            </div>
+            <el-pagination style="text-align: center;margin-top:20px"
+                           v-if="pageOption.paginationShow"
+                           @current-change="handlePageChange"
+                           :current-page="pageOption.currentPage"
+                           layout="total, prev, pager, next"
+                           :total="pageOption.total">
+            </el-pagination>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+
+
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/model_list.js"></script>
+</html>
