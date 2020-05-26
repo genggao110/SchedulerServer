@@ -2,6 +2,8 @@ package com.scheduler.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @Author: wangming
@@ -37,5 +39,17 @@ public class IPUtils {
             }
         }
         return ip;
+    }
+
+    //从url中解析出ip地址和端口，例如：http://172.212.21.86:8060/indec/df,返回结果是 http://172.212.21.86:8060
+    public static URI getIPAndPort(URI uri){
+        URI effectiveURI = null;
+        try{
+            effectiveURI = new URI(uri.getScheme(),uri.getUserInfo(),uri.getHost(),uri.getPort(),null,null,null);
+        }catch (URISyntaxException e) {
+            e.printStackTrace();
+            effectiveURI = null;
+        }
+        return effectiveURI;
     }
 }

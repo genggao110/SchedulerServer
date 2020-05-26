@@ -28,6 +28,7 @@ public class Task {
     private String taskId;
     private String name;
     private String version;
+    private String description;
     private List<Model> models;
     /**
      * 0-started, 1 - finished, -1 - failed
