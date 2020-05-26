@@ -2679,7 +2679,7 @@ Graph.prototype.setLogicalScene=function(Str){
 		this.logicalScene.conditionItems=conditionItems;
 		this.logicalScene.operations=operations;
 		this.logicalScene.dependencies=dependencies;
-		console.log(this.logicalScene);
+		// console.log(this.logicalScene);
 	}
 }
 

@@ -90,6 +90,10 @@
             operations:[],
             dependencies:[]
         };
+        window.modelTaskConfig={
+            modelItems:[],
+            dataItems:[]
+        };
         var emptyGraph = "<mxGraphModel><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/></root></mxGraphModel>";
         window.mxgraphXMLStr="";
         window.logicalSceneXMLStr="";
@@ -727,9 +731,100 @@
         );
     </script>
 
-    <div id="">
+    <div id="setService">
 
     </div>
+    <script>
+    </script>
+
+    <div id="setDataDiv">
+        <Modal
+			v-model="setDataModal"
+            title="Set Data Service">
+            <h4>Name:</h4>
+            <h5>{{thisDataName}}</h5>
+            <h4 style="margin:5px 0 0 0">Description:</h4>
+            <h5>{{thisDataDescription}}</h5>
+            <h4 style="display: inline-block">Type: </h4>
+            <Radio-group v-model="dataType" type="button" style="margin:5px 0 15px 0" size="small">
+                <Radio label="url">
+                    Url
+                </Radio>
+                <Radio label="link">
+                    Link
+                </Radio>
+            </Radio-group>
+            <div v-if="dataType=='url'">
+                <i-input v-model="dataUrl" placeholder="Enter data url..."></i-input>
+            </div>
+            <div v-else-if="dataType=='link'">
+                <i-select filterable v-model="selectedData">
+                    <i-option v-for="dataOption in dataOptions" :value="dataOption.uid" :key="dataOption.index">{{dataOption.name}}</i-option>
+                </i-select>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" @click="setData">OK</i-button>
+            </div>
+        </Modal>
+    </div>
+    <script>window.setDataVM = new Vue(
+        {
+            el: "#setDataDiv",
+            data(){
+                return{
+                    setDataModal:false,
+                    thisDataUid:"",
+                    thisDataName:"",
+                    thisDataDescription:"",
+                    dataType:"url",
+                    dataUrl:"",
+                    selectedData:"",
+                    dataOptions: [],
+                }
+            },
+            methods:{
+                setDataModelShow(cell){
+                    this.thisDataUid = cell.uid;
+                    this.selectedData = "";
+                    this.dataUrl="";
+                    var dataItems = window.modelTaskConfig.dataItems;
+                    for(var i=0;i<dataItems.length;i++){
+                        if(dataItems[i].uid!=this.thisDataUid){
+                            this.dataOptions.push(dataItems[i]);
+                        }
+                    }
+                    var dataDes = graph.logicalScene.dataItems;
+                    for(var i=0;i<dataDes.length;i++){
+                        var dataItem = dataDes[i];
+                        if(dataItem.uid == cell.uid){
+                            this.thisDataName = dataItem.name;
+                            this.thisDataDescription = dataItem.description;
+                            break;
+                        }
+                    }
+                    this.setDataModal = true;
+                },
+                setData(){
+                    var dataItem = {
+                        name: this.thisDataName,
+                        description: this.thisDataDescription,
+                        uid: this.thisDataUid,
+                        type: this.dataType,
+                    };
+                    if(this.dataType=='url'){
+                        dataItem.value = this.dataUrl;
+                    }
+                    else{
+                        dataItem.value = this.selectedData;
+                    }
+                    window.modelTaskConfig.dataItems.push(dataItem);
+                    console.log(window.modelTaskConfig);
+                    this.setDataModal = false;
+                }
+            }
+        }
+    );
+    </script>
 <script type="text/javascript" src="mxGraph/js/Collaboration.js"></script>
 </body>
 </html>

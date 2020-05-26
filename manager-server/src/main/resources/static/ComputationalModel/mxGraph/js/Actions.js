@@ -1354,7 +1354,8 @@ Actions.prototype.init = function()
 	this.addAction('setDataService',function () {
         var cell = graph.getSelectionCell();
 		// ui.showDialog(new SetDataServiceDialogOld(ui, cell.value,cell.uid).container,460,360,true,false);
-		ui.showDialog(new SetDataServiceDialog(ui, cell.value,cell.uid).container,460,240,true,false);
+		// ui.showDialog(new SetDataServiceDialog(ui, cell.value,cell.uid).container,460,240,true,false);
+		window.setDataVM.setDataModelShow(cell);
 	});
 	this.addAction('setOperationService',function () {
         var cell = graph.getSelectionCell();
