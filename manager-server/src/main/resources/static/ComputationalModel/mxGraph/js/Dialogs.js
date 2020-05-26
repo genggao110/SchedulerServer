@@ -137,6 +137,12 @@ var OpenNewFile2 = function(editorUi)
         var graph = editorUi.editor.graph;
 		graph.setLogicalScene(value);
 		window.logicalSceneXMLStr=value;
+		var sidebar=editorUi.sidebar;
+		sidebar.container.innerHTML = "";
+		sidebar.addBasicInfo("modelitem","Model Item",true,graph.logicalScene.modelItems);
+        sidebar.addBasicInfo("dataitem","Data Item",true,graph.logicalScene.dataItems);
+        sidebar.addBasicInfo("condition","Condition Item",true,graph.logicalScene.conditionItems);
+        sidebar.addBasicInfo("operation","Operation Item",true,graph.logicalScene.operations);
         editorUi.hideDialog();
     });
     okBtn.className = 'geBtn gePrimaryBtn';

@@ -27,12 +27,14 @@
 	<!-- import iView -->
     <script src="//unpkg.com/view-design/dist/iview.min.js"></script>
     <!-- import jexcel -->
-    <script src="http://cdn.bossanova.uk/js/jquery.jexcel.js"></script>
-    <link rel="stylesheet" href="http://cdn.bossanova.uk/css/jquery.jexcel.css" type="text/css" />
+    <script src="https://bossanova.uk/jexcel/v4/jexcel.js"></script>
+    <script src="https://bossanova.uk/jsuites/v2/jsuites.js"></script>
+    <link rel="stylesheet" href="https://bossanova.uk/jexcel/v4/jexcel.css" type="text/css" />
+    <link rel="stylesheet" href="https://bossanova.uk/jsuites/v2/jsuites.css" type="text/css" />
 	
     <script type="text/javascript">
-        var reg=/groupID=(\S*)/;
-        var url=window.location.href;
+        // var reg=/groupID=(\S*)/;
+        // var url=window.location.href;
         // if (!sessionStorage.getItem("username")) {
         //     alert("请先登录！");
         //     localStorage.removeItem("historyURL");
@@ -54,28 +56,28 @@
         // - touch=1: Enables a touch-style user interface.
         // - storage=local: Enables HTML5 local storage.
         // - chrome=0: Chromeless mode.
-        var urlParams = (function(url)
-        {
-            var result = new Object();
-            var idx = url.lastIndexOf('?');
+        // var urlParams = (function(url)
+        // {
+        //     var result = new Object();
+        //     var idx = url.lastIndexOf('?');
 
-            if (idx > 0)
-            {
-                var params = url.substring(idx + 1).split('&');
+        //     if (idx > 0)
+        //     {
+        //         var params = url.substring(idx + 1).split('&');
 
-                for (var i = 0; i < params.length; i++)
-                {
-                    idx = params[i].indexOf('=');
+        //         for (var i = 0; i < params.length; i++)
+        //         {
+        //             idx = params[i].indexOf('=');
 
-                    if (idx > 0)
-                    {
-                        result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
-                    }
-                }
-            }
+        //             if (idx > 0)
+        //             {
+        //                 result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+        //             }
+        //         }
+        //     }
 
-            return result;
-        })(window.location.href);
+        //     return result;
+        // })(window.location.href);
 
         // Default resources are included in grapheditor resources
         mxLoadResources = false;
@@ -146,11 +148,11 @@
         </nav>
     </div>
     <script type="text/javascript">
-        $('#userNameLabel').html(sessionStorage.getItem("username"));
-        if(url.search(reg)!=-1){
-            let groupID=url.match(reg)[1];
-            $('#groupIDLabel').html("CID: "+groupID);
-        }
+        // $('#userNameLabel').html(sessionStorage.getItem("username"));
+        // if(url.search(reg)!=-1){
+        //     let groupID=url.match(reg)[1];
+        //     $('#groupIDLabel').html("CID: "+groupID);
+        // }
     </script>
 	<div id="qosModalDiv">
 		<Modal
@@ -215,8 +217,8 @@
                                     <Row>
                                         <i-col span="7">
                                             <div style="height:275px;border: 0.5px solid #dcdee2;">
-                                                <h5 style="margin:5px 0">Performance</h5>
-                                                    <Radio-group v-model="selectedWeights">
+                                                <h5 style="margin:5px 0">{{selectedFactors[selectX]}}</h5>
+                                                    <Radio-group v-model="selectedWeights" @on-change="setWeight">
                                                         <Radio label="0" size="small">
                                                             <small>Extremely Important</small>
                                                         </Radio>
@@ -245,7 +247,7 @@
                                                             <small>Extremely Important</small>
                                                         </Radio>
                                                     </Radio-group>
-                                                <h5 style="margin:5px 0">Avaliability</h5>
+                                                <h5 style="margin:5px 0">{{selectedFactors[selectY]}}</h5>
                                             </div>
                                         </i-col>
                                         <i-col span="17">
@@ -300,7 +302,12 @@
                         ],
                         selectedFactors: [],
                         stepType: "type0",
-                        selectedWeights: 0
+                        showData:[],
+                        factors:[],
+                        columns:[],
+                        selectedWeights: 0,
+                        selectX:1,
+                        selectY:0,
 					}
 				},
                 methods: {
@@ -321,17 +328,16 @@
                             var that = this;
                             this.stepIndex++;
                             if(this.stepIndex == 1){
-                                $('#weightTable').html('');
-                                var factors = this.selectedFactors;
-                                var fLength = factors.length;
-                                var showData = [];
-                                var columns = [];
+                                this.factors = this.selectedFactors;
+                                var fLength = this.factors.length;
+                                this.showData = [];
+                                this.columns = [];
                                 for(var i=0;i<fLength;i++){
                                     var columnItem = {
                                         'type':"text",
-                                        'title': factors[i]
+                                        'title': this.factors[i]
                                     }
-                                    columns.push(columnItem)
+                                    this.columns.push(columnItem)
                                     var dataItem = []
                                     for(var j=0;j<fLength;j++){
                                         if(i==j){
@@ -341,20 +347,39 @@
                                             dataItem.push('')
                                         }
                                     }
-                                    showData.push(dataItem);
+                                    this.showData.push(dataItem);
                                 }
-                                $('#weightTable').jexcel({ 
-                                    data: showData, 
-                                    colHeaders: factors, 
-                                    columns: columns,
-                                });
-                                $('td.jexcel_label').each((index, el)=>{
-                                    el.innerHTML=factors[index];
-                                })
+                                this.initJexcel();
                             }
                         }
                     },
+                    initJexcel(){
+                        var options = {
+                            data: this.showData, 
+                            colHeaders: this.factors, 
+                            columns: this.columns,
+                            onselection:(instance, x1, y1, x2, y2, origin)=>{
+                                this.selectX = x1;
+                                this.selectY = y1;
+                            }
+                        }
+                        $('#weightTable').empty();
+                        $('#weightTable').html(`<div id="weightExcel"></div>`);
+                        let spreadsheet = jexcel(document.getElementById('weightExcel'), options);
+                        Object.assign(this, spreadsheet);
+                    },
+                    setWeight(){
+                        if(this.selectX!=this.selectY){
+                            this.showData[this.selectY][this.selectX] = this.selectedWeights + "";
+                            this.showData[this.selectX][this.selectY] = "1" + "/" + this.selectedWeights;
+                            this.initJexcel();
+                        }
+                        else{
+                            confirm('此值不能修改');
+                        }
+                    },
                     finish() {
+                        console.log(this.showData);
                         this.qosModal = false;
                     },
                     cancel() {
@@ -701,6 +726,10 @@
             }
         );
     </script>
+
+    <div id="">
+
+    </div>
 <script type="text/javascript" src="mxGraph/js/Collaboration.js"></script>
 </body>
 </html>
