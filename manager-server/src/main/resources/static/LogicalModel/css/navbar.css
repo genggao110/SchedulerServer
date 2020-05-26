@@ -1,0 +1,41 @@
+.head{
+    background: #2b2f36;
+    border: none;
+    min-height: 60px;
+}
+.head .navbarPanel{
+    padding: 0 15px;
+    position: relative;
+    text-align: center;
+}
+.head .navbar-header{
+    float: left;
+}
+.head .navbar-header a{
+    width: 156px;
+    height: 60px;
+}
+.head .navbar-header a img{
+    margin-top: 7px;
+}
+.head .navTitle{
+    color: #FFFFFF;
+    font-size: 20px;
+    line-height: 60px;
+}
+#rightNav{
+    float: right;
+    margin: 0px;
+    padding: 0px;
+}
+#rightNav li{
+    float: left;
+}
+#rightNav li a{
+    font-size: 18px;
+    padding: 0 20px;
+    text-decoration: none;
+    height: 60px;
+    line-height: 60px;
+    color: #EEEEEE;
+}

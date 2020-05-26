@@ -1,0 +1,706 @@
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5,IE=9" ><![endif]-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Computational Model Builder</title>
+    <style>
+        .keyValueTable thead tr{
+            border: 1px solid #cccccc;
+            background: #dddddd;
+            height: 25px;
+        }
+        .keyValueTable tbody td input[type='text']{
+            width: 98%;
+        }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="mxGraph/styles/grapheditor.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+	<!-- import Vue.js -->
+	<script src="//vuejs.org/js/vue.min.js"></script>
+	<!-- import stylesheet -->
+	<link rel="stylesheet" href="//unpkg.com/view-design/dist/styles/iview.css">
+	<!-- import iView -->
+    <script src="//unpkg.com/view-design/dist/iview.min.js"></script>
+    <!-- import jexcel -->
+    <script src="http://cdn.bossanova.uk/js/jquery.jexcel.js"></script>
+    <link rel="stylesheet" href="http://cdn.bossanova.uk/css/jquery.jexcel.css" type="text/css" />
+	
+    <script type="text/javascript">
+        var reg=/groupID=(\S*)/;
+        var url=window.location.href;
+        // if (!sessionStorage.getItem("username")) {
+        //     alert("请先登录！");
+        //     localStorage.removeItem("historyURL");
+        //     if(url.search(reg)!=-1){
+        //         localStorage.setItem("historyURL",url);
+        //     }
+        //     window.location.href="/TeamWorking/html/login.html";
+        // }
+        // else{
+        //     localStorage.removeItem("historyURL");
+        //     if(url.search(reg)==-1){
+        //         window.location.href="/TeamWorking/html/login.html";
+        //     }
+        // }
+    </script>
+    <script type="text/javascript">
+        // Parses URL parameters. Supported parameters are:
+        // - lang=xy: Specifies the language of the user interface.
+        // - touch=1: Enables a touch-style user interface.
+        // - storage=local: Enables HTML5 local storage.
+        // - chrome=0: Chromeless mode.
+        var urlParams = (function(url)
+        {
+            var result = new Object();
+            var idx = url.lastIndexOf('?');
+
+            if (idx > 0)
+            {
+                var params = url.substring(idx + 1).split('&');
+
+                for (var i = 0; i < params.length; i++)
+                {
+                    idx = params[i].indexOf('=');
+
+                    if (idx > 0)
+                    {
+                        result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+                    }
+                }
+            }
+
+            return result;
+        })(window.location.href);
+
+        // Default resources are included in grapheditor resources
+        mxLoadResources = false;
+
+        //Default Model
+        var LogicalModel = {
+            modelItems:[],
+            dataItems:[],
+            conditionItems:[],
+            operations:[],
+            dependencies:[]
+        };
+        var emptyGraph = "<mxGraphModel><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/></root></mxGraphModel>";
+        window.mxgraphXMLStr="";
+        window.logicalSceneXMLStr="";
+        window.runModelUid="";
+    </script>
+    <script type="text/javascript" src="mxGraph/js/Init.js"></script>
+    <script type="text/javascript" src="mxGraph/deflate/pako.min.js"></script>
+    <script type="text/javascript" src="mxGraph/deflate/base64.js"></script>
+    <script type="text/javascript" src="mxGraph/jscolor/jscolor.js"></script>
+    <script type="text/javascript" src="mxGraph/sanitizer/sanitizer.min.js"></script>
+    <script type="text/javascript" src="mxGraph/js/mxgraph/js/mxClient.js"></script>
+    <script type="text/javascript" src="mxGraph/js/EditorUi.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Editor.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Sidebar.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Graph.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Shapes.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Actions.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Menus.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Format.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Toolbar.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Dialogs.js"></script>
+    <style>
+        .factorTitle{
+            display:inline-block
+        }
+        .factorDes{
+            display: block;
+            text-indent: 2em;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body class="geEditor">
+    <div class="head">
+        <nav class="navbar navbar-default pcnav" role="navigation">
+            <div class="navbarPanel">
+                <div class="navbar-header">
+                    <a href="#" class="navbar-brand">
+                        <img src="images/logo.png" height="45">
+                    </a>
+                </div>
+                <span class="navTitle">Computational Model Builder</span>
+                <ul id="rightNav">
+                    <li>
+                         <!--<a href="http://localhost:8081/TeamWorking/index.html"><strong>HOME</strong></a>-->
+                        <a href="/TeamWorking/index.html"><strong>HOME</strong></a>
+                    </li>
+                    <li class="nav_hello">
+                        <a><strong id="userNameLabel">NJGIS</strong></a>
+                    </li>
+                    <li class="nav_exit" >
+                        <a><strong id="groupIDLabel">GroupID</strong></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <script type="text/javascript">
+        $('#userNameLabel').html(sessionStorage.getItem("username"));
+        if(url.search(reg)!=-1){
+            let groupID=url.match(reg)[1];
+            $('#groupIDLabel').html("CID: "+groupID);
+        }
+    </script>
+	<div id="qosModalDiv">
+		<Modal
+			v-model="qosModal"
+            title="Qos Evaluation Wizard"
+            :mask-closable = "false"
+            width=700>
+			<div style="height:350px;">
+                <Row>
+                    <i-col span="7">
+                        <div style="height:350px;border: 0.5px solid #dcdee2;padding:5px;background-color:white">
+                            <Tree :data = "step" id="stepTree" @on-select-change="changeStep"></Tree>
+                        </div>
+                    </i-col>
+                    <i-col span="17">
+                        <div style="height:350px;margin-left: 25px" v-show="stepIndex==0">
+                            <h5>Step1: Choose the QoS factors using in the evaluation process</h5>
+                            <div style="margin-top:20px">
+                                <Checkbox-group v-model="selectedFactors">
+                                    <Checkbox label="Performance">
+                                        <h5 class="factorTitle">Performance</h5>
+                                        <small class="factorDes">表示地理模型服务请求的相应速度，本质上与计算资源的网络状况相关。</small>
+                                    </Checkbox>
+                                    <Checkbox label="Reliability" style="margin:6px 0">
+                                        <h5 class="factorTitle">Reliability</h5>
+                                        <small class="factorDes">代表在指定的时间间隔内成功执行服务的概率。</small>
+                                    </Checkbox>
+                                    <Checkbox label="Avaliability" style="margin:6px 0">
+                                        <h5 class="factorTitle">Avaliability</h5>
+                                        <small class="factorDes">代表地理模型服务可用的可能性。</small>
+                                    </Checkbox>
+                                    <br/>
+                                    <Checkbox label="Reputation" style="margin:6px 0">
+                                        <h5 class="factorTitle">Reputation</h5>
+                                        <small class="factorDes">模型使用者对于地理模型服务的综合评分。</small>
+                                    </Checkbox>
+                                    <Checkbox label="CPU performance" style="margin:6px 0">
+                                        <h5 class="factorTitle">CPU performance</h5>
+                                        <small class="factorDes">模型服务所承载计算资源的CPU性能评分。</small>
+                                    </Checkbox>
+                                    <Checkbox label="Memory size" style="margin:6px 0">
+                                        <h5 class="factorTitle">Memory size</h5>
+                                        <small class="factorDes">模型服务所承载计算资源的内存容量大小。</small>
+                                    </Checkbox>
+                                </Checkbox-group>
+                            </div>
+                        </div>
+                        <div style="height:350px;" v-show="stepIndex==1">
+                            <h5 style="margin-left: 25px">Step2: Determine the weights of each QoS factor</h5>
+                            <div style="margin-top:20px;margin-left: 25px">
+                                <Radio-group v-model="stepType">
+                                    <Radio label="type0">
+                                        <small>Expenence Method</small>
+                                    </Radio>
+                                    <Radio label="type1">
+                                        <small>Analytic Hierarchy Process(AHP)</small>
+                                    </Radio>
+                                </Radio-group>
+                            </div>
+                            <div style="margin-top: 15px" v-show="stepType=='type1'">
+                                <div style="height:275px;border: 0.5px solid #dcdee2;">
+                                    <Row>
+                                        <i-col span="7">
+                                            <div style="height:275px;border: 0.5px solid #dcdee2;">
+                                                <h5 style="margin:5px 0">Performance</h5>
+                                                    <Radio-group v-model="selectedWeights">
+                                                        <Radio label="0" size="small">
+                                                            <small>Extremely Important</small>
+                                                        </Radio>
+                                                        <Radio label="1" size="small">
+                                                            <small>Very Important</small>
+                                                        </Radio>
+                                                        <Radio label="2" size="small">
+                                                            <small>Quite Important</small>
+                                                        </Radio>
+                                                        <Radio label="3" size="small">
+                                                            <small>Weakly Important</small>
+                                                        </Radio>
+                                                        <Radio label="4" size="small">
+                                                            <small>Equally Important</small>
+                                                        </Radio>
+                                                        <Radio label="5" size="small">
+                                                            <small>Weakly Important</small>
+                                                        </Radio>
+                                                        <Radio label="6" size="small">
+                                                            <small>Quite Important</small>
+                                                        </Radio>
+                                                        <Radio label="7" size="small">
+                                                            <small>Very Important</small>
+                                                        </Radio>
+                                                        <Radio label="8" size="small">
+                                                            <small>Extremely Important</small>
+                                                        </Radio>
+                                                    </Radio-group>
+                                                <h5 style="margin:5px 0">Avaliability</h5>
+                                            </div>
+                                        </i-col>
+                                        <i-col span="17">
+                                            <div style="height:275px;border: 0.5px solid #dcdee2;">
+                                                <h5 style="text-align: center;margin: 10px 0">Fuzzy Pairwise Comparison</h5>
+                                                <div id="weightTable"></div>
+                                            </div>
+                                        </i-col>
+                                    </Row>
+                                </div>
+                            </div>
+                        </div>
+                    </i-col>
+                </Row>
+            </div>
+            <div slot="footer">
+                <i-button @click="back()" size = "small" :disabled="stepIndex==0">&lt Back</i-button>
+                <i-button @click="next()" size = "small" :disabled="stepIndex==2">Next &gt</i-button>
+                <i-button type="primary" @click="finish()" size = "small" :disabled="stepIndex!=2">Finish</i-button>
+                <i-button @click="cancel()" size = "small">Cancel</i-button>
+            </div>
+		</Modal>
+	</div>
+	<script>
+		window.qosModalVM = new Vue(
+			{
+                el: "#qosModalDiv",
+                mounted(){
+                    $(".ivu-tree-title").css("font-size", "3px");
+                    $(".ivu-modal-content").css("background-color", "#f8f8f9");
+                },
+				data(){
+					return{
+                        qosModal:false,
+                        stepIndex: 0,
+                        step: [
+                            {
+                                title: "QoS Evaluation",
+                                expand: true,
+                                children: [
+                                    {
+                                        title: "Choose Qos factors"
+                                    },
+                                    {
+                                        title: "Determine Weights"
+                                    },
+                                    {
+                                        title: "Check QoS Information"
+                                    }
+                                ]
+                            }
+                        ],
+                        selectedFactors: [],
+                        stepType: "type0",
+                        selectedWeights: 0
+					}
+				},
+                methods: {
+                    showQosModal(modelName){
+                        this.stepIndex = 0;
+                        this.qosModal = true;
+                    },
+                    changeStep(array, value){
+                        this.stepIndex = value.nodeKey - 1;
+                    },
+                    back(){
+                        this.stepIndex--;
+                    },
+                    next(){
+                        if(this.selectedFactors.length<1){
+                            confirm("请选择至少一个因素");
+                        }else{
+                            var that = this;
+                            this.stepIndex++;
+                            if(this.stepIndex == 1){
+                                $('#weightTable').html('');
+                                var factors = this.selectedFactors;
+                                var fLength = factors.length;
+                                var showData = [];
+                                var columns = [];
+                                for(var i=0;i<fLength;i++){
+                                    var columnItem = {
+                                        'type':"text",
+                                        'title': factors[i]
+                                    }
+                                    columns.push(columnItem)
+                                    var dataItem = []
+                                    for(var j=0;j<fLength;j++){
+                                        if(i==j){
+                                            dataItem.push('1');
+                                        }
+                                        else{
+                                            dataItem.push('')
+                                        }
+                                    }
+                                    showData.push(dataItem);
+                                }
+                                $('#weightTable').jexcel({ 
+                                    data: showData, 
+                                    colHeaders: factors, 
+                                    columns: columns,
+                                });
+                                $('td.jexcel_label').each((index, el)=>{
+                                    el.innerHTML=factors[index];
+                                })
+                            }
+                        }
+                    },
+                    finish() {
+                        this.qosModal = false;
+                    },
+                    cancel() {
+                        this.qosModal = false;
+                    }
+                }
+			}
+		);
+    </script>
+    
+    <div id="globalModalDiv">
+        <Modal
+			v-model="confirmModal"
+            title="Service Chain Optimization Wizard">
+            <h4>Do you want to set global optimization before run?</h4>
+            <div slot="footer">
+                <i-button type="primary" @click="setGlobal()" size = "small">Yes, to optimize</i-button>
+                <i-button @click="toRun()" size = "small">No, to run</i-button>
+            </div>
+        </Modal>
+        <Modal
+			v-model="optimizationModal"
+            title="Before run"
+            width=650px>
+            <div style="height:400px">
+                <h5>Step1: Choose the QoS factors using in the global optimization process</h5>
+                <div style="margin-top:20px">
+                    <Checkbox-group v-model="selectedFactors">
+                        <Row>
+                            <i-col span="8">
+                                <Checkbox label="Performance">
+                                    <h5 class="factorTitle">Performance</h5>
+                                </Checkbox>
+                            </i-col>
+                            <i-col span="8">
+                                <Checkbox label="Reliability" style="margin:6px 0">
+                                    <h5 class="factorTitle">Reliability</h5>
+                                </Checkbox>
+                            </i-col>
+                            <i-col span="8">
+                                <Checkbox label="Avaliability" style="margin:6px 0">
+                                    <h5 class="factorTitle">Avaliability</h5>
+                                </Checkbox>
+                            </i-col>
+                            <i-col span="8">
+                                <Checkbox label="Reputation" style="margin:6px 0">
+                                    <h5 class="factorTitle">Reputation</h5>
+                                </Checkbox>
+                            </i-col>
+                            <i-col span="8">
+                                <Checkbox label="CPU performance" style="margin:6px 0">
+                                    <h5 class="factorTitle">CPU performance</h5>
+                                </Checkbox>
+                            </i-col>
+                            <i-col span="8">
+                                <Checkbox label="Memory size" style="margin:6px 0">
+                                    <h5 class="factorTitle">Memory size</h5>
+                                </Checkbox>
+                            </i-col>
+                        </Row>
+                    </Checkbox-group>
+                    <div style="height:30px"></div>
+                    <h5>Step2: Set the constraints of whole service chain(optional)</h5>
+                    <div style="padding:10px">
+                        <small>QoS Factor:</small>
+                        <div style="min-height:50px;border: 0.5px solid #dcdee2;">
+                            <div style="padding:5px 20px" v-show="isSelected('Performance')">
+                                <span>The performance of the service chain≥</span>
+                                <i-select v-model="performanceSe" size = "small" style="width:120px;margin-left: 15px">
+                                    <i-option v-for="item in performanceOp" :value="item" :key="item.index">{{ item }}</i-option>
+                                </i-select>
+                            </div>
+                            <div style="padding:5px 20px" v-show="isSelected('Reliability')">
+                                <span>The reliability of the service chain≥</span>
+                                <i-select v-model="reliabilitySe" size = "small" style="width:120px;margin-left: 15px">
+                                    <i-option v-for="item in reliabilityOp" :value="item" :key="item.index">{{ item }}</i-option>
+                                </i-select>
+                            </div>
+                            <div style="padding:5px 20px" v-show="isSelected('Avaliability')">
+                                <span>The avaliability of the service chain≥</span>
+                                <i-select v-model="avaliabilitySe" size = "small" style="width:120px;margin-left: 15px">
+                                    <i-option v-for="item in avaliabilityOp" :value="item" :key="item.index">{{ item }}</i-option>
+                                </i-select>
+                            </div>
+                            <div style="padding:5px 20px" v-show="isSelected('Reputation')">
+                                <span>The reputation of the service chain≥</span>
+                                <i-select v-model="reputationSe" size = "small" style="width:120px;margin-left: 15px">
+                                    <i-option v-for="item in reputationOp" :value="item" :key="item.index">{{ item }}</i-option>
+                                </i-select>
+                            </div>
+                            <div style="padding:5px 20px" v-show="isSelected('CPU performance')">
+                                <span>The CPU performance of the service chain≥</span>
+                                <i-select v-model="CPUSe" size = "small" style="width:120px;margin-left: 15px">
+                                    <i-option v-for="item in CPUOp" :value="item" :key="item.index">{{ item }}</i-option>
+                                </i-select>
+                            </div>
+                            <div style="padding:5px 20px" v-show="isSelected('Memory size')">
+                                <span>The memory size of the service chain≥</span>
+                                <i-select v-model="memorySe" size = "small" style="width:120px;margin-left: 15px">
+                                    <i-option v-for="item in memoryOp" :value="item" :key="item.index">{{ item }}</i-option>
+                                </i-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" @click="toRun()" size = "small">OK, to run</i-button>
+                <i-button @click="cancel()" size = "small">Cancel</i-button>
+            </div>
+        </Modal>
+    </div>
+    <script>
+        window.globalModalVM = new Vue(
+			{
+                el: "#globalModalDiv",
+                mounted(){
+                    $(".ivu-modal-content").css("background-color", "#f8f8f9");
+                },
+                data(){
+                    return{
+                        confirmModal:false,
+                        optimizationModal:false,
+                        selectedFactors:[],
+                        performanceSe:"",
+                        performanceOp: ['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'],
+                        reliabilitySe:"",
+                        reliabilityOp: ['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'],
+                        avaliabilitySe:"",
+                        avaliabilityOp: ['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'],
+                        reputationSe:"",
+                        reputationOp: ['1 Star','2 Star','3 Star','4 Star','5 Star'],
+                        CPUSe:"",
+                        CPUOp: ['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'],
+                        memorySe:"",
+                        memoryOp: ['1G','4G','8G','16G'],
+
+                    }
+                },
+                methods:{
+                    showConfirm(){
+                        this.confirmModal = true;
+                    },
+                    setGlobal(){
+                        this.confirmModal = false;
+                        this.optimizationModal = true;
+                    },
+                    toRun(){
+                        confirm("To run");
+                    },
+                    cancel(){
+                        this.optimizationModal = false;
+                    },
+                    isSelected(item){
+                        return this.selectedFactors.includes(item);
+                    }
+                }
+            }
+        );
+    </script>
+    <div id="runModalDiv">
+        <Modal
+			v-model="runStateModal"
+            title="Running state"
+            width=650px>
+            <div style="height:400px;overflow-y: auto">
+                <div v-for="model in runData" :key="model.index">
+                    <h3 style="display:inline-block">Model: </h3><h3 style="display:inline-block;color:tomato">{{model.model}}</h3>
+                    <div style="margin:5px"  v-for="state in model.states" :key="state.index">
+                        <h4 style="display:inline-block">State: </h4><h4 style="display:inline-block;color:#2b85e4">{{state.state}}</h4>
+                        <div style="margin:5px;border: 0.5px solid #dcdee2;padding: 3px"  v-for="event in state.events" :key="event.index">
+                            <small style="margin-left:15px"><strong>Event: </strong>{{event}}</small>
+                            <i-button type="text" icon="md-download" style="color:#2b85e4;float:right;margin-right: 15px" size="small">Data download</i-button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div style="margin:15px">
+                <i-progress :percent="100" :stroke-width="20" text-inside></i-progress>
+                <small style="float:right;color:red"><strong>Total time: </strong>15min 46s</small>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" @click="cancel()" size = "small">OK</i-button>
+            </div>
+        </Modal>
+    </div>
+    <script>
+        window.runModalVM = new Vue(
+			{
+                el: "#runModalDiv",
+                mounted(){
+                    $(".ivu-modal-content").css("background-color", "#f8f8f9");
+                },
+                data(){
+                    return{
+                        runStateModal:false,
+                        runData:[
+                            {
+                                model:"PitRemove",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"DInFlowDir",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"AreaD8",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"D8FlowDir",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"AreaDInf",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"SlopeArea",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"D8FlowPathExtermeUp",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"Threshold",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"StreamNet",
+                                states:[
+                                    {
+                                        state:"0",
+                                        events:["0","0","0","0","0","0"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"Watershed Delineation",
+                                states:[
+                                    {
+                                        state:"AutoSnap",
+                                        events:["OriginalOutletShape","SnapThresholdValue","Watershed"]
+                                    },
+                                    {
+                                        state:"DefineStreamGrids",
+                                        events:["WatershedGrid"]
+                                    },
+                                    {
+                                        state:"DelineateWatershedState",
+                                        events:["WatershedShape"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"HruGenerator",
+                                states:[
+                                    {
+                                        state:"RUNSTATE",
+                                        events:["FIELDS","SCENARIO","STATISTICS","KNOWN_CROPS","Control"]
+                                    }
+                                ]
+                            },
+                            {
+                                model:"SWAT",
+                                states:[
+                                    {
+                                        state:"WatershedDelienationState",
+                                        events:["DEM","MaskShape","MaskDEM","FillDEM","D8",
+                                        "D8Slope","DInf","DInfSlope","AreaD8","AreaDInf","ThresholdValue",
+                                        "OrignalStreamShape","OriginalOutletShape","SnapThresholdValue","Watershed",
+                                        "WatershedGrid","WatershedShape"]
+                                    },
+                                    {
+                                        state:"WatershedDelienationState",
+                                        events:["DEM","MaskShape","MaskDEM","FillDEM","D8",
+                                        "D8Slope","WeatherGenerator","TMP","MinumParameter","TimeSpan","SlopeLimitation",
+                                        "Rainfall_Runoff_Routine","Rainfall_Distribution","Potentail_ET_Method","Printout_Frequently",
+                                        "HydroResponseUnitData","FullHruShape"]
+                                    },
+                                    {
+                                        state:"RunSWATState",
+                                        events:["SWATRUN_Param"]
+                                    },
+                                    {
+                                        state:"SWATBasinShapeGenerator",
+                                        events:["SummeryType","SWATBasinShapeGen"]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                methods:{
+                    showRunModal(){
+                        this.runStateModal = true;
+                    },
+                    cancel(){
+                        this.runStateModal = false;
+                    }
+                }
+            }
+        );
+    </script>
+<script type="text/javascript" src="mxGraph/js/Collaboration.js"></script>
+</body>
+</html>
