@@ -19,6 +19,9 @@ public class Model {
     @JacksonXmlProperty(localName = "description", isAttribute = true)
     private String description;
 
+    @JacksonXmlProperty(localName = "modelServiceUrl", isAttribute = true)
+    private String modelServiceUrl;
+
     @JacksonXmlProperty(localName = "OutputData")
     private OutputData outputData;
 

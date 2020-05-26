@@ -37,6 +37,7 @@ public class TaskService {
             task.setUid(taskConfiguration.getUid());
             task.setDate(new Date());
             task.setName(taskConfiguration.getName());
+            task.setDescription(taskConfiguration.getDescription());
             task.setVersion(taskConfiguration.getVersion());
             task.setModels(taskConfiguration.getModels());
             task.setTaskId(taskId.toString());
@@ -50,7 +51,7 @@ public class TaskService {
             e.printStackTrace();
             log.info("parse xml error: " + e.getMessage());
             return null;
-        }catch (InterruptedException e){
+        }catch (Exception e){
             e.printStackTrace();
             log.info("push task into the Deque error: " + e.getMessage());
             return null;
