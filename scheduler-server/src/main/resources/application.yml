@@ -16,7 +16,7 @@ spring:
     static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/", "file:${prop.task-uploadr}"]
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/Task
+      uri: mongodb://172.21.213.33:27017/Task
   servlet:
     multipart:
       max-file-size: 1000MB

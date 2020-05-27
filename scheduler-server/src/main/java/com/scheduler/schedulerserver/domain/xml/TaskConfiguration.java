@@ -26,6 +26,9 @@ public class TaskConfiguration {
     @JacksonXmlProperty(localName = "version" ,isAttribute = true)
     private String version;
 
+    @JacksonXmlProperty(localName = "description", isAttribute = true)
+    private String description;
+
     @JacksonXmlProperty(localName = "Model")
     @JacksonXmlElementWrapper(localName = "Models")
     private LinkedList<Model> models;

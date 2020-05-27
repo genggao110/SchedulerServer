@@ -7,9 +7,12 @@ import com.scheduler.schedulerserver.domain.xml.DataTemplate;
 import com.scheduler.schedulerserver.domain.xml.Model;
 import com.scheduler.schedulerserver.domain.xml.ShareData;
 import com.scheduler.schedulerserver.dto.ExDataDTO;
+import com.scheduler.schedulerserver.dto.OutputDataDTO;
+import com.scheduler.utils.IPUtils;
 import com.scheduler.utils.MyHttpUtils;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,21 +63,26 @@ public class AdvanceHandler {
             }
             //只有数据准备完毕之后才会进入到这里
             if (status){
-                //提交模型运行给ManagerServer(这里测试就调用本地)
+                //根据modelSerUrl直接和特定的TaskServer通信，避免再从Manager Server转发一次
                 String pid = this.modelList.get(index).getPid();
+                String modelSerUrl = this.modelList.get(index).getModelServiceUrl();
+                //TODO 从url中获取task Server的ip和port(例如http://172.21.212.119:8061)
+                String taskIpAndPort = IPUtils.getIPAndPort(URI.create(modelSerUrl)).toString();
+                int port = 8061;
                 List<ExDataDTO> inputs = TemplateToExData(this.modelList.get(index).getInputData().getInputs());
-                //拼凑请求URL
-                String url = "http://" + ManagerServerConstants.MANAGERSERVER + "/computableModel/submitTask";
                 JSONObject params = new JSONObject();
+                String inputsArray = convertItems2JSON(inputs);
                 params.put("pid",pid);
-                params.put("userName",userName);
-                params.put("inputs",inputs);
+                params.put("username",userName);
+                params.put("inputs",inputsArray);
+                //这里用了老版本的数据容器，但是task server需要该字段，因此填充为空数组
+                params.put("outputs",new JSONArray().toJSONString());
 
                 try{
-                    String resJson = MyHttpUtils.POSTWithJSON(url, "UTF-8",null,params);
+                    String resJson = MyHttpUtils.POSTWithJSON(modelSerUrl, "UTF-8",null,params);
                     System.out.println(resJson);
                     JSONObject jResponse = JSONObject.parseObject(resJson);
-                    if(jResponse.getInteger("code") == -1){
+                    if(jResponse.getString("result").equals("err")){
                         //说明找不到可用的地理模型服务
                         synchronized (this.sharedMap){
                             this.modelList.get(index).setStatus(-1);
@@ -85,14 +93,13 @@ public class AdvanceHandler {
                         break;
                     }else{
                         //得到任务的Id后，进行轮询遍历，以得到模型的运行结果
-                        String taskId = jResponse.getJSONObject("data").getString("tid");
-                        String taskIp = jResponse.getJSONObject("data").getString("ip");
-                        int port = jResponse.getJSONObject("data").getInteger("port");
+                        String taskId = jResponse.getString("data");
                         //构建模型运行状态变量
                         int taskStatus;
+                        //TODO 构建备选服务计数(当计数超过备选服务个数的时候，说明确实是运行出错了)
                         while(true){
                             //直接向Task Server 发起http请求，获取模型运行结果
-                            String taskQueryUrl = "http://" + taskIp + ":" + port + "/task/" + taskId;
+                            String taskQueryUrl = taskIpAndPort + "/task/" + taskId;
                             String taskResult = MyHttpUtils.GET(taskQueryUrl, "UTF-8",null);
                             JSONObject taskResultResponse = JSONObject.parseObject(taskResult);
                             if(taskResultResponse.getString("result").equals("suc")){
@@ -110,7 +117,7 @@ public class AdvanceHandler {
                                     }else{
                                         //失败或成功的状态跳出while循环，在break之前更新一下model里面output信息
                                         JSONArray jOutputs = jData.getJSONArray("t_outputs");
-                                        //更新状态
+                                        //TODO 论文优化的部分，如果模型运行失败，则还可以从备选模型服务中选出可用的服务进行再次调度运行更新状态
                                         updateModelOutputByTask(jOutputs,index);
                                         break;
                                     }
@@ -224,6 +231,48 @@ public class AdvanceHandler {
             exDataDTOList.add(exDataDTO);
         }
         return exDataDTOList;
+    }
+
+    private String convertItems2JSON(List<ExDataDTO> inputs){
+        JSONArray resultJson = new JSONArray();
+        for(ExDataDTO input: inputs){
+            JSONObject temp = new JSONObject();
+            temp.put("StateName", input.getStatename());
+            temp.put("Event", input.getEvent());
+            temp.put("Url", input.getUrl());
+            temp.put("Tag", input.getTag());
+            temp.put("Suffix",input.getSuffix());
+            resultJson.add(temp);
+        }
+        return resultJson.toJSONString();
+    }
+
+    private List<ExDataDTO> convertJSON2Items(JSONArray jOutputs){
+        List<ExDataDTO> outputItems = new ArrayList<>();
+        for(int i = 0; i < jOutputs.size(); i++){
+            JSONObject temp = jOutputs.getJSONObject(i);
+            ExDataDTO exDataDTO = new ExDataDTO();
+            exDataDTO.setStatename(temp.getString("StateName"));
+            exDataDTO.setEvent(temp.getString("Event"));
+            exDataDTO.setTag(temp.getString("Tag"));
+            exDataDTO.setUrl(temp.getString("Url"));
+            exDataDTO.setSuffix(temp.getString("Suffix"));
+            outputItems.add(exDataDTO);
+        }
+        return outputItems;
+    }
+
+    private String convertOutputItems2JSON(List<OutputDataDTO> outputs){
+        JSONArray resultJson = new JSONArray();
+        for(OutputDataDTO output:outputs){
+            JSONObject temp = new JSONObject();
+            temp.put("StateName",output.getStatename());
+            temp.put("Event", output.getEvent());
+            temp.put("Type",output.getTemplate().getType());
+            temp.put("Value",output.getTemplate().getValue());
+            resultJson.add(temp);
+        }
+        return resultJson.toJSONString();
     }
 
     /**
