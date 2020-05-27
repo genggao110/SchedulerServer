@@ -235,6 +235,15 @@ a:focus,a:active,a:hover,h3:hover{
 }
 
 
+.titleImg{
+    width: 100%;
+    height: 272px;
+    position: absolute;
+    margin-top: -62px;
+    z-index: -1;
+    background-position-y: -450px;
+    background-position-x: center;
+}
 
 
 

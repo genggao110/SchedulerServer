@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/list.css">
     <link rel="stylesheet" href="/static/css/model_items.css">
-
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/vue-avatar.min.js"></script>
+    <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <link rel="stylesheet" href="/static/css/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/wzhFlexContainer.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
 
@@ -25,19 +27,6 @@
             margin: 0;
         }
 
-        .mainBarLogo{
-            width: 220px !important;
-            height: 52px !important;
-            margin-left: 20px;
-            margin-right: auto;
-            background-image: url("/static/img/logo.png");
-            background-size: auto 45px !important;
-            background-repeat: no-repeat;
-            padding: 0px !important;
-            display: inline-block;
-            float: left;
-            margin-top: 5px;
-        }
 
         .badge {
             padding: 5px 7px;
@@ -74,7 +63,7 @@
 <body>
 <div id="app">
 
-    <div th:replace="fragment/navbar :: menu"></div>
+    <div th:replace="fragments/navbar :: menu"></div>
 
     <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 20px;margin-bottom: 20px">
         <div class="el-col-6" style="height:700px">
@@ -132,7 +121,7 @@
             </el-tabs>
         </div>
         <div class="el-col-18" style="height:700px">
-            <el-tabs type="border-card" stretch="true" style="margin-left: 10px;">
+            <el-tabs type="border-card" stretch="true" style="height: 100%; margin-left: 10px;">
                 <el-tab-pane label="Computable Resource">
                     <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length!=0" v-for="(container,index) in modelContainerList">
                         <el-card class="box-card serverCard" >
@@ -173,7 +162,7 @@
                             <div v-cloak class="list-item" style="border:none">
                                 <div class="detail_title">
                                     <a target="_blank" @click="open">SWAT_Model</a>
-                                    <el-button type="primary" class="pull-right" style="margin-top: -5px;" @click="getComputerForDeploy()">Adapting</el-button>
+                                    <el-button type="primary" class="pull-right" style="margin-top: -5px;">Adapting</el-button>
                                 </div>
                                 <div>
 
@@ -310,6 +299,8 @@
 
 </body>
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/adaptor.js"></script>
 </html>

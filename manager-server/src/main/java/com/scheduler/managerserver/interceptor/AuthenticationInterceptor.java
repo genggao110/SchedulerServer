@@ -62,10 +62,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 String userId = (String) claims.get("id");
                 //如果查询不存在，错误已经被处理
                 User user = userService.findUserById(userId);
-                if(!user.getPassword().equals((String)claims.get("password"))){
-                    response.setStatus(401);
-                    throw new MyException(ResultEnum.USER_PASSWORD_NOT_MATCH);
-                }
+//                if(!user.getPassword().equals((String)claims.get("password"))){
+//                    response.setStatus(401);
+//                    throw new MyException(ResultEnum.USER_PASSWORD_NOT_MATCH);
+//                }
                 return true;
             }
         }

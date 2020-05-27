@@ -396,5 +396,6 @@ new Vue({
         this.getModelResourceInfo(id);
         //目前这里是获取到所有的可用计算资源
         this.getAllAvailableComputerResource();
+
     }
 })

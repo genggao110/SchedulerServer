@@ -134,6 +134,38 @@ public class ModelResourceService {
         return result_json;
     }
 
+    public JSONObject getModelResource(){
+        JSONObject result_json = new JSONObject();
+        String url = PORTAL_ADDRESS + "/computableModel/getAllInfo" ;
+        String result = "";
+        try{
+            result = MyHttpUtils.GET(url, "UTF-8", null);
+            JSONObject resJson = JSON.parseObject(result);
+            if(resJson.getIntValue("code") == 0){
+                //表明是成功获取
+                JSONObject data = resJson.getJSONObject("data");
+                ModelResourceVO modelResourceVO = handleModelPackageData(data);
+                //单独对runtime节点信息进行处理
+                if(data.getString("runtime") == null){
+                    //对mdl信息进行额外处理
+                    String mdlString = data.getString("mdlJson");
+                    JSONObject mdlJson = JSON.parseObject(mdlString);
+                    JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+                    JSONObject runtime = convertMDLRuntimeToJSON(modelClass.getJSONArray("Runtime").getJSONObject(0));
+                    modelResourceVO.setRuntime(runtime.toJSONString());
+                }
+                result_json.put("info", modelResourceVO);
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+            result_json = null;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            result_json = null;
+        }
+        return result_json;
+    }
+
     // 返回符合条件的计算资源id (代码就先这样写吧，后面有需要可以进行优化)
     public List<RecommendComputer> getSuitableComputerForDeploy(ModelEnvironment modelEnvironment){
         List<RecommendComputer> result = new ArrayList<>();

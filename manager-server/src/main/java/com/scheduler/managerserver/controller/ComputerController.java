@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.json.Json;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: wangming
@@ -60,6 +62,19 @@ public class ComputerController {
             return ResultUtils.success("Delete success!");
         }
     }
+
+    @RequestMapping(value = "/getByUsers", method = RequestMethod.GET)
+    @ApiOperation(value = "获取用户的计算资源信息")
+    JsonResult getAllComputerResource(@RequestParam("userNames[]") String[] userNames) {
+        List<ComputerInfo> array = new ArrayList<>();
+
+        for(String id : userNames){
+            array.addAll(computerInfoDao.findAllByUserId(id));
+        }
+
+        return ResultUtils.success(array);
+    }
+
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ApiOperation(value = "获取所有的计算资源信息")

@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/list.css">
     <link rel="stylesheet" href="/static/css/model_items.css">
-
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/vue-avatar.min.js"></script>
+    <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
 
@@ -23,20 +23,6 @@
         }
         body{
             margin: 0;
-        }
-
-        .mainBarLogo{
-            width: 220px !important;
-            height: 52px !important;
-            margin-left: 20px;
-            margin-right: auto;
-            background-image: url("/static/img/logo.png");
-            background-size: auto 45px !important;
-            background-repeat: no-repeat;
-            padding: 0px !important;
-            display: inline-block;
-            float: left;
-            margin-top: 5px;
         }
 
         .badge {
@@ -66,7 +52,7 @@
 <body>
     <div id="app">
 
-        <div th:replace="fragment/navbar :: menu"></div>
+        <div th:replace="fragments/navbar :: menu"></div>
         <div style="padding: 24px;">
             <el-page-header content="详情页面">
             </el-page-header>
@@ -170,6 +156,8 @@
     </div>
 
 </body>
-
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/data_info.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 </html>
