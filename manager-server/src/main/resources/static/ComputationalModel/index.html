@@ -158,6 +158,7 @@
         //     $('#groupIDLabel').html("CID: "+groupID);
         // }
     </script>
+
 	<div id="qosModalDiv">
 		<Modal
 			v-model="qosModal"
@@ -544,6 +545,7 @@
             }
         );
     </script>
+
     <div id="runModalDiv">
         <Modal
 			v-model="runStateModal"
@@ -731,22 +733,16 @@
         );
     </script>
 
-    <div id="setService">
-
-    </div>
-    <script>
-    </script>
-
     <div id="setDataDiv">
         <Modal
 			v-model="setDataModal"
             title="Set Data Service">
             <h4>Name:</h4>
-            <h5>{{thisDataName}}</h5>
+            <h5>{{thisDataItem.name}}</h5>
             <h4 style="margin:5px 0 0 0">Description:</h4>
-            <h5>{{thisDataDescription}}</h5>
+            <h5>{{thisDataItem.description}}</h5>
             <h4 style="display: inline-block">Type: </h4>
-            <Radio-group v-model="dataType" type="button" style="margin:5px 0 15px 0" size="small">
+            <Radio-group v-model="thisDataItem.type" type="button" style="margin:5px 0 15px 0" size="small">
                 <Radio label="url">
                     Url
                 </Radio>
@@ -754,10 +750,10 @@
                     Link
                 </Radio>
             </Radio-group>
-            <div v-if="dataType=='url'">
+            <div v-if="thisDataItem.type=='url'">
                 <i-input v-model="dataUrl" placeholder="Enter data url..."></i-input>
             </div>
-            <div v-else-if="dataType=='link'">
+            <div v-else-if="thisDataItem.type=='link'">
                 <i-select filterable v-model="selectedData">
                     <i-option v-for="dataOption in dataOptions" :value="dataOption.uid" :key="dataOption.index">{{dataOption.name}}</i-option>
                 </i-select>
@@ -767,64 +763,144 @@
             </div>
         </Modal>
     </div>
-    <script>window.setDataVM = new Vue(
-        {
-            el: "#setDataDiv",
-            data(){
-                return{
-                    setDataModal:false,
-                    thisDataUid:"",
-                    thisDataName:"",
-                    thisDataDescription:"",
-                    dataType:"url",
-                    dataUrl:"",
-                    selectedData:"",
-                    dataOptions: [],
-                }
-            },
-            methods:{
-                setDataModelShow(cell){
-                    this.thisDataUid = cell.uid;
-                    this.selectedData = "";
-                    this.dataUrl="";
-                    var dataItems = window.modelTaskConfig.dataItems;
-                    for(var i=0;i<dataItems.length;i++){
-                        if(dataItems[i].uid!=this.thisDataUid){
-                            this.dataOptions.push(dataItems[i]);
-                        }
+    <script>
+        window.setDataVM = new Vue(
+            {
+                el: "#setDataDiv",
+                data(){
+                    return{
+                        setDataModal:false,
+                        thisDataItem:{},
+                        dataUrl:"",
+                        selectedData:"",
+                        dataOptions: [],
+                        exist:""
                     }
-                    var dataDes = graph.logicalScene.dataItems;
-                    for(var i=0;i<dataDes.length;i++){
-                        var dataItem = dataDes[i];
-                        if(dataItem.uid == cell.uid){
-                            this.thisDataName = dataItem.name;
-                            this.thisDataDescription = dataItem.description;
-                            break;
-                        }
-                    }
-                    this.setDataModal = true;
                 },
-                setData(){
-                    var dataItem = {
-                        name: this.thisDataName,
-                        description: this.thisDataDescription,
-                        uid: this.thisDataUid,
-                        type: this.dataType,
-                    };
-                    if(this.dataType=='url'){
-                        dataItem.value = this.dataUrl;
+                methods:{
+                    setDataModelShow(cell){
+                        this.thisDataItem={
+                            uid:"",
+                            name:"",
+                            description:"",
+                            type:"url",
+                            value:""
+                        },
+                        this.selectedData = "";
+                        this.dataUrl="";
+                        this.exist="";
+                        this.dataOptions=[];
+                        var dataItems = window.modelTaskConfig.dataItems;
+                        for(let i=0;i<dataItems.length;i++){
+                            if(dataItems[i].uid!=cell.uid){
+                                this.dataOptions.push(dataItems[i]);
+                            }
+                            else{
+                                this.thisDataItem = dataItems[i];
+                                if(dataItems[i].type=="url"){
+                                    this.dataUrl=dataItems[i].value;
+                                }
+                                else{
+                                    this.selectedData=dataItems[i].value;
+                                }
+                                this.exist=i;
+                            }
+                        }
+                        if(this.exist===""){
+                            var dataDes = graph.logicalScene.dataItems;
+                            for(let i=0;i<dataDes.length;i++){
+                                var dataItem = dataDes[i];
+                                if(dataItem.uid == cell.uid){
+                                    this.thisDataItem.uid = cell.uid;
+                                    this.thisDataItem.name = dataItem.name;
+                                    this.thisDataItem.description = dataItem.description;
+                                    break;
+                                }
+                            }
+                        }
+                        this.setDataModal = true;
+                    },
+                    setData(){
+                        if(this.thisDataItem.type=="url"){
+                            this.thisDataItem.value=this.dataUrl;
+                        }
+                        else{
+                            this.thisDataItem.value=this.selectedData;
+                        }
+                        if(this.exist!==""){
+                            window.modelTaskConfig.dataItems[this.exist] = this.thisDataItem;
+                        }
+                        else{
+                            window.modelTaskConfig.dataItems.push(this.thisDataItem);
+                        }
+                        console.log(this.exist);
+                        console.log(window.modelTaskConfig);
+                        this.setDataModal = false;
                     }
-                    else{
-                        dataItem.value = this.selectedData;
-                    }
-                    window.modelTaskConfig.dataItems.push(dataItem);
-                    console.log(window.modelTaskConfig);
-                    this.setDataModal = false;
                 }
             }
-        }
-    );
+        );
     </script>
+
+    <div id="setServiceDiv">
+        <Modal
+			v-model="setServiceModal"
+            title="Set Data Service"
+            :mask-closable="false"
+            >
+            <h4 style="display:inline-block">Name:</h4><h5 style="display:inline-block">{{thisModelInfo.name}}</h5>
+            <h4 style="margin-top: 5px">Description:</h4>
+            <p style="display:inline-block">{{thisModelInfo.description}}</p>
+            <div>
+                <i-input v-model="selectedModel" disabled ></i-input>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" @click="setServiceModal=false">Cancel</i-button>
+                <i-button type="primary" @click="setService">OK</i-button>
+            </div>
+        </Modal>
+    </div>
+    <script>
+        window.setServiceVM = new Vue(
+            {
+                el: "#setServiceDiv",
+                data(){
+                    return{
+                        setServiceModal:false,
+                        thisModelInfo:{
+                            uid:"",
+                            name:"",
+                            description:""
+                        },
+                        selectedModel:{
+                            name:"",
+                            pid:"",
+
+                        },
+                    }
+                },
+                methods:{
+                    setServiceModelShow(cell){
+                        this.thisModelInfo.uid = cell.uid;
+                        var modelItems = graph.logicalScene.modelItems;
+                        for(var i=0;i<modelItems.length;i++){
+                            var modelItem = modelItems[i];
+                            if(modelItem.uid == cell.uid){
+                                this.thisModelInfo.name = modelItem.name;
+                                this.thisModelInfo.description = modelItem.description;
+                                break;
+                            }
+                        }
+                        this.setServiceModal = true;
+                    },
+                    setService(){
+                        confirm("set service");
+                    }
+                }
+            }
+        );
+    </script>
+
 <script type="text/javascript" src="mxGraph/js/Collaboration.js"></script>
 </body>
 </html>
