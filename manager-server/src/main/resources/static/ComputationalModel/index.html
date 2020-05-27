@@ -289,9 +289,10 @@
                 <i-button @click="cancel()" size = "small">Cancel</i-button>
             </div>
 		</Modal>
+        <Spin size="large" v-if="spinShow"></Spin>
 	</div>
 	<script>
-		Vue.component('qos-modal',
+		window.qosModalVM = new Vue(
 			{
                 el: "#qosModalDiv",
                 mounted(){
@@ -327,12 +328,17 @@
                         selectedWeights: 0,
                         selectX:1,
                         selectY:0,
+                        modelPid:"",
+                        spinShow:false,
 					}
 				},
                 methods: {
-                    showQosModal(modelName){
+                    showQosModal(pid){
+                        this.modelPid = pid;
                         this.stepIndex = 0;
                         this.qosModal = true;
+                        this.selectedFactors=[];
+                        this.selectedWeights = 0;
                     },
                     changeStep(array, value){
                         this.stepIndex = value.nodeKey - 1;
@@ -397,8 +403,39 @@
                             confirm('此值不能修改');
                         }
                     },
+                    getServiceUrls(weight,pid){
+                        console.log("请求服务节点");
+                        this.spinShow=true;
+                        var url = "/integrate/getSuitableTaskNode";
+                        if(window.location.port == "5500"){
+                            url = "http://localhost:8090/integrate/getSuitableTaskNode";
+                        }
+                        var option = {
+                            pid:pid
+                        };
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            data:option,
+                            async: true,
+                            success: data=> {
+                                this.spinShow=false;
+                                if(!data.code){
+                                    window.setServiceVM.getServiceUrl(data.data.optional,data.data.recommend);
+                                }
+                                else{
+                                    console.log("Get service list fail.");
+                                }
+                            },
+                            error: function(err) {
+                                this.spinShow=false;
+                                console.log("Get service list fail.");
+                            }
+                        });
+                    },
                     finish() {
                         console.log(this.showData);
+                        this.getServiceUrls(this.showData,this.modelPid);
                         this.qosModal = false;
                     },
                     cancel() {
@@ -904,7 +941,14 @@
             </div>
             <div>
                 <span>Set computational service:</span>
-                <i-button @click="showQosModal" size="small" class="fileBtnHoverGreen">Select service</i-button>
+                <i-button @click="showQosModal" size="small" class="fileBtnHoverGreen" :disabled="thisModelItem.pid===''">Select service</i-button>
+            </div>
+            <div>
+                <i-input v-model="thisModelItem.modelServiceUrl" size="small" style="margin: 1px 0" disabled >
+                    <span slot="prepend">Service url:</span>
+                </i-input>
+                <strong>Optional service urls:</strong>
+                <p v-for="option in thisModelItem.serviceOptions" :key="option.index">{{option}}</p>
             </div>
             <div slot="footer">
                 <i-button @click="setServiceModal=false">Cancel</i-button>
@@ -950,7 +994,16 @@
                 data(){
                     return{
                         setServiceModal:false,
-                        thisModelItem:{},
+                        thisModelItem:{
+                            uid:"",
+                            name:"",
+                            description:"",
+                            pid:"",
+                            modelName:"",
+                            modelServiceUrl:"",
+                            states:[],
+                            serviceOptions:[]
+                        },
                         selectedModel:{},
                         exist:"",
                         modelListModal:false,
@@ -965,7 +1018,14 @@
                         radioFresh:0,
                         scrollOps: {
                             bar: {
-                                background: "#808695"
+                            background: "#808080",
+                            keepShow: true,
+                            size: "8px"
+                            },
+                            rail: {
+                            background: "#d7d7d7",
+                            opacity: 0.8,
+                            size: "10px"
                             }
                         },
                         dataOptions:[]
@@ -981,7 +1041,8 @@
                             pid:"",
                             modelName:"",
                             modelServiceUrl:"",
-                            states:[]
+                            states:[],
+                            serviceOptions:[]
                         };
                         this.exist="";
                     },
@@ -1104,10 +1165,16 @@
                             states.push(state);
                         }
                         this.thisModelItem.states = states;
+                        this.thisModelItem.serviceOptions = [];
+                        this.thisModelItem.modelServiceUrl = "";
                         this.modelListModal = false;
                     },
                     showQosModal(){
-                        this.$refs.qosModalEl.showQosModal(this.thisModelItem);
+                        window.qosModalVM.showQosModal(this.thisModelItem.pid);
+                    },
+                    getServiceUrl(serviceOptions,serviceUrl){
+                        this.thisModelItem.serviceOptions = serviceOptions;
+                        this.thisModelItem.modelServiceUrl = serviceUrl;
                     },
                     saveService(){
                         var states = this.thisModelItem.states;
