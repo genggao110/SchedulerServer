@@ -2914,6 +2914,65 @@ Graph.prototype.setComputationalScene=function(Str){
 }
 
 /**
+ * Get the XML of computational service list in type string.
+ */
+Graph.prototype.getComputationalServiceXMLStr=function(){
+	function createUUID () {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		  var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+		  return v.toString(16);
+		});
+	}
+	var XMLDoc=mxUtils.createXmlDocument();
+	var taskConfigurationXML=XMLDoc.createElement("TaskConfiguration");
+	var id=createUUID();
+	taskConfigurationXML.setAttribute("uid",id);
+	taskConfigurationXML.setAttribute("name",window.taskTitle);
+	taskConfigurationXML.setAttribute("version","1.0");
+	taskConfigurationXML.setAttribute("description",window.taskDescription);
+
+	var modelsXML=XMLDoc.createElement("Models");
+
+	var modelItems = window.modelTaskConfig.modelItems;
+	for(var i=0;i<modelItems.length;i++){
+		var modelXML=XMLDoc.createElement("Model");
+		modelXML.setAttribute("name",modelItems[i].name);
+		modelXML.setAttribute("pid",modelItems[i].pid);
+		modelXML.setAttribute("description",modelItems[i].description);
+		modelXML.setAttribute("modelServiceUrl",modelItems[i].modelServiceUrl);
+		var states = modelItems[i].states;
+		for(var j=0;j<states.length;j++){
+			var state = states[j];
+			var stateName = state.name;
+			var events = state.events;
+			for(var k=0;k<events.length;k++){
+				var dataXML = ""
+				var event = events[k];
+				if(event.type==="Input"){
+					dataXML = XMLDoc.createElement("InputData");
+				}
+				else{
+					dataXML = XMLDoc.createElement("OutputData");
+				}
+				var dataTemplateXML = XMLDoc.createElement("DataTemplate");
+				dataTemplateXML.setAttribute("state",stateName);
+				dataTemplateXML.setAttribute("event",event.name);
+				dataTemplateXML.setAttribute("value",event.value);
+				dataTemplateXML.setAttribute("dataId",event.dataId);
+				dataTemplateXML.setAttribute("type",event.dataType);
+				dataXML.appendChild(dataTemplateXML);
+				modelXML.appendChild(dataXML);
+			}
+		}
+		modelsXML.appendChild(modelXML);
+	}
+	taskConfigurationXML.appendChild(modelsXML);
+	console.log(taskConfigurationXML);
+	var taskConfigurationXMLStr=mxUtils.getXml(taskConfigurationXML);
+	return taskConfigurationXMLStr;
+}
+
+/**
  * Hover icons are used for hover, vertex handler and drag from sidebar.
  */
 HoverIcons = function(graph)

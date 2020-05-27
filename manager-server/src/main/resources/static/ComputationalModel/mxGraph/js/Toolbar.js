@@ -330,7 +330,13 @@ Toolbar.prototype.init = function()
     var editorUi = this.editorUi;
     runModel.onclick = function () {
 		// window.globalModalVM.showConfirm();
-		window.runModalVM.showRunModal();
+		// window.runModalVM.showRunModal();
+
+		//王明版本
+		console.log(window.modelTaskConfig);
+		var graph = editorUi.editor.graph;
+		var ComputationalServiceXMLStr = graph.getComputationalServiceXMLStr();
+
 		// var reg = /groupID=(\S*)/;
 		// var url = window.location.href;
 		// if (url.search(reg) != -1) {
