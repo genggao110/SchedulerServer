@@ -318,6 +318,5 @@ toModel=To Model Dependency
 toCondition=To Condition Dependency
 toDataDependency=To Data Dependency
 setModelService=Set Model Service
-setModelScheduling=Set Model Scheduling
 setDataService=Set Data Service
 setOperationService=Set Operation Service

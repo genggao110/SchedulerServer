@@ -1344,12 +1344,9 @@ Actions.prototype.init = function()
 
     this.addAction('setModelService',function () {
         var cell = graph.getSelectionCell();
-        ui.showDialog(new SetModelServiceDialog(ui, cell.value,cell.uid).container,500,500,true,false);
+		// ui.showDialog(new SetModelServiceDialog(ui, cell.value,cell.uid).container,500,500,true,false);
+		window.setServiceVM.setServiceModelShow(cell);
 
-	});
-    this.addAction('setModelScheduling',function () {
-		var cell = graph.getSelectionCell();
-		window.qosModalVM.showQosModal(cell.value);
 	});
 	this.addAction('setDataService',function () {
         var cell = graph.getSelectionCell();

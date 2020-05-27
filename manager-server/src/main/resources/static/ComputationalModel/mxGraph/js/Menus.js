@@ -1031,9 +1031,6 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
             if(type==="modelitem"){
                 this.addMenuItems(menu, ['setModelService'], null, evt);
 			}
-			if(type==="modelitem"){
-                this.addMenuItems(menu, ['setModelScheduling'], null, evt);
-			}
 			if(type==="dataitem"){
                 this.addMenuItems(menu, ['setDataService'], null, evt);
 			}

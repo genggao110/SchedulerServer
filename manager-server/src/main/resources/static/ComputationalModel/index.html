@@ -31,6 +31,9 @@
     <script src="https://bossanova.uk/jsuites/v2/jsuites.js"></script>
     <link rel="stylesheet" href="https://bossanova.uk/jexcel/v4/jexcel.css" type="text/css" />
     <link rel="stylesheet" href="https://bossanova.uk/jsuites/v2/jsuites.css" type="text/css" />
+    <!-- import vuescroll -->
+    <script src="https://unpkg.com/vuescroll@4.14.4/dist/vuescroll.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.14.4/dist/vuescroll.css" type="text/css" />
 	
     <script type="text/javascript">
         // var reg=/groupID=(\S*)/;
@@ -123,6 +126,17 @@
             display: block;
             text-indent: 2em;
             word-break: break-word;
+        }
+        .twoRowHidden{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .fileBtnHoverGreen:hover {
+            background-color: #19be6b;
+            color: white;
         }
     </style>
 </head>
@@ -277,7 +291,7 @@
 		</Modal>
 	</div>
 	<script>
-		window.qosModalVM = new Vue(
+		Vue.component('qos-modal',
 			{
                 el: "#qosModalDiv",
                 mounted(){
@@ -778,7 +792,7 @@
                     }
                 },
                 methods:{
-                    setDataModelShow(cell){
+                    init(){
                         this.thisDataItem={
                             uid:"",
                             name:"",
@@ -790,6 +804,9 @@
                         this.dataUrl="";
                         this.exist="";
                         this.dataOptions=[];
+                    },
+                    setDataModelShow(cell){
+                        this.init();
                         var dataItems = window.modelTaskConfig.dataItems;
                         for(let i=0;i<dataItems.length;i++){
                             if(dataItems[i].uid!=cell.uid){
@@ -833,8 +850,6 @@
                         else{
                             window.modelTaskConfig.dataItems.push(this.thisDataItem);
                         }
-                        console.log(this.exist);
-                        console.log(window.modelTaskConfig);
                         this.setDataModal = false;
                     }
                 }
@@ -845,20 +860,88 @@
     <div id="setServiceDiv">
         <Modal
 			v-model="setServiceModal"
-            title="Set Data Service"
+            title="Set Model Service"
             :mask-closable="false"
+            :styles="{top: '20px'}"
             >
-            <h4 style="display:inline-block">Name:</h4><h5 style="display:inline-block">{{thisModelInfo.name}}</h5>
+            <h4 style="display:inline-block">Name:</h4><h5 style="display:inline-block">{{thisModelItem.name}}</h5>
             <h4 style="margin-top: 5px">Description:</h4>
-            <p style="display:inline-block">{{thisModelInfo.description}}</p>
+            <p style="display:inline-block" class="twoRowHidden">{{thisModelItem.description}}</p>
+            <div style="margin: 5px 0">
+                <span>Select model from model list of portal:</span>
+                <i-button @click="showModelListModal" size="small" class="fileBtnHoverGreen">Show list</i-button>
+                <i-input v-model="thisModelItem.modelName" size="small" style="margin: 1px 0" disabled >
+                    <span slot="prepend">Model name:</span>
+                </i-input>
+                <i-input v-model="thisModelItem.pid" size="small" disabled >
+                    <span slot="prepend">Model md5:</span>
+                </i-input>
+            </div>
+            <div style="margin-bottom: 5px" v-if="thisModelItem.states.length>0">
+                <span>Set up data association:</span>
+                <div style="height: 300px; border: 1px solid #dcdee2; padding: 5px">
+                    <vue-scroll :ops="scrollOps">
+                        <div v-for="state in thisModelItem.states" :key="state.index" style="margin-bottom: 3px">
+                            <div>
+                                <h3 style="display: inline-block;margin-right: 15px">State:</h3>
+                                <strong style="display: inline-block;">{{state.name}}</strong>
+                            </div>
+                            <div  v-for="event in state.events" :key="event.index" style="margin-left: 5px">
+                                <strong style="display: inline-block;margin-right: 5px">-Event:</strong>
+                                <span>{{event.name}}</span>
+                                <strong style="display: inline-block;margin-left: 20px;margin-right: 5px">Type:</strong>
+                                <span>{{event.type}}</span>
+                                <div style="margin-left: 5px">
+                                    <span>Select Data:</span>
+                                    <i-select filterable v-model="event.dataId" style="width:300px" size="small">
+                                        <i-option v-for="dataOption in dataOptions" :value="dataOption.uid" :key="dataOption.index">{{dataOption.name}}</i-option>
+                                    </i-select>
+                                </div>
+                            </div>
+                        </div>
+                    </vue-scroll>
+                </div>
+            </div>
             <div>
-                <i-input v-model="selectedModel" disabled ></i-input>
+                <span>Set computational service:</span>
+                <i-button @click="showQosModal" size="small" class="fileBtnHoverGreen">Select service</i-button>
             </div>
             <div slot="footer">
-                <i-button type="primary" @click="setServiceModal=false">Cancel</i-button>
-                <i-button type="primary" @click="setService">OK</i-button>
+                <i-button @click="setServiceModal=false">Cancel</i-button>
+                <i-button type="primary" @click="saveService">OK</i-button>
             </div>
         </Modal>
+        <Modal
+			v-model="modelListModal"
+            title="Select Model"
+            :mask-closable="false"
+            width="700"
+            :styles="{top: '20px'}"
+            >
+            <i-input search enter-button placeholder="Enter something..." v-model="searchText" @on-search="searchModelList"></i-input>
+            <div style="min-height:350px">
+                <Radio-group v-model="selectedModel.pid" size="small" @on-change="selectNewModel" :key="radioFresh">
+                    <div v-for="model in portalModelList" :key="model.index" style="margin:5px">
+                        <Radio :label="model.md5"><h3 style="display: inline-block">{{model.name}}</h3></Radio>
+                        <div class="twoRowHidden" :title="model.description">{{model.description}}</div>
+                    </div>
+                </Radio-group>
+            </div>
+            <div style="margin: 5px 0"><h5 style="display: inline-block">Selected Model:</h5><span style="margin-left: 20px">{{selectedModel.modelName}}</span></div>
+            <Page v-if="modelListModal" 
+            :total="pageOption.total" 
+            size="small" 
+            :current="pageOption.currentPage" 
+            :page-size="pageOption.pageSize" 
+            show-total show-elevator 
+            @on-change="getModelList"></Page>
+            <div slot="footer">
+                <i-button @click="modelListModal=false">Cancel</i-button>
+                <i-button type="primary" @click="selectModel">OK</i-button>
+            </div>
+        </Modal>
+        <qos-modal ref="qosModalEl"></qos-modal>
+        <Spin size="large" v-if="spinShow"></Spin>
     </div>
     <script>
         window.setServiceVM = new Vue(
@@ -867,35 +950,187 @@
                 data(){
                     return{
                         setServiceModal:false,
-                        thisModelInfo:{
-                            uid:"",
-                            name:"",
-                            description:""
+                        thisModelItem:{},
+                        selectedModel:{},
+                        exist:"",
+                        modelListModal:false,
+                        pageOption:{
+                            currentPage:1,
+                            pageSize:5,
+                            total:100,
                         },
-                        selectedModel:{
-                            name:"",
-                            pid:"",
-
+                        spinShow:false,
+                        searchText:"",
+                        portalModelList:[],
+                        radioFresh:0,
+                        scrollOps: {
+                            bar: {
+                                background: "#808695"
+                            }
                         },
+                        dataOptions:[]
                     }
                 },
                 methods:{
+                    init(){
+                        this.dataOptions = window.modelTaskConfig.dataItems;
+                        this.thisModelItem={
+                            uid:"",
+                            name:"",
+                            description:"",
+                            pid:"",
+                            modelName:"",
+                            modelServiceUrl:"",
+                            states:[]
+                        };
+                        this.exist="";
+                    },
                     setServiceModelShow(cell){
-                        this.thisModelInfo.uid = cell.uid;
-                        var modelItems = graph.logicalScene.modelItems;
-                        for(var i=0;i<modelItems.length;i++){
-                            var modelItem = modelItems[i];
-                            if(modelItem.uid == cell.uid){
-                                this.thisModelInfo.name = modelItem.name;
-                                this.thisModelInfo.description = modelItem.description;
+                        this.init();
+                        var modelItems = window.modelTaskConfig.modelItems
+                        for(let i=0;i<modelItems.length;i++){
+                            if(modelItems[i].uid==cell.uid){
+                                this.thisModelItem = modelItems[i];
+                                this.exist = i;
                                 break;
+                            }
+                        }
+                        if(this.exist===""){
+                            var modelDes = graph.logicalScene.modelItems;
+                            for(var i=0;i<modelDes.length;i++){
+                                var modelItem = modelDes[i];
+                                if(modelItem.uid == cell.uid){
+                                    this.thisModelItem.uid = modelItem.uid;
+                                    this.thisModelItem.name = modelItem.name;
+                                    this.thisModelItem.description = modelItem.description;
+                                    break;
+                                }
                             }
                         }
                         this.setServiceModal = true;
                     },
-                    setService(){
-                        confirm("set service");
-                    }
+                    showModelListModal(){
+                        this.selectedModel={
+                            modelName:"",
+                            pid:"",
+                            mdl:""
+                        };
+                        this.modelListModal = true;
+                        this.pageOption = {
+                            currentPage:1,
+                            pageSize:5,
+                            total:100,
+                        }
+                        this.searchText = "";
+                        this.getModelList(1);
+                    },
+                    searchModelList(){
+                        this.pageOption.currentPage = 1;
+                        this.getModelList(1);
+                    },
+                    getModelList(currentPage){
+                        this.spinShow=true;
+                        var url = "/modelResource/list";
+                        if(window.location.port == "5500"){
+                            url = "http://localhost:8090/modelResource/list";
+                        }
+                        var option = {
+                            asc:false,
+                            page:currentPage-1,
+                            pageSize:this.pageOption.pageSize,
+                            type:"Package",
+                            searchText:this.searchText
+                        };
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            data:option,
+                            async: true,
+                            success: data=> {
+                                this.spinShow=false;
+                                this.radioFresh++;
+                                if(!data.code){
+                                    this.pageOption.total = data.data.total;
+                                    this.portalModelList = data.data.resource;
+                                }
+                                else{
+                                    console.log("Get model list fail.");
+                                }
+                            },
+                            error: function(err) {
+                                this.spinShow=false;
+                                this.radioFresh++;
+                                console.log("Get model list fail.");
+                            }
+                        });
+                    },
+                    selectNewModel(uid){
+                        for(let i=0;i<this.portalModelList.length;i++){
+                            if(this.portalModelList[i].md5==uid){
+                                this.selectedModel.modelName = this.portalModelList[i].name;
+                                this.selectedModel.mdl=this.portalModelList[i].mdlJson;
+                                break;
+                            }
+                        }
+                    },
+                    selectModel(){
+                        this.thisModelItem.pid = this.selectedModel.pid;
+                        this.thisModelItem.modelName = this.selectedModel.modelName;
+                        var mdlJson = JSON.parse(this.selectedModel.mdl);
+                        var mdlStates = mdlJson.ModelClass[0].Behavior[0].StateGroup[0].States[0].State;
+                        var states = [];
+                        for(let i=0;i<mdlStates.length;i++){
+                            var mdlState = mdlStates[i];
+                            var state = {};
+                            state.name = mdlState.name;
+                            var mdlEvents = mdlState.Event;
+                            var events = [];
+                            for(let j=0;j<mdlEvents.length;j++){
+                                var mdlEvent = mdlEvents[j];
+                                var event = {};
+                                event.name = mdlEvent.name;
+                                if(mdlEvent.type==="response"){
+                                    event.type = "Input";
+                                }
+                                else{
+                                    event.type = "Output";
+                                }
+                                event.value = "";
+                                event.dataId = "";
+                                event.dataType = "";
+                                events.push(event);
+                            }
+                            state.events = events;
+                            states.push(state);
+                        }
+                        this.thisModelItem.states = states;
+                        this.modelListModal = false;
+                    },
+                    showQosModal(){
+                        this.$refs.qosModalEl.showQosModal(this.thisModelItem);
+                    },
+                    saveService(){
+                        var states = this.thisModelItem.states;
+                        for(let i = 0;i<states.length;i++){
+                            for(let j=0;j<states[i].events.length;j++){
+                                for(let k=0;k<this.dataOptions.length;k++){
+                                    if(states[i].events[j].dataId==this.dataOptions[k].uid){
+                                        states[i].events[j].value = this.dataOptions[k].value;
+                                        states[i].events[j].dataType = this.dataOptions[k].type;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if(this.exist===""){
+                            window.modelTaskConfig.modelItems.push(this.thisModelItem);
+                        }
+                        else{
+                            window.modelTaskConfig.modelItems[this.exist] = this.thisModelItem;
+                        }
+                        this.setServiceModal=false;
+                        console.log(this.thisModelItem);
+                    },
                 }
             }
         );
