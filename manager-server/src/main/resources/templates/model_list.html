@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="/static/css/list.css">
     <link rel="stylesheet" href="/static/css/model_items.css">
     <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <link rel="stylesheet" href="/static/css/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/wzhFlexContainer.css">
 <!--    <link rel="stylesheet" href="/static/css/fluent/fluent.css">-->
     <script src="/static/js/common/jquery-3.3.1.min.js"></script>
     <script src="/static/js/common/vue.min.js"></script>
@@ -42,14 +44,15 @@
 <div id="app">
 
     <div th:replace="fragments/navbar :: menu"></div>
-    <div class="titleImg" style=" background-image: url(../../../static/img/lake.jpeg);">
+    <div class="titleImg" style=" background-image: url(../../../static/img/conifer.jpg);">
 
     </div>
-    <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 120px;margin-bottom: 20px;">
-        <h1 class="modelList" align="center" style="color: whitesmoke">
+    <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 84px;margin-bottom: 20px;">
+        <h1 class="modelList" align="center" style="color: whitesmoke;margin-top: -15px">
             Model Resource List
         </h1>
-        <el-divider></el-divider>
+        <h3 class="f3-light mb-1" style="text-align: center;color: whitesmoke">Choose a model, and build a project of it.</h3>
+        <el-divider style="background-color: transparent"></el-divider>
 
         <div class="searcherPanel">
             <div class="searcherInputPanel" @keydown.enter="searchResult()">

@@ -123,6 +123,11 @@
                                             </a>
 
                                             <div class="" style="display: flex;align-items: center;">
+                                                <div class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"
+                                                >
+                                                    <i class="fa fa-trash-o"></i>
+                                                    <p>Delete</p>
+                                                </div>
                                                 <el-button type="primary" size="mini"
                                                            style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
                                                            @click="window.open('/project/'+project.oid)">
@@ -136,7 +141,7 @@
                                             <h4 v-if="project.status==1"
                                                 style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
                                                 @click="expandRunInfo(index,$event)">
-                                                <span style="color: rgb(103,194,58)">Ready</span> to deploy !</h4>
+                                                <span style="color: rgb(103,194,58)">Deployed</span> !</h4>
                                             <h4 v-if="project.status==0"
                                                 style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
                                                 @click="expandRunInfo(index,$event)">
@@ -501,7 +506,7 @@
                                 <!--                        所有可以使用-->
                                 <div>
                                     <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerUse.length!=0"
-                                         v-for="(container,index) in modelContainerUse">
+                                         v-for="(container,index) in modelContainerUse" style="min-height: 201px">
                                         <el-card class="box-card serverCard" style="cursor: pointer"
                                                  @click.native="chooseResource($event,container)">
                                             <div class="content">
@@ -530,7 +535,7 @@
                                                         <a @click="open"
                                                            style="display: inline-block;margin-left: 5px;font-size:15px;">
                                                             <h4>
-                                                                {{container.userId}}</h4></a>
+                                                                {{container.user}}</h4></a>
                                                     </div>
                                                     <div class="serverIp pull-right"
                                                          style="color:red;font-size: 20px">
@@ -579,7 +584,7 @@
                                                         <a @click="open"
                                                            style="display: inline-block;margin-left: 5px;font-size:15px;">
                                                             <h4>
-                                                                {{container.userId}}</h4></a>
+                                                                {{container.user}}</h4></a>
                                                     </div>
                                                     <div class="serverIp pull-right"
                                                          style="color:red;font-size: 20px">

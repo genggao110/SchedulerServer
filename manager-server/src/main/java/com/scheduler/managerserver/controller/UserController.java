@@ -27,6 +27,15 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public ModelAndView getRegister() {
+        System.out.println("register");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("register");
+        modelAndView.addObject("name", "OpenGMS");
+
+        return modelAndView;
+    }
 
 //    @RequestMapping(value = "/register", method = RequestMethod.POST)
 //    @ApiOperation(value = "用户注册")

@@ -28,10 +28,14 @@
                 <div class="indentmenu">
                     <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a class="fa fa-navicon " style="cursor: pointer;"></a></li>
                 </div>
-                <div th:unless="${logged}" class="login">
-                    <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
-                    <li><a class="login" href="/user/register">Sign Up</a></li>
-                </div>
+                <li th:unless="${logged}" style="width: auto;float: right">
+                    <div class="nutButton flexCenter" style="margin-top: 7px"><a class="login" href="/user/login">Log in/Sign up</a></div>
+                </li>
+<!--                <div  class="login">-->
+
+<!--                    <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>-->
+<!--                    <li><a class="login" href="/user/register">Sign Up</a></li>-->
+<!--                </div>-->
                 <div th:unless="${logged}" class="login2">
                     <li id="dropls"><a style="cursor:pointer"><p style="font-size: 13px">Log in</p><div class="innerBorder"></div><p style="font-size: 13px">Sign up</p></a></li>
                 </div>
@@ -46,6 +50,7 @@
                             <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
                                 <img class="userIcon round_icon" src="/static/img/icon/default.png" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
                                 <div class="el-badge item">
+                                    <!--/*@thymesVar id="user" type=""*/-->
                                     <div id="userName" th:text="${user.name}" style="display: inline-block">Hello!!!!!!!!!</div>
                                     <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
                                 right: 0px !important;
@@ -79,7 +84,7 @@
         </div>
 
         <!--    各种下拉菜单-->
-        <div class="sub zmax" id="subCommunity" style="left: 228px">
+        <div class="sub zmax" id="subCommunity" style="left: 348px">
             <ul>
                 <li><a href="/list/model">Model</a></li>
                 <li><a href="/list/data">Data</a></li>
@@ -103,7 +108,7 @@
 
         <!--        用户登录后的下拉-->
         <!--        大屏幕-->
-        <div th:if="${logged}" class="subLog zmax" id="logedSub" style="right: 0px">
+        <div th:if="${logged}" class="subLog zmax" id="logedSub" style="right: 140px">
             <ul>
                 <li><a id="userSpaceDir" href="/user/userSpace">My Project</a></li>
                 <li>
@@ -118,6 +123,7 @@
         </div>
 
         <!--        小屏幕-->
+        <!--/*@thymesVar id="logged" type=""*/-->
         <div th:if="${logged}" id="phoneUserSub" class="fullSub zmax" style="">
             <ul>
                 <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">
@@ -199,6 +205,7 @@
                     </ul>
                 </div>
                 <li id="aboutUs"><a href="http://opengmsteam.com/">About us</a></li>
+                <!--/*@thymesVar id="logged" type=""*/-->
                 <div th:unless="${logged}" id="phoneLogin">
                     <!--                        <a href="" style="padding: 0px">-->
                     <li style="float: left;width: 50%;background-color: inherit;border-width: 0;color: white" ><a href="/user/login">Log In</a></li>

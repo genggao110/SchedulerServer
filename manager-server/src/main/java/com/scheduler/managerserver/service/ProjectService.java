@@ -76,6 +76,12 @@ public class ProjectService {
         inviteDao.insert(invite);
     }
 
+    public void changeStatus(String Oid) {
+        Project project =  projectDao.findFirstByOid(Oid);
+        project.setStatus(1);
+        projectDao.save(project);
+    }
+
     public Project getByOid(String oid){
         return projectDao.findFirstByOid(oid);
 

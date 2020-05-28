@@ -195,30 +195,31 @@ $(function () {
     })
 
 //user page and space route drop down and fold up
+    var tFoldLog1;
     $('.loged').mouseenter(()=>{
         //clearTimeout(tFoldComm);
-        clearTimeout(tFoldLog);
+        clearTimeout(tFoldLog1);
         let target=$('#logedSub');
         subMenuDropDpwn(target);
     })
 
-    $('.loged').mouseleave(()=>{
-        let target= $('#logedSub');
-        tFoldLog=setTimeout(()=>{
-            subMenuFoldUp(target);
-        },200);
-
-    })
+    // $('.loged').mouseleave(()=>{
+    //     let target= $('#logedSub');
+    //     tFoldLog1=setTimeout(()=>{
+    //         subMenuFoldUp(target);
+    //     },200);
+    //
+    // })
 
     $('#logedSub').mouseenter(()=>{
-        clearTimeout(tFoldLog);
+        clearTimeout(tFoldLog1);
         let target=$('#logedSub');
         subMenuDropDpwn(target);
     })
 
     $('#logedSub').mouseleave(()=>{
         let target=$('#logedSub');
-        tFoldLog=setTimeout(()=>{
+        tFoldLog1=setTimeout(()=>{
             subMenuFoldUp(target);
         },200)
     })
@@ -234,7 +235,7 @@ $(function () {
         let target= $('.sub:eq(2)');
         tFoldls=setTimeout(()=>{
             subMenuFoldUp(target);
-        },200);
+        },1500);
     })
 
     $('#subls').mouseenter(()=>{

@@ -21,6 +21,7 @@ li a:focus, li a:active, li a:hover {
     list-style-type: none;
     margin: 0;
     overflow: hidden;
+    /*background: hsla(0, 0%, 20%, 1);*/
     /*background-color: rgba(255, 255, 255, 0.405);*/
     /*backdrop-filter: saturate(120%) blur(20px);*/
 }
@@ -73,7 +74,7 @@ li a:focus, li a:active, li a:hover {
     text-decoration: none;
     overflow: hidden;
     transition: .4s;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
     /*background-color: #080a0e;*/
 }
@@ -118,11 +119,15 @@ li a:focus, li a:active, li a:hover {
 .sub>ul{
     width: 200px;
     height: 0;
-    background-color: rgba(0, 0, 0, 0.85) !important;
+    background-color: rgba(255, 255, 255, 0.405)!important;
     margin-top: 2.5px !important;
     box-shadow: 1px 2px 12px 0 rgba(0, 0, 0, 0.5) ;
     border-radius: 2px;
     overflow: hidden;
+}
+
+.sub a:hover{
+    color: #00abff !important;
 }
 
 .sub li{
@@ -157,7 +162,7 @@ li a:focus, li a:active, li a:hover {
 .subLog>ul{
     height: 0;
     width: 150px;
-    background-color: rgba(0, 0,0, 0.87) !important;
+    background-color: rgba(255, 255, 255, 0.405)!important;
     margin-top: 2px !important;
     box-shadow: 1px 2px 12px 0 rgba(0, 0, 0, 0.4) ;
     overflow: hidden;
@@ -183,6 +188,10 @@ li a:focus, li a:active, li a:hover {
     transition:.5s;
     font-family: sans-serif;
     font-size: 14px;
+}
+
+.subLog a:hover{
+    color: #00abff !important;
 }
 
 #subls li{
@@ -321,9 +330,9 @@ li a:focus, li a:active, li a:hover {
     width: 150px;
     height: 62px;
     margin-top: 0;
-    background-color: rgb(0,171,255);
-    border-bottom:3px solid;
-    border-bottom-color:rgb(0,171,255);
+    /*background-color: rgb(0,171,255);*/
+    /*border-bottom:3px solid;*/
+    /*border-bottom-color:rgb(0,171,255);*/
     transition:.4s;
 }
 .loged>li a{

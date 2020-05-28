@@ -56,6 +56,9 @@ public class ModelResourceService {
     ComputerInfoService computerInfoService;
 
     @Autowired
+    ProjectService projectService;
+
+    @Autowired
     ComputerInfoDao computerInfoDao;
 
     @Autowired
@@ -277,6 +280,7 @@ public class ModelResourceService {
 
     // 模型资源部署包在计算资源上的部署
     public DeployTask deployModel(ModelDeployDTO modelDeployDTO){
+
         String agentId = modelDeployDTO.getAgentId();
         DeployTask deployTask = new DeployTask();
         //1. 根据agentId 从Manager Server服务器获取到相关Task Server的ip和port
@@ -325,6 +329,10 @@ public class ModelResourceService {
                     deployTask.setTaskId(task_Id);
                     //插入数据库记录
                     deployTaskDao.insert(deployTask);
+
+                    String projectId = modelDeployDTO.getProjectId();
+                    projectService.changeStatus(projectId);
+
                     return deployTask;
                 }
             }else {

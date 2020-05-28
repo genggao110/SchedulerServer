@@ -237,12 +237,14 @@ a:focus,a:active,a:hover,h3:hover{
 
 .titleImg{
     width: 100%;
-    height: 272px;
+    height: 311px;
     position: absolute;
     margin-top: -62px;
     z-index: -1;
-    background-position-y: -450px;
+    background-position-y: -670px;
     background-position-x: center;
+    background-size: 2000px;
+    background-repeat: no-repeat;
 }
 
 

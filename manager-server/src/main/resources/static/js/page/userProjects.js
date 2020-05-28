@@ -183,6 +183,206 @@ var userProjects = Vue.extend(
 
                 ],
 
+                modelContainerListPre:[{
+                    hostName:"iZrj9fpaid84lev5yy85m1Z",
+                    software_info:{
+                        os:"Ubuntu",
+                        version:"16.04",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Ubuntu",
+                            version: "16.04",
+                            cpu_core: "1",
+                            memory_size: "4",
+                            disk_all: "3",
+                        }
+                    },
+                    ip:"47.254.69.78",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"iZrj9fpaid84lev5yy85m2Z",
+                    software_info:{
+                        os:"Ubuntu",
+                        version:"16.04",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Ubuntu",
+                            version: "16.04",
+                            cpu_core: "2",
+                            memory_size: "4",
+                            disk_all: "3",
+                        }
+                    },
+                    ip:"47.88.52.90",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"launch-advisor-20191209",
+                    software_info:{
+                        os:"Windows Server",
+                        version:"2012 R2",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Windows Server",
+                            version: "2012 R2",
+                            cpu_core: "2",
+                            memory_size: "4",
+                            disk_all: "3",
+                        }
+                    },
+                    ip:"47.74.66.87",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"iZm5e81qbhfk423he1vxovZ",
+                    software_info:{
+                        os:"CentOS",
+                        version:"7.6",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "CentOS",
+                            version: "7.6",
+                            cpu_core: "2",
+                            memory_size: "8",
+                            disk_all: "5",
+                        }
+                    },
+                    ip:"118.190.246.198",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"ming",
+                    software_info:{
+                        os:"CentOS",
+                        version:"7.3",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "CentOS",
+                            version: "7.3",
+                            cpu_core: "1",
+                            memory_size: "2",
+                            disk_all: "1",
+                        }
+                    },
+                    ip:"47.107.155.239",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"WIN-VH4GMM75DJH",
+                    software_info:{
+                        os:"Windows Server",
+                        version:"2012 R2",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Windows Server",
+                            version: "2012 R2",
+                            cpu_core: "4",
+                            memory_sizeemory: "8",
+                            disk_all: "20",
+                        }
+                    },
+                    ip:"172.21.213.105",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"WIN-DEABAKGA1HS",
+                    software_info:{
+                        os:"Windows Server",
+                        version:"2012 R2",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Windows Server",
+                            version: "2012 R2",
+                            cpu_core: "8",
+                            memory_size: "4",
+                            disk_all: "20",
+                        }
+                    },
+                    ip:"172.21.212.85",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"DESKTOP-3K2K270",
+                    software_info:{
+                        os:"Windows",
+                        version:"10",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Windows",
+                            version: "10",
+                            cpu_core: "12",
+                            memory_size: "24",
+                            disk_all: "4",
+                        }
+                    },
+                    ip:"172.25.111.173",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"localdomain",
+                    software_info:{
+                        os:"CentOS",
+                        version:"7.7",
+                    },
+                    hardware_info: {
+                        staticInfo: {
+                            platform: "CentOS",
+                            version: "7.7",
+                            cpu_core: "2",
+                            memory_size: "12",
+                            disk_all: "20",
+                        },
+                    },
+                    ip:"172.21.213.66",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"shencr-CMIP",
+                    software_info:{
+                        os:"Ubuntu",
+                        version:"16.04",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Ubuntu",
+                            version: "16.04",
+                            cpu_core: "4",
+                            memory_size: "4",
+                            disk_all: "20",
+                        }
+                    },
+                    ip:"172.21.212.58",
+                    score:"86",
+                    user:"NNU_Group"
+                },{
+                    hostName:"LAPTOP-0PNLCFNL",
+                    software_info:{
+                        os:"Windows",
+                        version:"10",
+                    },
+                    hardware_info:{
+                        staticInfo: {
+                            platform: "Windows",
+                            version: "10",
+                            cpu_core: "4",
+                            memory_size: "8",
+                            disk_all: "4",
+                        }
+                    },
+                    ip:"223.2.35.64",
+                    score:"86",
+                    user:"NNU_Group"
+                }],
+
                 invitedUsers: [{
                     oid: '42',
                     name: 'NNU_Group',
@@ -824,7 +1024,7 @@ var userProjects = Vue.extend(
                     this.chosenUser.forEach((ele)=>{
                         inviting.push(ele.userName)
                     })
-                    this.modelContainerUse =  this.getAvailableComputerResourceByUser(invited)
+                    this.modelContainerUse =  this.modelContainerListPre.concat(this.getAvailableComputerResourceByUser(invited));
                 }
 
             },
