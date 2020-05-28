@@ -332,27 +332,8 @@ Toolbar.prototype.init = function()
     runModel.appendChild(runModelIcon);
     var editorUi = this.editorUi;
     runModel.onclick = function () {
-		// window.globalModalVM.showConfirm();
+		window.globalModalVM.showConfirm();
 		// window.runModalVM.showRunModal();
-
-		//王明版本
-		console.log(window.modelTaskConfig);
-		var graph = editorUi.editor.graph;
-		var ComputationalServiceXMLStr = graph.getComputationalServiceXMLStr();
-		var comServiceXMLBlob = new Blob([ComputationalServiceXMLStr], {type: "text/plain;charset=utf-8"});
-		var formdata = new FormData();
-		formdata.append('file',comServiceXMLBlob, 'ComputationalService.xml');
-		//此处上传运行配置到服务器
-		var modelItems = window.modelTaskConfig.modelItems;
-		var optionalServiceConfig = [];
-		for(let i=0;i<modelItems.length;i++){
-			var optionalModelservice={}
-			optionalModelservice.pid=modelItems[i].pid;
-			optionalModelservice.optional=modelItems[i].serviceOptions;
-			optionalServiceConfig.push(optionalModelservice);
-		}
-		console.log(optionalServiceConfig);
-		//此处上传备用配置到服务器
 
 		// var reg = /groupID=(\S*)/;
 		// var url = window.location.href;

@@ -27,13 +27,13 @@
 	<!-- import iView -->
     <script src="//unpkg.com/view-design/dist/iview.min.js"></script>
     <!-- import jexcel -->
-    <script src="https://bossanova.uk/jexcel/v4/jexcel.js"></script>
-    <script src="https://bossanova.uk/jsuites/v2/jsuites.js"></script>
-    <link rel="stylesheet" href="https://bossanova.uk/jexcel/v4/jexcel.css" type="text/css" />
-    <link rel="stylesheet" href="https://bossanova.uk/jsuites/v2/jsuites.css" type="text/css" />
+    <script src="js/jexcel.js"></script>
+    <script src="js/jsuites.js"></script>
+    <link rel="stylesheet" href="css/jexcel.css" type="text/css" />
+    <link rel="stylesheet" href="css/jsuites.css" type="text/css" />
     <!-- import vuescroll -->
-    <script src="https://unpkg.com/vuescroll@4.14.4/dist/vuescroll.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.14.4/dist/vuescroll.css" type="text/css" />
+    <script src="js/vuescroll.js"></script>
+    <link rel="stylesheet" href="css/vuescroll.css" type="text/css" />
     <!-- import ahp.js -->
     <script>var global = window;</script>
     <script src="js/ahp.js"></script>
@@ -146,7 +146,7 @@
     </style>
 </head>
 <body class="geEditor">
-    <div class="head">
+    <!-- <div class="head">
         <nav class="navbar navbar-default pcnav" role="navigation">
             <div class="navbarPanel">
                 <div class="navbar-header">
@@ -157,7 +157,6 @@
                 <span class="navTitle">Computational Model Builder</span>
                 <ul id="rightNav">
                     <li>
-                         <!--<a href="http://localhost:8081/TeamWorking/index.html"><strong>HOME</strong></a>-->
                         <a href="/TeamWorking/index.html"><strong>HOME</strong></a>
                     </li>
                     <li class="nav_hello">
@@ -168,7 +167,7 @@
                     </li>
                 </ul>
             </div>
-        </nav>
+        </nav> -->
     </div>
     <script type="text/javascript">
         // $('#userNameLabel').html(sessionStorage.getItem("username"));
@@ -565,7 +564,7 @@
 			v-model="optimizationModal"
             title="Before run"
             width=650px>
-            <div style="height:400px">
+            <div>
                 <h5>Step1: Choose the QoS factors using in the global optimization process</h5>
                 <div style="margin-top:20px">
                     <Checkbox-group v-model="selectedFactors">
@@ -602,11 +601,11 @@
                             </i-col>
                         </Row>
                     </Checkbox-group>
-                    <div style="height:30px"></div>
+                    <div style="height:15px"></div>
                     <h5>Step2: Set the constraints of whole service chain(optional)</h5>
                     <div style="padding:10px">
                         <small>QoS Factor:</small>
-                        <div style="min-height:50px;border: 0.5px solid #dcdee2;">
+                        <div style="min-height:205px;border: 0.5px solid #dcdee2;">
                             <div style="padding:5px 20px" v-show="isSelected('Performance')">
                                 <span>The performance of the service chain≥</span>
                                 <i-select v-model="performanceSe" size = "small" style="width:120px;margin-left: 15px">
@@ -645,6 +644,14 @@
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <h5>Error handling:</h5>
+                        <Radio-group v-model="errorHandling">
+                            <Radio label="optional">Use alternate services</Radio>
+                            <Radio label="migrate">Migrating to an available service</Radio>
+                            <Radio label="terminate">Terminate and record</Radio>
+                        </Radio-group>
+                    </div>
                 </div>
             </div>
             <div slot="footer">
@@ -677,11 +684,19 @@
                         CPUOp: ['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'],
                         memorySe:"",
                         memoryOp: ['1G','4G','8G','16G'],
-
+                        errorHandling:"terminate"
                     }
                 },
                 methods:{
                     showConfirm(){
+                        this.selectedFactors=[];
+                        this.performanceSe="";
+                        this.reliabilitySe="";
+                        this.avaliabilitySe="";
+                        this.reputationSe="";
+                        this.CPUSe="";
+                        this.memorySe="";
+                        this.errorHandling="terminate";
                         this.confirmModal = true;
                     },
                     setGlobal(){
@@ -689,7 +704,8 @@
                         this.optimizationModal = true;
                     },
                     toRun(){
-                        confirm("To run");
+                        window.runModalVM.runModelTask();
+                        this.confirmModal = false;
                     },
                     cancel(){
                         this.optimizationModal = false;
@@ -707,18 +723,19 @@
 			v-model="runStateModal"
             title="Running state"
             width=650px>
-            <div style="height:400px;overflow-y: auto">
-                <div v-for="model in runData" :key="model.index">
-                    <h3 style="display:inline-block">Model: </h3><h3 style="display:inline-block;color:tomato">{{model.model}}</h3>
-                    <div style="margin:5px"  v-for="state in model.states" :key="state.index">
-                        <h4 style="display:inline-block">State: </h4><h4 style="display:inline-block;color:#2b85e4">{{state.state}}</h4>
-                        <div style="margin:5px;border: 0.5px solid #dcdee2;padding: 3px"  v-for="event in state.events" :key="event.index">
-                            <small style="margin-left:15px"><strong>Event: </strong>{{event}}</small>
-                            <i-button type="text" icon="md-download" style="color:#2b85e4;float:right;margin-right: 15px" size="small">Data download</i-button>
+            <div style="height:400px;">
+                <vue-scroll :ops="scrollOps">
+                    <div v-for="model in runData" :key="model.index">
+                        <h3 style="display:inline-block">Model: </h3><h3 style="display:inline-block;color:tomato">{{model.model}}</h3>
+                        <div style="margin:5px"  v-for="state in model.states" :key="state.index">
+                            <h4 style="display:inline-block">State: </h4><h4 style="display:inline-block;color:#2b85e4">{{state.state}}</h4>
+                            <div style="margin:5px;border: 0.5px solid #dcdee2;padding: 3px"  v-for="event in state.events" :key="event.index">
+                                <small style="margin-left:15px"><strong>Event: </strong>{{event}}</small>
+                                <i-button type="text" icon="md-download" style="color:#2b85e4;float:right;margin-right: 15px" size="small">Data download</i-button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
+                </vue-scroll>
             </div>
             <div style="margin:15px">
                 <i-progress :percent="100" :stroke-width="20" text-inside></i-progress>
@@ -739,6 +756,18 @@
                 data(){
                     return{
                         runStateModal:false,
+                        scrollOps: {
+                            bar: {
+                            background: "#808080",
+                            keepShow: true,
+                            size: "8px"
+                            },
+                            rail: {
+                            background: "#d7d7d7",
+                            opacity: 0.8,
+                            size: "10px"
+                            }
+                        },
                         runData:[
                             {
                                 model:"PitRemove",
@@ -878,6 +907,28 @@
                     }
                 },
                 methods:{
+                    runModelTask(){
+                        //王明版本
+                        console.log(window.modelTaskConfig);
+                        var graph = GraphUi;
+                        var ComputationalServiceXMLStr = graph.getComputationalServiceXMLStr();
+                        var comServiceXMLBlob = new Blob([ComputationalServiceXMLStr], {type: "text/plain;charset=utf-8"});
+                        var formdata = new FormData();
+                        formdata.append('file',comServiceXMLBlob, 'ComputationalService.xml');
+                        //此处上传运行配置到服务器
+                        var modelItems = window.modelTaskConfig.modelItems;
+                        var optionalServiceConfig = [];
+                        for(let i=0;i<modelItems.length;i++){
+                        	var optionalModelservice={}
+                        	optionalModelservice.pid=modelItems[i].pid;
+                        	optionalModelservice.optional=modelItems[i].serviceOptions;
+                        	optionalServiceConfig.push(optionalModelservice);
+                        }
+                        console.log(optionalServiceConfig);
+                        //此处上传备用配置到服务器
+
+                        this.showRunModal();
+                    },
                     showRunModal(){
                         this.runStateModal = true;
                     },
