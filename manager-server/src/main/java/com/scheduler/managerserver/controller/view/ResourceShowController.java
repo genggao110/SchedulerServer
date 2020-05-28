@@ -68,29 +68,4 @@ public class ResourceShowController {
         return modelAndView;
 
     }
-
-    @RequestMapping(value="/computationalModel",method = RequestMethod.GET)
-    public ModelAndView getComputational(HttpServletRequest req) {
-        System.out.println("computational model builder");
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("computational_builder");
-
-
-        return modelAndView;
-
-    }
-
-
-    @RequestMapping(value="/logicalModel",method = RequestMethod.GET)
-    public ModelAndView getLogical(HttpServletRequest req) {
-        System.out.println("logical model builder");
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("logical_builder");
-
-
-        return modelAndView;
-
-    }
 }
