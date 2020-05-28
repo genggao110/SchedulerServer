@@ -1033,6 +1033,7 @@
                                 <span>{{event.name}}</span>
                                 <strong style="display: inline-block;margin-left: 20px;margin-right: 5px">Type:</strong>
                                 <span>{{event.type}}</span>
+                                <small :disable="event.optional" style="margin-left: 20px">(Optional)</small>
                                 <div style="margin-left: 5px">
                                     <span>Select Data:</span>
                                     <i-select filterable v-model="event.dataId" style="width:300px" size="small">
@@ -1261,6 +1262,7 @@
                                 else{
                                     event.type = "Output";
                                 }
+                                event.optional = mdlEvent.optional;
                                 event.value = "";
                                 event.dataId = "";
                                 event.dataType = "";

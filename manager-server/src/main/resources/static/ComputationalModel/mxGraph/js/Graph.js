@@ -2946,22 +2946,24 @@ Graph.prototype.getComputationalServiceXMLStr=function(){
 			var stateName = state.name;
 			var events = state.events;
 			for(var k=0;k<events.length;k++){
-				var dataXML = ""
 				var event = events[k];
-				if(event.type==="Input"){
-					dataXML = XMLDoc.createElement("InputData");
+				if(event.value!=""){
+					var dataXML = ""
+					if(event.type==="Input"){
+						dataXML = XMLDoc.createElement("InputData");
+					}
+					else{
+						dataXML = XMLDoc.createElement("OutputData");
+					}
+					var dataTemplateXML = XMLDoc.createElement("DataTemplate");
+					dataTemplateXML.setAttribute("state",stateName);
+					dataTemplateXML.setAttribute("event",event.name);
+					dataTemplateXML.setAttribute("value",event.value);
+					dataTemplateXML.setAttribute("dataId",event.dataId);
+					dataTemplateXML.setAttribute("type",event.dataType);
+					dataXML.appendChild(dataTemplateXML);
+					modelXML.appendChild(dataXML);
 				}
-				else{
-					dataXML = XMLDoc.createElement("OutputData");
-				}
-				var dataTemplateXML = XMLDoc.createElement("DataTemplate");
-				dataTemplateXML.setAttribute("state",stateName);
-				dataTemplateXML.setAttribute("event",event.name);
-				dataTemplateXML.setAttribute("value",event.value);
-				dataTemplateXML.setAttribute("dataId",event.dataId);
-				dataTemplateXML.setAttribute("type",event.dataType);
-				dataXML.appendChild(dataTemplateXML);
-				modelXML.appendChild(dataXML);
 			}
 		}
 		modelsXML.appendChild(modelXML);
