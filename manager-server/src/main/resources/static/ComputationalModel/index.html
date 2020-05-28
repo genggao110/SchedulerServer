@@ -34,6 +34,9 @@
     <!-- import vuescroll -->
     <script src="https://unpkg.com/vuescroll@4.14.4/dist/vuescroll.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.14.4/dist/vuescroll.css" type="text/css" />
+    <!-- import ahp.js -->
+    <script>var global = window;</script>
+    <script src="js/ahp.js"></script>
 	
     <script type="text/javascript">
         // var reg=/groupID=(\S*)/;
@@ -185,7 +188,7 @@
                 <Row>
                     <i-col span="7">
                         <div style="height:350px;border: 0.5px solid #dcdee2;padding:5px;background-color:white">
-                            <Tree :data = "step" id="stepTree" @on-select-change="changeStep"></Tree>
+                            <Tree :data = "step" id="stepTree"></Tree>
                         </div>
                     </i-col>
                     <i-col span="17">
@@ -240,31 +243,31 @@
                                             <div style="height:275px;border: 0.5px solid #dcdee2;">
                                                 <h5 style="margin:5px 0">{{selectedFactors[selectX]}}</h5>
                                                     <Radio-group v-model="selectedWeights" @on-change="setWeight">
-                                                        <Radio label="0" size="small">
+                                                        <Radio label="1" size="small">
                                                             <small>Extremely Important</small>
                                                         </Radio>
-                                                        <Radio label="1" size="small">
-                                                            <small>Very Important</small>
-                                                        </Radio>
                                                         <Radio label="2" size="small">
-                                                            <small>Quite Important</small>
+                                                            <small>Very Important</small>
                                                         </Radio>
                                                         <Radio label="3" size="small">
-                                                            <small>Weakly Important</small>
-                                                        </Radio>
-                                                        <Radio label="4" size="small">
-                                                            <small>Equally Important</small>
-                                                        </Radio>
-                                                        <Radio label="5" size="small">
-                                                            <small>Weakly Important</small>
-                                                        </Radio>
-                                                        <Radio label="6" size="small">
                                                             <small>Quite Important</small>
                                                         </Radio>
+                                                        <Radio label="4" size="small">
+                                                            <small>Weakly Important</small>
+                                                        </Radio>
+                                                        <Radio label="5" size="small">
+                                                            <small>Equally Important</small>
+                                                        </Radio>
+                                                        <Radio label="6" size="small">
+                                                            <small>Weakly Important</small>
+                                                        </Radio>
                                                         <Radio label="7" size="small">
-                                                            <small>Very Important</small>
+                                                            <small>Quite Important</small>
                                                         </Radio>
                                                         <Radio label="8" size="small">
+                                                            <small>Very Important</small>
+                                                        </Radio>
+                                                        <Radio label="9" size="small">
                                                             <small>Extremely Important</small>
                                                         </Radio>
                                                     </Radio-group>
@@ -281,13 +284,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div style="height:350px;" v-show="stepIndex==2">
+                            <h1>Page 3</h1>
+                            <h1 v-if="ahpCheck">Check success</h1>
+                            <h1 v-else>Check fail</h1>
+                        </div>
                     </i-col>
                 </Row>
             </div>
             <div slot="footer">
                 <i-button @click="back()" size = "small" :disabled="stepIndex==0">&lt Back</i-button>
                 <i-button @click="next()" size = "small" :disabled="stepIndex==2">Next &gt</i-button>
-                <i-button type="primary" @click="finish()" size = "small" :disabled="stepIndex!=2">Finish</i-button>
+                <i-button type="primary" @click="finish()" size = "small" :disabled="!(stepIndex==2&&ahpCheck)">Finish</i-button>
                 <i-button @click="cancel()" size = "small">Cancel</i-button>
             </div>
 		</Modal>
@@ -311,7 +319,7 @@
                                 expand: true,
                                 children: [
                                     {
-                                        title: "Choose Qos factors"
+                                        title: "Choose Qos Factors"
                                     },
                                     {
                                         title: "Determine Weights"
@@ -327,11 +335,13 @@
                         showData:[],
                         factors:[],
                         columns:[],
-                        selectedWeights: 0,
+                        selectedWeights: 1,
                         selectX:1,
                         selectY:0,
                         modelPid:"",
+                        weightObject:{},
                         spinShow:false,
+                        ahpCheck:false,
 					}
 				},
                 methods: {
@@ -341,42 +351,77 @@
                         this.qosModal = true;
                         this.selectedFactors=[];
                         this.selectedWeights = 0;
-                    },
-                    changeStep(array, value){
-                        this.stepIndex = value.nodeKey - 1;
+                        this.weightObject = {};
                     },
                     back(){
                         this.stepIndex--;
                     },
                     next(){
-                        if(this.selectedFactors.length<1){
-                            confirm("请选择至少一个因素");
-                        }else{
-                            var that = this;
-                            this.stepIndex++;
-                            if(this.stepIndex == 1){
-                                this.factors = this.selectedFactors;
-                                var fLength = this.factors.length;
-                                this.showData = [];
-                                this.columns = [];
-                                for(var i=0;i<fLength;i++){
-                                    var columnItem = {
-                                        'type':"text",
-                                        'title': this.factors[i]
+                        switch(this.stepIndex){
+                            case 0:{
+                                if(this.selectedFactors.length<1){
+                                    confirm("请选择至少一个因素");
+                                }
+                                else{
+                                    this.stepIndex++;
+                                    this.factors = this.selectedFactors;
+                                    var fLength = this.factors.length;
+                                    this.showData = [];
+                                    this.columns = [];
+                                    for(var i=0;i<fLength;i++){
+                                        var columnItem = {
+                                            'type':"text",
+                                            'title': this.factors[i]
+                                        }
+                                        this.columns.push(columnItem)
+                                        var dataItem = []
+                                        for(var j=0;j<fLength;j++){
+                                            if(i==j){
+                                                dataItem.push('1');
+                                            }
+                                            else{
+                                                dataItem.push('')
+                                            }
+                                        }
+                                        this.showData.push(dataItem);
                                     }
-                                    this.columns.push(columnItem)
-                                    var dataItem = []
-                                    for(var j=0;j<fLength;j++){
-                                        if(i==j){
-                                            dataItem.push('1');
+                                    this.initJexcel();
+                                }
+                                break;
+                            }
+                            case 1:{
+                                switch(this.stepType){
+                                    case "type0":{
+                                        this.weightObject = {};
+                                        for(let i=0;i<this.selectedFactors.length;i++){
+                                            let thisFactor= this.selectedFactors[i];
+                                            this.weightObject[thisFactor] = 1/parseFloat(this.selectedFactors.length);
+                                        }
+                                        this.stepIndex++;
+                                        this.ahpCheck = true;
+                                        break;
+                                    }
+                                    case "type1":{
+                                        var nullValue = false;
+                                        for(let i=0;i<this.showData.length;i++){
+                                            var rows = this.showData[i];
+                                            for(let j=0;j<rows.length;j++){
+                                                if(rows[j]==""){
+                                                    nullValue = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if(nullValue){
+                                            confirm("请将表格填写完整");
                                         }
                                         else{
-                                            dataItem.push('')
+                                            this.ahpCheck = false;
+                                            this.stepIndex++;
+                                            this.runAHP(this.showData);
                                         }
                                     }
-                                    this.showData.push(dataItem);
                                 }
-                                this.initJexcel();
                             }
                         }
                     },
@@ -397,8 +442,8 @@
                     },
                     setWeight(){
                         if(this.selectX!=this.selectY){
-                            this.showData[this.selectY][this.selectX] = this.selectedWeights + "";
-                            this.showData[this.selectX][this.selectY] = "1" + "/" + this.selectedWeights;
+                            this.showData[this.selectY][this.selectX] = this.selectedWeights+"";
+                            this.showData[this.selectX][this.selectY] = "1"+"/"+this.selectedWeights;
                             this.initJexcel();
                         }
                         else{
@@ -406,7 +451,6 @@
                         }
                     },
                     getServiceUrls(weight,pid){
-                        console.log("请求服务节点");
                         this.spinShow=true;
                         var url = "/integrate/getSuitableTaskNode";
                         if(window.location.port == "5500"){
@@ -435,9 +479,68 @@
                             }
                         });
                     },
+                    runAHP(originalArray){
+
+                        //测试AHP
+                        // var items = ["1"];
+                        // var criteria = ["a","b","c","d"];
+                        // var criteriaItemRank = {
+                        //     "a":[[1]],
+                        //     "b":[[1]],
+                        //     "c":[[1]],
+                        //     "d":[[1]],
+                        // };
+                        // var criteriaRank = [
+                        //     [1, 0.3333333333333333, 0.5, 0.5],
+                        //     [3, 1, 2, 2],
+                        //     [2, 0.5, 1, 2],
+                        //     [2, 0.5, 0.5, 1]
+                        // ];
+
+                        var items = ["1"];
+                        var criteria = this.selectedFactors;
+                        var criteriaItemRank ={};
+                        for(let i=0;i<this.selectedFactors.length;i++){
+                            let thisFactor= this.selectedFactors[i];
+                            criteriaItemRank[thisFactor] = [[1]];
+                        }
+                        var criteriaRank = [];
+                        for(let i=0;i<originalArray.length;i++){
+                            var rowArray = originalArray[i];
+                            var newRowArray = [];
+                            for(let j=0;j<rowArray.length;j++){
+                                var num = rowArray[j];
+                                var nums = num.split("/");
+                                if(nums.length==1){
+                                    num = parseFloat(nums[0]);
+                                }
+                                else if(nums.length==2){
+                                    num = 1/parseFloat(nums[1]);
+                                }
+                                newRowArray.push(num);
+                            }
+                            criteriaRank.push(newRowArray);
+                        }
+                        var ahpResult = window.runAHPCalculation(items,criteria,criteriaItemRank,criteriaRank);
+
+                        console.log(ahpResult.log);
+                        var ci = ahpResult.criteriaRankMetaMap.ci;
+                        if(ci<0.1){
+                            this.ahpCheck = true;
+                        }
+                        else{
+                            this.ahpCheck = false;
+                        }
+                        var resultWeightArray = ahpResult.criteriaRankMetaMap.weightedVector;
+                        this.weightObject = {};
+                        for(let i=0;i<this.selectedFactors.length;i++){
+                            let thisFactor= this.selectedFactors[i];
+                            this.weightObject[thisFactor] = resultWeightArray[i];
+                        }
+                    },
                     finish() {
-                        console.log(this.showData);
-                        this.getServiceUrls(this.showData,this.modelPid);
+                        console.log(this.weightObject);
+                        this.getServiceUrls(this.weightObject,this.modelPid);
                         this.qosModal = false;
                     },
                     cancel() {
