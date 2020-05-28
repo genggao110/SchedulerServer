@@ -1,5 +1,5 @@
 //element-ui 切换英文，勿删！
-ELEMENT.locale(ELEMENT.lang.en)
+// ELEMENT.locale(ELEMENT.lang.en)
 
 
 $("#wx").mouseover(function(){
@@ -554,6 +554,12 @@ function watchWidth() {
     var hrefElement=href.split('/')[1];
     var reg=RegExp(/model/i);
     console.log(hrefElement)
+    if(href!='/list/model'){
+        $(".mainNav").css('backgroundColor','#333333')
+        $(".sub").children('ul').css('cssText','background-color:#333333!important')
+        $(".subLog").children('ul').css('cssText','background-color:#333333!important')
+    }
+
     if(hrefElement.match(reg)){
         for(let i=0;i<clickMenu.length;i++){
             if(i==1)

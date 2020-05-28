@@ -10,9 +10,14 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/list.css">
     <link rel="stylesheet" href="/static/css/model_items.css">
-
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/vue-avatar.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <link rel="stylesheet" href="/static/css/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/wzhFlexContainer.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/js/common/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/common/navbar.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
 
@@ -54,7 +59,7 @@
 <body>
     <div id="app">
         <div style="position: relative;z-index: 9999;">
-            <div th:replace="fragment/navbar :: menu"></div>
+<!--            <div th:replace="fragments/navbar :: menu"></div>-->
         </div>
 
         <div>
