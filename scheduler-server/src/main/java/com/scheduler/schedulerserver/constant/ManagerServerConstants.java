@@ -6,5 +6,5 @@ package com.scheduler.schedulerserver.constant;
  */
 public class ManagerServerConstants {
 
-    public static String MANAGERSERVER = "127.0.0.1:8084/GeoModeling";
+    public static String MANAGERSERVER = "127.0.0.1:8072";
 }

@@ -1,0 +1,136 @@
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5,IE=9" ><![endif]-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logical Model Builder</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="mxGraph/styles/grapheditor.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        // var reg=/groupID=(\S*)/;
+        // var url=window.location.href;
+        // if (!sessionStorage.getItem("username")) {
+        //     alert("请先登录！");
+        //     localStorage.removeItem("historyURL");
+        //     if(url.search(reg)!=-1){
+        //         localStorage.setItem("historyURL",url);
+        //     }
+        //     // window.location.href="http://localhost:8081/TeamWorking/html/login.html";
+        //     window.location.href="/TeamWorking/html/login.html";
+        // }
+        // else{
+        //     localStorage.removeItem("historyURL");
+        //     if(url.search(reg)==-1){
+        //         // window.location.href="http://localhost:8081/TeamWorking/html/login.html";
+        //         window.location.href="/TeamWorking/html/login.html";
+        //     }
+        // }
+    </script>
+    <script type="text/javascript">
+        // Parses URL parameters. Supported parameters are:
+        // - lang=xy: Specifies the language of the user interface.
+        // - touch=1: Enables a touch-style user interface.
+        // - storage=local: Enables HTML5 local storage.
+        // - chrome=0: Chromeless mode.
+        var urlParams = (function(url)
+        {
+            var result = new Object();
+            var idx = url.lastIndexOf('?');
+
+            if (idx > 0)
+            {
+                var params = url.substring(idx + 1).split('&');
+
+                for (var i = 0; i < params.length; i++)
+                {
+                    idx = params[i].indexOf('=');
+
+                    if (idx > 0)
+                    {
+                        result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
+                    }
+                }
+            }
+
+            return result;
+        })(window.location.href);
+
+        // Default resources are included in grapheditor resources
+        mxLoadResources = false;
+
+        //Default Model
+        var LogicalModel = {
+            basicInfo : {
+                name:"",
+                description:"",
+                modelDependency:""
+            },
+            modelItems:[],
+            dataItems:[],
+            condition:[],
+            operation:[]
+        };
+        var emptyGraph = "<mxGraphModel><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/></root></mxGraphModel>";
+        var Integration = "";
+        var ModelDependency = "";
+        var ConditionDependency = "";
+        var DataDependency = "";
+
+        var currentUID="basicXML";
+    </script>
+    <script type="text/javascript" src="mxGraph/js/Init.js"></script>
+    <script type="text/javascript" src="mxGraph/deflate/pako.min.js"></script>
+    <script type="text/javascript" src="mxGraph/deflate/base64.js"></script>
+    <script type="text/javascript" src="mxGraph/jscolor/jscolor.js"></script>
+    <script type="text/javascript" src="mxGraph/sanitizer/sanitizer.min.js"></script>
+    <script type="text/javascript" src="mxGraph/js/mxgraph/js/mxClient.js"></script>
+    <script type="text/javascript" src="mxGraph/js/EditorUi.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Editor.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Sidebar.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Graph.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Shapes.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Actions.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Menus.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Format.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Toolbar.js"></script>
+    <script type="text/javascript" src="mxGraph/js/Dialogs.js"></script>
+</head>
+<body class="geEditor">
+<div class="head">
+    <n<!--av class="navbar navbar-default pcnav" role="navigation">
+        <div class="navbarPanel">
+            <div class="navbar-header">
+                <a href="#" class="navbar-brand">
+                    <img src="images/logo.png" height="45">
+                </a>
+            </div>
+            <span class="navTitle">Logical Model Builder</span>
+            <ul id="rightNav">
+                <li>
+                     &lt;!&ndash;<a href="http://localhost:8081/TeamWorking/index.html"><strong>HOME</strong></a>&ndash;&gt;
+                    <a href="/TeamWorking/index.html"><strong>HOME</strong></a>
+                </li>
+                <li class="nav_hello">
+                    <a><strong id="userNameLabel">NJGIS</strong></a>
+                </li>
+                <li class="nav_exit" >
+                    <a><strong id="groupIDLabel">GroupID</strong></a>
+                </li>
+            </ul>
+        </div>
+    </nav>-->
+</div>
+<script type="text/javascript">
+    $('#userNameLabel').html(sessionStorage.getItem("username"));
+    if(url.search(reg)!=-1){
+        let groupID=url.match(reg)[1];
+        $('#groupIDLabel').html("CID: "+groupID);
+    }
+</script>
+<script type="text/javascript" src="mxGraph/js/Collaboration.js"></script>
+</body>
+</html>

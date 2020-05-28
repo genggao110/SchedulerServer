@@ -314,7 +314,6 @@ new Vue({
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: (result) => {
-                    console.log(result);
                     if(result.code == 0){
                         console.log(result.data);
                     }else {

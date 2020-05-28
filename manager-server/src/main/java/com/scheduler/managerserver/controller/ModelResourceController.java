@@ -2,6 +2,7 @@ package com.scheduler.managerserver.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.scheduler.managerserver.dao.DeployTaskDao;
+import com.scheduler.managerserver.dto.DeployedResourceFindDTO;
 import com.scheduler.managerserver.dto.ModelResourceFindDTO;
 import com.scheduler.managerserver.dto.computer.RecommendComputer;
 import com.scheduler.managerserver.dto.modelresource.ModelDeployDTO;
@@ -115,5 +116,15 @@ public class ModelResourceController {
         }
         DeployTask result = modelResourceService.refreshDeployRecord(deployTask);
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value = "/getModelServiceResource", method = RequestMethod.POST)
+    @ApiOperation(value = "获取门户计算资源库中可用的模型服务资源")
+    public JsonResult getModelServiceResourceFromPortal(DeployedResourceFindDTO deployedResourceFindDTO){
+        JSONObject serverResources = modelResourceService.listDeployedComputerModelFromPortal(deployedResourceFindDTO);
+        if(serverResources == null){
+            return ResultUtils.error(-1,"get computer resources error!");
+        }
+        return ResultUtils.success(serverResources);
     }
 }

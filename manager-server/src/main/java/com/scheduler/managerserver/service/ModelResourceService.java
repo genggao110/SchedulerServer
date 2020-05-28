@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.scheduler.managerserver.dao.ComputerInfoDao;
 import com.scheduler.managerserver.dao.DeployTaskDao;
+import com.scheduler.managerserver.dto.DeployedResourceFindDTO;
 import com.scheduler.managerserver.dto.ModelResourceFindDTO;
 import com.scheduler.managerserver.dto.computer.RecommendComputer;
 import com.scheduler.managerserver.dto.modelresource.ModelDeployDTO;
@@ -18,6 +19,7 @@ import com.scheduler.managerserver.pojo.computer.Optional;
 import com.scheduler.managerserver.pojo.computer.Software;
 import com.scheduler.managerserver.pojo.resource.HardwareInfo;
 import com.scheduler.managerserver.pojo.resource.SoftwareInfo;
+import com.scheduler.managerserver.vo.ComputerServerInfo;
 import com.scheduler.managerserver.vo.ModelInfoVO;
 import com.scheduler.managerserver.vo.ModelResourceVO;
 import com.scheduler.mdl.MdlDocument;
@@ -82,7 +84,7 @@ public class ModelResourceService {
         String result = "";
         try {
             result = MyHttpUtils.POST(url,"UTF-8",null, params,null);
-            JSONObject jResponse = JSONObject.parseObject(result);
+            JSONObject jResponse = JSON.parseObject(result);
             if(jResponse.getIntValue("code") == 0){
                 //表明是成功获取
                 JSONObject data = jResponse.getJSONObject("data");
@@ -103,6 +105,41 @@ public class ModelResourceService {
             result_json = null;
         }
         return result_json;
+    }
+
+    //从门户获取所有可以调用的计算模型(门户数据库deploy字段为true的情况)
+    public JSONObject listDeployedComputerModelFromPortal(DeployedResourceFindDTO deployedResourceFindDTO){
+        JSONObject result = new JSONObject();
+        //拼凑参数
+        Map<String,String> params = new HashMap<>();
+        params.put("asc", deployedResourceFindDTO.getAsc().toString());
+        params.put("page", deployedResourceFindDTO.getPage().toString());
+        params.put("pageSize", deployedResourceFindDTO.getPageSize().toString());
+        params.put("searchText", deployedResourceFindDTO.getSearchText());
+
+        String url = PORTAL_ADDRESS + "/computableModel/listDeployed";
+        String response = "";
+        try{
+            response = MyHttpUtils.POST(url, "UTF-8",null,params,null);
+            JSONObject jResponse = JSON.parseObject(response);
+            if(jResponse.getIntValue("code") == 0){
+                JSONObject data = jResponse.getJSONObject("data");
+                result.put("total", data.getIntValue("total"));
+                result.put("pages", data.getIntValue("pages"));
+                //处理计算模型列表
+                JSONArray array_list = data.getJSONArray("list");
+                List<ComputerServerInfo> computerServerInfos = new ArrayList<>();
+                for(int i = 0; i < array_list.size(); i++){
+                    ComputerServerInfo computerServerInfo = handleComputerModelData(array_list.getJSONObject(i));
+                    computerServerInfos.add(computerServerInfo);
+                }
+                result.put("list",computerServerInfos);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            result = null;
+        }
+        return result;
     }
 
     public JSONObject getModelResourceByOid(String oid){
@@ -664,6 +701,21 @@ public class ModelResourceService {
             modelResourceVO.setResources(resource);
         }
         return modelResourceVO;
+    }
+
+    private ComputerServerInfo handleComputerModelData(JSONObject list){
+        ComputerServerInfo computerServerInfo = new ComputerServerInfo();
+        computerServerInfo.setOid(list.getString("oid"));
+        computerServerInfo.setName(list.getString("name"));
+        computerServerInfo.setDescription(list.getString("description"));
+        computerServerInfo.setAuthor_name(list.getString("author_name"));
+        computerServerInfo.setAuthor_oid(list.getString("author_oid"));
+        computerServerInfo.setCreateTime(list.getString("createTime"));
+        computerServerInfo.setContentType(list.getString("contentType"));
+        computerServerInfo.setPid(list.getString("md5"));
+        computerServerInfo.setMdl(list.getString("mdl"));
+        computerServerInfo.setMdlJson(list.getString("mdlJson"));
+        return computerServerInfo;
     }
 
     //add by wangming at 2020.05.19 从mdl中解析环境配置信息为json
