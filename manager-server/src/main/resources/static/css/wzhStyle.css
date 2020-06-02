@@ -1,0 +1,226 @@
+body{
+    margin: 0 !important;
+}
+
+.innerBorder{
+    align-self: center;
+    width: 95.5%;
+    border-bottom: 1px solid #cccccc;
+}
+
+.innerBorderCol{
+    height: 85%;
+    width: 1px;
+    background-color: rgba(0,0,0,0.1);
+    margin: 0 8px;
+}
+
+.bigDialog{
+    height: 650px;
+}
+
+.circleSmall {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 2px solid rgb(5, 176, 255);
+    background: white;
+    color: rgb(5, 176, 255);
+    cursor: pointer;
+    transition: .3s;
+}
+
+.circleSmall:hover {
+    background: rgb(5, 176, 255);
+    color: rgb(248, 249, 250);
+    box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 3px 5px 3px rgba(60, 64, 67, 0.192);
+}
+
+.circleSmallDark {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 2px solid rgb(64, 158, 255);
+    background: white;
+    color: rgb(64, 158, 255);
+    cursor: pointer;
+    transition: .3s;
+}
+
+.circleSmallDark:hover {
+    background: rgb(64, 158, 255);
+    color: rgb(248, 249, 250);
+    box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 3px 5px 3px rgba(60, 64, 67, 0.192);
+}
+
+.circleMiddle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 3px solid rgb(5, 176, 255);
+    background: white;
+    color: rgb(5, 176, 255);
+    cursor: pointer;
+    transition: .3s;
+}
+
+.circleMiddle:hover {
+    background: rgb(5, 176, 255);
+    color: rgb(248, 249, 250);
+    box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 3px 5px 3px rgba(60, 64, 67, 0.192);
+}
+
+.noMargin{
+    margin: 0;
+}
+
+.scrollContainer{
+    overflow-y: scroll;
+}
+
+.rAngleContainer{
+    padding: 2px 6px ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    min-height: 21px;
+    border: #0069ba 2px solid;
+    color: #0069ba;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    font-size: 15px;
+    padding-top: 0;
+}
+
+.chosen{
+    border-top: 8px solid #00C1DE !important;
+}
+
+.round_icon{
+    width:30px;
+    height: 30px;
+    display: flex;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.logo{
+    float: left;
+    background-image: url('../../../static/img/logo.png');
+    background-size:auto 45px;
+    background-repeat: no-repeat;
+    width:156px;
+    height:60px;
+
+    margin-left: 20px;
+    margin-right: 135px;
+}
+
+.nutButton {
+    height: 42px;
+    border-radius: 99999px;
+    border: 2.5px #e6e6e6 solid;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #e6e6e6;
+    transition: .3s all;
+}
+
+.nutButton:hover {
+    background-color: #e6e6e6;
+    color: #333333;
+    font-weight: 500;
+}
+
+.detailBoxContainer .el-dialog{
+    width: 320px;
+    height: 500px;
+    position: absolute;
+    right: 150px;
+    top: 20px;
+    background-color: rgba(255,255,255,0.61);
+    backdrop-filter: saturate(120%) blur(10px);
+    box-shadow: 0 25.6px 57.6px 0 rgba(0,0,0,.22), 0 4.8px 14.4px 0 rgba(0,0,0,.18);;
+}
+
+.detailContainer{
+
+}
+
+.osImg{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1px solid #bfbfbf;
+    position: absolute;
+    top: -35px;
+    background-color: rgba(255, 255, 255, 0.9);
+    right: 120px;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.3) !important;
+}
+
+.cirqueBox{
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    /*-webkit-mask: radial-gradient(transparent, transparent 60px, #000 0);*/
+    /*mask: radial-gradient(transparent 60px, #000 0);*/
+}
+.circleInner{
+    width: 64px;
+    height: 64px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    z-index: 99;
+}
+.cirqueRed{
+    position: absolute;
+    width:100%;
+    height: 100%;
+    left:0;
+    top:0;
+    border-radius: 50%;
+    background-color: #2bb848;
+    z-index: 2;
+
+    animation:mymove 1.5s linear;
+}
+.cirqueGrey{
+    position: absolute;
+    width:100%;
+    height: 100%;
+    border-radius: 50%;
+    left:0;
+    top:0;
+    background-color: #f5f5f5;
+    z-index: 1;
+}
+@keyframes mymove
+{
+    0%   {
+        clip-path: polygon(35px 35px, 35px -300px, 35px -300px, 35px -300px, 35px -300px, 35px -300px);
+
+    }
+    25%   {
+        clip-path: polygon(35px 35px, 35px -300px, 35px -300px, 370px 35px, 370px 35px, 370px 35px);
+    }
+    50%   {
+        clip-path: polygon(35px 35px, 35px -300px, 370px 35px, 35px 370px, 35px 370px, 35px 370px);
+    }
+    75%   {
+        clip-path: polygon(35px 35px, 35px -300px, 370px 35px, 35px 370px, 35px 370px, -300px 35px);
+
+    }
+    100%   {
+        clip-path: polygon(35px 35px, 35px -300px, 370px 35px, 35px 370px, -300px 35px, 35px -300px);
+    }
+}

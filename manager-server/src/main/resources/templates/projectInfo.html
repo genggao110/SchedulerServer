@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ProjectInfo</title>
+
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/list.css">
+    <link rel="stylesheet" href="/static/css/model_items.css">
+    <link rel="stylesheet" href="/static/css/common/styles.9694af830a714e8db8b1.css">
+    <link rel="stylesheet" href="/static/css/fluent/fluent.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <link rel="stylesheet" href="/static/css/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/wzhFlexContainer.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <script src="/static/element-ui/index.js"></script>
+    <script src="/static/element-ui/umd/locale/en.js"></script>
+
+    <style>
+        .el-menu a{
+            color:white;
+        }
+        body{
+            margin: 0;
+        }
+
+        .badge {
+            padding: 5px 7px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .cell{
+            text-align: center;
+        }
+
+        .el-card__body {
+            padding: 0;
+        }
+
+        .serverCard{
+            margin:15px 0;
+            padding:0 15px;
+            border-top:8px solid #373D41;
+        }
+
+        .serverCard .content{
+            padding:10px 0 0 0;
+        }
+
+        .serverCard:hover{
+            border-top: 8px solid #00C1DE;
+        }
+    </style>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.css">
+
+
+</head>
+<body>
+<div id="app">
+
+    <div th:replace="fragments/navbar :: menu"></div>
+    <div style="margin: 25px">
+        <h2 style="text-align: center" >{{projectInfo.title}}</h2>
+        <div class="" style="width: 200px;    margin-right: 70px;float: right;">
+            <h4 style="margin-bottom: 10px">create by <a style="cursor: pointer" @click="window.open('http://localhost:8080/user/'+projectInfo.owner.oid)">{{projectInfo.owner.name}}</a></h4>
+            <h5 style="font-weight: 400">{{formatDate(projectInfo.createDate)}}</h5>
+        </div>
+
+    </div>
+    <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 20px;margin-bottom: 20px">
+        <div class="el-col-6" style="height:700px">
+            <el-tabs type="border-card" stretch="true" style="height: 100%;">
+                <el-tab-pane label="Participant User">
+                    <el-table
+
+                            :show-header="false"
+                            :data="invitedUsers"
+                            style="width: 100%">
+                        <el-table-column style="text-align: right;">
+                            <template slot-scope="scope">
+                                <img style="border-radius: 50%;height:40px;width:40px;border: 1px solid #C0C4CC;" src="/static/img/icon/default.png">
+                            </template>
+                        </el-table-column>
+                        <el-table-column>
+                            <template slot-scope="scope">
+
+                                <el-tag size="medium">{{ scope.row.name }}</el-tag>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="flexRow">
+                        <div class="innerBorder" style="width: 17%"></div>
+                        <div style="flex: 1;color: rgb(140,140,140)">Invites waiting to be accepted </div>
+                        <div class="innerBorder" style="width: 17%"></div>
+                    </div>
+                    <el-table
+
+                            :show-header="false"
+                            :data="invitingUsers"
+                            style="width: 100%">
+                        <el-table-column style="text-align: right;">
+                            <template slot-scope="scope">
+                                <img style="border-radius: 50%;height:40px;width:40px;border: 1px solid #C0C4CC;" src="/static/img/icon/default.png">
+                            </template>
+                        </el-table-column>
+                        <el-table-column>
+                            <template slot-scope="scope">
+
+                                <el-tag size="medium">{{ scope.row.name }}</el-tag>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+
+            </el-tabs>
+        </div>
+        <div class="el-col-18 " style="height:700px">
+            <el-tabs type="border-card" stretch="true" style="height: 100%; margin-left: 10px;" v-model="activeTab">
+                <el-tab-pane label="Computable Resource" name="tab1" v-loading="loadRecmd" class="overflow-scroll"  style="height: 620px">
+                    <div class="flexCol overflow-scroll" style="height: 560px">
+                        <div class="flexRow">
+                            <div class="innerBorder" style="width: 38%"></div>
+                            <h4>Resources you can use now.</h4>
+                            <div class="innerBorder" style="width: 38%" ></div>
+                        </div>
+                   <!--       推荐         -->
+                        <div v-if="recommend.length!=0">
+                            <h4 style="color:#5cb87a;margin-left: 15px;">The resources we recommend:</h4>
+                            <div class="col-sm-12 col-md-6 col-lg-4"  v-for="(container,index) in recommend">
+                                <div class="cirqueBoxContainer" style="display: none">
+                                    <div class="flexCenter cirqueBox" style="z-index: 999 ;top: 60px;right: 149px;">
+                                        <div class="circleInner flexCenter">
+                                            <i class="ms-Icon ms-Icon--SkypeCheck checkResource" style="display :none;font-size:30px ; color: #2bb848"></i>
+                                        </div>
+                                        <div class="cirqueRed"></div>
+
+                                        <div class="cirqueGrey"></div>
+
+                                    </div>
+                                </div>
+                                <el-card class="box-card serverCard"
+                                         style="cursor: pointer" @click.native="chooseRecommend($event,container,index)">
+                                    <div class="content">
+                                        <div class="clearfix">
+                                            <div class="flexCenter">
+<!--                                                <i class="ms-Icon ms-Icon&#45;&#45;Medal" style="font-size: 25px"></i>-->
+                                                <img style="width: 20px;margin-top: -5px;margin-bottom: 5px" src="/static/img/medal2.png">
+                                            </div>
+                                            <div class="pull-left">
+                                                <h4 style="margin-bottom: 10px;font-weight: bold">
+                                                    {{container.hostName}}
+
+                                                </h4>
+                                                <h2 style="position: absolute;right: 50px;top: 58px;color: #2bb848;">{{container.score}}</h2>
+                                                <p style="margin-bottom:5px">{{container.software_info.os}} {{container.software_info.osVersion}}</p>
+                                                <p>{{container.hardware_info.staticInfo.cpu_core}} Core - {{container.hardware_info.staticInfo.memory_size}} RAM - {{container.hardware_info.staticInfo.disk_all}} Hard Disk</p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">
+                                            <div class="serverStatus pull-left">
+                                                <a>
+                                                    <img src="/static/img/icon/default.png"
+                                                         class="round_icon"
+                                                         style="margin-top:-5px;width:20px;height: 20px;display: inline-block;border:1px solid #ccc;border-radius: 50%">
+                                                </a>
+
+                                                <a @click="window.open('http://geomodeling.njnu.edu.cn/user/'+user.oid)"
+                                                   style="display: inline-block;margin-left: 5px;font-size:15px;"><h4>
+                                                    {{container.user}}</h4></a>
+                                            </div>
+                                            <div class="serverIp pull-right" style="color:red;font-size: 20px">
+                                                <!--{{container.score}}-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </div>
+
+                        <div v-if="recommend.length!=0" class="innerBorder" style="border:1px #d9d9d9 dashed "></div>
+<!--                        所有可以使用-->
+                        <div>
+                            <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerUse.length!=0"
+                                 v-for="(container,index) in modelContainerUse" style="min-height: 155px">
+                                <div class="cirqueBoxContainer" style="display: none">
+                                    <div class="flexCenter cirqueBox" style="z-index: 999 ;top: 60px;right: 149px;">
+                                        <div class="circleInner flexCenter">
+                                            <i class="ms-Icon ms-Icon--SkypeCheck checkResource" style="display :none;font-size:30px ; color: #2bb848"></i>
+                                        </div>
+                                        <div class="cirqueRed"></div>
+
+                                        <div class="cirqueGrey"></div>
+
+                                    </div>
+                                </div>
+
+                                <el-card class="box-card serverCard" style="cursor: pointer" @click.native="chooseResource($event,container,index)">
+                                    <div class="content">
+                                        <div class="clearfix">
+                                            <div class="pull-left">
+                                                <h4 style="margin-bottom: 10px;font-weight: bold">
+                                                    {{container.hostName}}
+
+                                                </h4>
+                                                <p style="margin-bottom:5px">{{container.software_info.os}} {{container.software_info.osVersion}}</p>
+                                                <p>{{container.hardware_info.staticInfo.cpu_core}} Core - {{container.hardware_info.staticInfo.memory_size}} RAM - {{container.hardware_info.staticInfo.disk_all}} Hard Disk</p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">
+                                            <div class="serverStatus pull-left">
+                                                <a>
+                                                    <img src="/static/img/icon/default.png"
+                                                         class="round_icon"
+                                                         style="margin-top:-5px;width:20px;height: 20px;display: inline-block;border:1px solid #ccc;border-radius: 50%">
+                                                </a>
+
+                                                <a @click="window.open('http://geomodeling.njnu.edu.cn/user/'+user.oid)"
+                                                   style="display: inline-block;margin-left: 5px;font-size:15px;"><h4>
+                                                    {{container.user}}</h4></a>
+                                            </div>
+                                            <div class="serverIp pull-right" style="color:red;font-size: 20px">
+                                                <!--{{container.score}}-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </div>
+
+                        <div class="flexRow" style="margin-top: 30px">
+                            <div class="innerBorder" style="width: 28.5%"></div>
+                            <h4>If all invites accepted, more resources you can use:</h4>
+                            <div class="innerBorder" style="width: 28.5%" ></div>
+                        </div>
+<!--                        等待接受-->
+                        <div>
+                            <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerListInviting.length!=0" v-for="(container,index) in modelContainerListInviting">
+                                <el-card class="box-card serverCard" >
+                                    <div class="content">
+                                        <div class="clearfix">
+                                            <div class="pull-left">
+                                                <h4 style="margin-bottom: 10px;font-weight: bold">
+                                                    {{container.hostName}}
+
+                                                </h4>
+                                                <p style="margin-bottom:5px">{{container.software_info.os}} {{container.software_info.osVersion}}</p>
+                                                <p>{{container.hardware_info.staticInfo.cpu_core}} Core - {{container.hardware_info.staticInfo.memory_size}} RAM - {{container.hardware_info.staticInfo.disk_all}} Hard Disk</p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">
+                                            <div class="serverStatus pull-left">
+                                                <a>
+                                                    <img src="/static/img/icon/default.png"
+                                                         class="round_icon"
+                                                         style="margin-top:-5px;width:20px;height: 20px;display: inline-block;border:1px solid #ccc;border-radius: 50%">
+                                                </a>
+
+                                                <a @click="window.open('http://geomodeling.njnu.edu.cn/user/'+user.oid)"
+                                                   style="display: inline-block;margin-left: 5px;font-size:15px;"><h4>
+                                                    {{container.user}}</h4></a>
+                                            </div>
+                                            <div class="serverIp pull-right" style="color:red;font-size: 20px">
+                                                <!--{{container.score}}-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-card>
+                            </div>
+                            <h3 class="f3-light mb-1" v-if="modelContainerListInviting.length==0" style="text-align: center;margin-top: 50px">Find no computable resource</h3>
+                        </div>
+
+                    </div>
+                    <div class="float-md-right">
+                        <el-button type="primary"  v-if="Object.keys(chosenResource).length&&loadingUser.userName===projectInfo.owner.userName" @click="deployModel()">
+                            Deploy
+                        </el-button>
+                        <el-button  v-if="Object.keys(chosenResource).length" @click="cancelChoose()">
+                            Cancel
+                        </el-button>
+                    </div>
+
+                </el-tab-pane>
+                <el-tab-pane label="Model Info" name="tab2" class="overflow-scroll" style="height: 560px">
+                    <div class="modelPanel ">
+                        <div class="content-body">
+                            <div v-cloak class="list-item " style="border:none">
+                                <div class="detail_title">
+                                    <a target="_blank" @click="open">{{modelItem.name}}</a>
+                                    <el-button v-if="loadingUser.userName===projectInfo.owner.userName" type="primary" @click="getComputerForDeploy" class="pull-right" style="margin-top: -5px;">Adapting</el-button>
+                                </div>
+                                <div>
+
+                                    <div class="detail_overview">
+                                        <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                            <avatar v-if="modelItem.image==''" :username="modelItem.name" :size="90"
+                                                    :rounded="false"></avatar>
+                                            <img v-if="modelItem.image!=''" :src="modelItem.image"
+                                                 style="width:90px;height: 90px;">
+
+                                        </a>
+
+                                        <div class="info">
+<!--                                            <p :style="{'-webkit-line-clamp':(modelItem.keywords.length>0?2:4)}">{{modelItem.description}}</p>-->
+                                            <p>{{modelItem.description}}</p>
+<!--                                            <div class="tags" v-if="modelItem.keywords.length>0">-->
+<!--                                                <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>-->
+<!--                                            </div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="runtime_table" class="table table-bordered text-center">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Type</th>
+                                        <th class="text-center">Property</th>
+                                        <th class="text-center">Value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <div >
+                                        <tr >
+                                            <td rowspan="4">Basic Info</td>
+                                            <td>name</td>
+                                            <td>SWATModelAllInOne</td>
+                                        </tr>
+                                        <tr >
+                                            <td>version</td>
+                                            <td>1.1.0.0</td>
+                                        </tr>
+                                        <tr >
+                                            <td>baseDir</td>
+                                            <td>$(ModelServicePath)\SWATModelAllInOne</td>
+                                        </tr>
+                                        <tr >
+                                            <td>entry</td>
+                                            <td>SWATModelAllInOne.exe</td>
+                                        </tr>
+                                    </div>
+                                    <div >
+                                        <tr >
+                                            <td rowspan="3">Hardware Dependencies</td>
+                                            <td>CPU_Frequency</td>
+                                            <td>2.8GHz</td>
+                                        </tr>
+                                        <tr >
+                                            <td>Memory_Size</td>
+                                            <td>50M</td>
+                                        </tr>
+                                        <tr >
+                                            <td>Disk_Size</td>
+                                            <td>100MB</td>
+                                        </tr>
+                                    </div>
+                                    <div >
+
+                                        <tr >
+                                            <td rowspan="2">Software Dependencies</td>
+                                            <td>Operation System</td>
+                                            <td>Windows | x64</td>
+                                        </tr>
+                                        <tr >
+                                            <td>Third-Party Software</td>
+                                            <td>MapWindows 4.8 | x64</td>
+                                        </tr>
+                                    </div>
+                                    <div >
+                                        <tr >
+                                            <td rowspan="3">Assemblies</td>
+                                            <td>GDALRasterMapping</td>
+                                            <td>${MappingPath}\GDALRasterMapping\</td>
+                                        </tr>
+                                        <tr >
+                                            <td>OGRVectorMapping</td>
+                                            <td>${MappingPath}\OGRVectorMapping\</td>
+                                        </tr>
+                                        <tr >
+                                            <td>TauDEM_Path</td>
+                                            <td>$(ModelServicePath)\TauDEM5Exe\</td>
+                                        </tr>
+
+                                    </div>
+
+
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <div class="detail_bottom">
+                                    <div style="display:inline-block;float: left;">
+                                        <a :href="'/user/'+ user.oid">
+                                            <img :src="user.image==''?'/static/img/icon/default.png':user.image"
+                                                 class="round_icon"
+                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                        </a>
+
+                                        <a @click="window.open('http://geomodeling.njnu.edu.cn/user/'+user.oid)"
+                                           style="display: inline-block;margin-left: 5px;cursor: pointer" ><h4>
+                                            {{user.name}}</h4></a>
+
+                                        <h4 class="screen_view">
+                                            contributed at {{modelItem.createTime.substring(0,10)}} </h4>
+                                        <h4 class="mobile_view">
+                                            {{modelItem.createTime.substring(0,10)}} </h4>
+                                    </div>
+                                    <div class="detail_option">
+                                        <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
+                                        <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </el-tab-pane>
+
+            </el-tabs>
+
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+<script src="/static/js/page/projectInfo.js"></script>
+</html>

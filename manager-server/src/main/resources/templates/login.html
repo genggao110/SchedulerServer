@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Log In | OpenGMS</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/common/styles.9694af830a714e8db8b1.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/wzhFlexContainer.css">
+    <link rel="stylesheet" href="/static/css/wzhStyle.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <style>
+        .el-form-item__content .el-button--primary{
+            margin:0 10px 10px 0;
+        }
+        .el-button+.el-button{
+            margin:0px;
+        }
+        .loginCard{
+            max-width: 500px;
+            min-width: 350px;
+            margin: auto;
+        }
+    </style>
+
+</head>
+<body style="background-color: whitesmoke">
+<!--<h1 th:text="${name}">Hello World</h1>-->
+<div id="app" v-cloak>
+    <div class="alert alert-warning fade in text-center" th:if="${notice}">
+        <button type="button" class="close close-sm" data-dismiss="alert">
+            <i class="fa fa-times"></i>
+        </button>
+        <strong style="font-size: 16px;font-weight: normal" th:text="${notice}">Warning!</strong>
+    </div>
+    <div class="flexCol flexCenter" style="margin-top: 5%">
+        <img src="/static/img/logo-blue-gray.png" style="width: 150px;margin-bottom: 10px">
+        <h2 _ngcontent-pnd-c16="" class="f2-light mb-1">Log in</h2>
+    </div>
+    <div class="el-row" style="margin-top:30px;margin-bottom: 30px;">
+        <el-col class="" style="width: 100%">
+            <div class="loginCard el-card is-always-shadow">
+                <div slot="header" class="clearfix el-card__header" style="text-align: center;">
+
+                </div>
+                <div  style="margin-top: 30px">
+                    <el-col :span="20" :offset="1">
+                        <el-form label-position="right" :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm" size="medium">
+                            <el-form-item label="Email">
+                                <el-input type="text" v-model="ruleForm.account" autocomplete="off" placeholder="email address"></el-input>
+                            </el-form-item>
+                            <el-form-item label="Password">
+                                <el-input type="password" v-model="ruleForm.password" autocomplete="off" placeholder="password"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-checkbox label="Remember email and password" name="type" v-model="ruleForm.remember"></el-checkbox>
+                                <br/>
+                                Forget your password ? <a href="javascript:void(0)" id="resetPW" @click="resetPassword">Reset</a>
+                            </el-form-item>
+
+                            <el-form-item>
+                                <el-button type="primary" @click="submitForm('ruleForm')" style="width: 90px">Log In</el-button>
+                                <el-button @click="window.location.href='/user/register'" style="width: 90px">Sign Up</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                </div>
+            </div>
+        </el-col>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    var preUrl=[[${preUrl}]];
+</script>
+<script src="/static/js/common/md5.js"></script>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/page/login.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script> <script src="/static/js/common/navbar.js"></script>
+</html>
