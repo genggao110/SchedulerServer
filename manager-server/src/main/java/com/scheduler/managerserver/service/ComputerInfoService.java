@@ -30,8 +30,6 @@ public class ComputerInfoService {
     @Autowired
     PortalUserService portalUserService;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     public boolean addComputer(ComputerInfoDTO computerInfoDTO) {
         ComputerInfo computerInfo = new ComputerInfo();
