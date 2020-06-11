@@ -115,87 +115,7 @@ public class ProjectService {
 
         Sort sort = Sort.by(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
         Pageable pageable = PageRequest.of(page, 10, sort);
-        Page<Project> projects = new Page<Project>() {
-            @Override
-            public int getTotalPages() {
-                return 0;
-            }
-
-            @Override
-            public long getTotalElements() {
-                return 0;
-            }
-
-            @Override
-            public <U> Page<U> map(Function<? super Project, ? extends U> function) {
-                return null;
-            }
-
-            @Override
-            public int getNumber() {
-                return 0;
-            }
-
-            @Override
-            public int getSize() {
-                return 0;
-            }
-
-            @Override
-            public int getNumberOfElements() {
-                return 0;
-            }
-
-            @Override
-            public List<Project> getContent() {
-                return null;
-            }
-
-            @Override
-            public boolean hasContent() {
-                return false;
-            }
-
-            @Override
-            public Sort getSort() {
-                return null;
-            }
-
-            @Override
-            public boolean isFirst() {
-                return false;
-            }
-
-            @Override
-            public boolean isLast() {
-                return false;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return false;
-            }
-
-            @Override
-            public Pageable nextPageable() {
-                return null;
-            }
-
-            @Override
-            public Pageable previousPageable() {
-                return null;
-            }
-
-            @Override
-            public Iterator<Project> iterator() {
-                return null;
-            }
-        };
+        Page<Project> projects = Page.empty();
 
         if (status.equals("ready")) {
             projects = projectDao.findByOwnerAndStatus(userName, 1, pageable);
@@ -228,7 +148,6 @@ public class ProjectService {
 
 
         return jObject;
-
     }
 
     public void changeInvitingUser(String proId,String invited){

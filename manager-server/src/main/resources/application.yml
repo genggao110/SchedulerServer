@@ -39,6 +39,7 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     cache: false
+
 server:
   port: 8090
   compression:
@@ -54,6 +55,8 @@ server:
   servlet:
     session:
       timeout: 60
+
+
 prop:
   portalAddress: http://127.0.0.1:8080
   #  portalAddress: http://geomodeling.njnu.edu.cn
