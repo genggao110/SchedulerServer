@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Computational Model Builder</title>
+
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/list.css">
+    <link rel="stylesheet" href="/static/css/model_items.css">
+
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+
+    <style>
+
+        .el-menu a{
+            color:white;
+        }
+
+        body{
+            margin: 0;
+        }
+
+        .mainBarLogo{
+            width: 220px !important;
+            height: 52px !important;
+            margin-left: 20px;
+            margin-right: auto;
+            background-image: url("/static/img/logo.png");
+            background-size: auto 45px !important;
+            background-repeat: no-repeat;
+            padding: 0px !important;
+            display: inline-block;
+            float: left;
+            margin-top: 5px;
+        }
+
+        .badge {
+            padding: 5px 7px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.css">
+
+
+</head>
+<body>
+    <div id="app">
+        <div style="position: relative;z-index: 9999;">
+            <div th:replace="fragment/navbar :: menu"></div>
+        </div>
+
+        <div>
+            <iframe src="/static/ComputationalModel/index.html" style="width:100%;height: 100%;position: absolute;top: 0;">
+
+            </iframe>
+        </div>
+
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    activeIndex2: '3-2'
+                };
+            },
+            methods:{
+                handleSelect(key, keyPath) {
+                    console.log(key, keyPath);
+                },
+            }
+        });
+    </script>
+
+</body>
+
+</html>

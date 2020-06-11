@@ -57,7 +57,7 @@ server:
       timeout: 60
 
 prop:
-  portalAddress: http://127.0.0.1:8080
+  portalAddress: http://223.2.42.169:8080
 #  portalAddress: http://geomodeling.njnu.edu.cn
-  managerAddress: http://127.0.0.1:8084
+  managerAddress: http://223.2.42.169:8084
 
