@@ -1,0 +1,281 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="menu">
+    <div id="navBar" class="wrap">
+        <div id="mainBar" role="mainBar">
+            <ul role="menubar" class="mainNav">
+                <!--            <div tabindex="0">-->
+                <div class="strip" style="float: left;margin-left: 4%;">
+                    <li id="dropstrip" style="width: 35px"><a id="phoneStrip" class="fa fa-navicon fa-2x" style="cursor: pointer"></a></li>
+                </div>
+                <li class="mainBarLogo" style="width: 230px;"><a href="/list/model" style="padding:20px 2px"></a></li>
+                <!--        </div>-->
+                <div class="mainmenu">
+<!--                    <li><a href="/list/model">Model</a></li>-->
+<!--                    <li><a href="/list/data">Data</a></li>-->
+<!--                    <li><a href="/list/compute">Computable Resource</a></li>-->
+
+                    <li id="drop1" class="clickMenu" style="width: 130px">
+                        <a style="text-align: left; padding-left: 17px;cursor: pointer;display: flex;align-items: center">Resource <div id="arrow1" class="fa fa-angle-down" style="margin-left:10px"></div></a>
+                    </li>
+<!--                    <li id="drop2" class="clickMenu" style="width: 77px">-->
+<!--                        <a style="text-align: left; padding-left: 15px;cursor: pointer;display: flex;align-items: center">Help <div class="fa fa-angle-down" style="margin-left:10px"></div></a>-->
+<!--                    </li>-->
+                    <li  class="clickMenu" style="width: 90px"><a href="/adaptor">Adaptor</a></li>
+                    <li id="menuAbout" class="clickMenu" style="width: 90px"><a href="http://opengmsteam.com">About us</a></li>
+                </div>
+                <div class="indentmenu">
+                    <li id="dropmu" style="left:150px;max-width:50px;min-width:20px"><a class="fa fa-navicon " style="cursor: pointer;"></a></li>
+                </div>
+                <li th:unless="${logged}" style="width: auto;float: right">
+                    <div class="nutButton flexCenter" style="margin-top: 7px"><a class="login" href="/user/login">Log in/Sign up</a></div>
+                </li>
+<!--                <div  class="login">-->
+
+<!--                    <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>-->
+<!--                    <li><a class="login" href="/user/register">Sign Up</a></li>-->
+<!--                </div>-->
+                <div th:unless="${logged}" class="login2">
+                    <li id="dropls"><a style="cursor:pointer"><p style="font-size: 13px">Log in</p><div class="innerBorder"></div><p style="font-size: 13px">Sign up</p></a></li>
+                </div>
+                <!--/*@thymesVar id="logged" type=""*/-->
+                <div th:if="${logged}" class="loged" >
+                    <div th:unless="${logged}" class="login">
+                        <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
+                        <li><a class="login" href="/user/register">Sign Up</a></li>
+                    </div>
+                    <div th:if="${logged}" class="loged" >
+                        <li id="userLoged" style="float: right">
+                            <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
+                                <img class="userIcon round_icon" src="/static/img/icon/default.png" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
+                                <div class="el-badge item">
+                                    <!--/*@thymesVar id="user" type=""*/-->
+                                    <div id="userName" th:text="${user.name}" style="display: inline-block">Hello!!!!!!!!!</div>
+                                    <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
+                                right: 0px !important;
+                                border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">
+                                    </sup>
+                                </div>
+                            </a>
+                        </li>
+                    </div>
+                </div>
+                <div th:if="${logged}" class="phoneLoged">
+                    <li id="phoneUserDrop" style="float: right;width: 40px; margin-right: 5%;">
+                        <div style="padding: 10px 5px;cursor:pointer">
+                            <div class="el-badge item">
+                                <img class="userIcon round_icon" src="'/static/img/icon/default.png'" style="width:30px;height: 30px;display: inline-block;margin-right:0px">
+                                <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
+                                right: 0px !important;
+                                border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">
+                                </sup>
+                            </div>
+
+                        </div>
+                    </li>
+                </div>
+
+                <!--               -->
+                <!--      小屏适配 -->
+
+                <!--               -->
+            </ul>
+        </div>
+
+        <!--    各种下拉菜单-->
+        <div class="sub zmax" id="subCommunity" style="left: 348px">
+            <ul>
+                <li><a href="/list/model">Model</a></li>
+                <li><a href="/list/data">Data</a></li>
+                <li><a href="/list/compute">Computable Resource</a></li>
+            </ul>
+        </div>
+        <div class="sub zmax" id="subHelp" style="left:585px">
+            <ul style="width: 180px">
+                <li style="width: 180px;"><a href="/help/demo" style="margin-left: 25px" class="clickSubMenu">Demo</a></li>
+                <li style="width: 180px;"><a href="/help/manual" style="margin-left: 25px" class="clickSubMenu">Manual</a></li>
+                <li style="width: 180px;"><a href="/help/document" style="margin-left: 25px" class="clickSubMenu">Document</a></li>
+            </ul>
+        </div>
+        <div id="subls" class="sub" style="right:0px;z-index:1000">
+            <ul style="width: 120px">
+                <li><a href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>
+                <li><a href="/user/register">Sign Up</a></li>
+            </ul>
+        </div>
+
+
+        <!--        用户登录后的下拉-->
+        <!--        大屏幕-->
+        <div th:if="${logged}" class="subLog zmax" id="logedSub" style="right: 140px">
+            <ul>
+                <li><a id="userSpaceDir" href="/user/userSpace">My Project</a></li>
+                <li>
+                    <div class="el-badge item">
+                        <a id="userNoticeDir1" href="/user/userSpace#/notice">Notice</a>
+                        <sup class="el-badge__content is-fixed notice_num" style="top: 30%;right: 30% !important;padding-right: 6px;padding-left: 6px;"></sup>
+                    </div>
+                </li>
+                <li><a href="/user/out">Log Out</a></li>
+                <!--                        <li><a href="">Thematic Center</a></li>-->
+            </ul>
+        </div>
+
+        <!--        小屏幕-->
+        <!--/*@thymesVar id="logged" type=""*/-->
+        <div th:if="${logged}" id="phoneUserSub" class="fullSub zmax" style="">
+            <ul>
+                <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">
+                    Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;" th:text="${user.name}"></span></p></li>
+                <li><a href="/user/userSpace">My Project</a></li>
+                <li class="el-badge item">
+                    <a id="userNoticeDir2" href="/user/userSpace#/notice">Notice</a>
+                    <sup class="el-badge__content is-fixed notice_num" style="right: 45%!important;"></sup>
+                </li>
+                <li style="background-color: rgb(0,192,255)"><a href="/user/out">Log Out</a></li>
+                <!--                        <li><a href="">Thematic Center</a></li>-->
+            </ul>
+        </div>
+
+
+        <!-- 左侧边栏 -->
+        <div id="submenu" class="sub zmax" style="left:0px">
+            <ul id="leftUl" style="width:220px">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/modelItem/repository">Model</a></li>
+                <li><a href="/dataItem/repository">Data</a></li>
+                <li id="leftcommunity"><a class="show" style="width: 190px;padding-right:18px;cursor: pointer">Community<span class="fa fa-angle-right" style="float: right;"></span></a></li>
+                <!-- <div class="lsub" id="leftsubc">
+                    <li><a href="/repository/concept">Concept & Semantic</a></li>
+                    <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                    <li><a href="/repository/unit">Unit & Metric</a></li>
+                    <li><a href="/repository/thematic">Thematic Center</a></li>
+                </div> -->
+                <li id="lefthelp" ><a class="show" style="width: 190px;padding-right: 18px;cursor: pointer">Help<span class="fa fa-angle-right" style="float: right;"></span></a></li>
+                <!-- <div class="lsub" id="leftsubh">
+                    <li><a href="/help/demo">Demo</a></li>
+                    <li><a href="/help/manual">Manual</a></li>
+                    <li><a href="/help/document">Document</a></li>
+                </div> -->
+                <li><a href="http://opengmsteam.com/">About us</a></li>
+            </ul>
+        </div>
+        <!-- 左侧边栏的子菜单 -->
+        <div class="sub zmax" id="leftCommunitySub" style="top: 215px;left: 218px;">
+            <ul style="margin-left: 4px;">
+                <li><a href="/repository/concept" class="subsub">Concept & Semantic</a></li>
+                <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                <li><a href="/repository/template">Data Template</a></li>
+                <li><a href="/repository/unit">Unit & Metric</a></li>
+                <li><a href="/repository/thematic">Thematic Center</a></li>
+                <li><a href="/statistics">Statistics</a></li>
+            </ul>
+        </div>
+        <div class="sub zmax" id="leftHelpSub" style="top: 255px;left: 219px">
+            <ul style="margin-left: 3px">
+                <li><a href="/help/demo" class="subsub">Demo</a></li>
+                <li><a href="/help/manual">Manual</a></li>
+                <li><a href="/help/document">Document</a></li>
+            </ul>
+        </div>
+
+        <!-- 小屏适配下拉菜单-- -->
+        <div class="fullSub zmax" id="phonesub" style="display: none; left:0px" >
+            <ul style="width: 100%;" >
+                <li><a href="/modelItem/repository">Model</a></li>
+                <li><a href="/dataItem/repository">Data</a></li>
+                <li id="phoneCommunity"><a type="button" data-toggle="collapse" data-target="#phoneSubCom" style="cursor: pointer">Community <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
+                <div id="phoneSubCom" class="phoneSubSUb" >
+                    <ul>
+                        <li><a href="/repository/concept">Concept & Semantic</a></li>
+                        <li><a href="/repository/spatialReference">Spatial Reference</a></li>
+                        <li><a href="/repository/template">Data Template</a></li>
+                        <li><a href="/repository/unit">Unit & Metric</a></li>
+                        <li><a href="/repository/thematic">Thematic Center</a></li>
+                        <li><a href="/statistics">Statistics</a></li>
+                    </ul>
+                </div>
+                <li id="phoneHelp" ><a type="button" data-toggle="collapse" data-target="#phoneSubHelp" style="cursor: pointer">Help <div class="fa fa-angle-down" style="margin-left: 3px;"></div></a></li>
+                <div id="phoneSubHelp" class="phoneSubSUb">
+                    <ul>
+                        <li><a href="/help/demo" class="subsub">Demo</a></li>
+                        <li><a href="/help/manual">Manual</a></li>
+                        <li><a href="/help/document">Document</a></li>
+                    </ul>
+                </div>
+                <li id="aboutUs"><a href="http://opengmsteam.com/">About us</a></li>
+                <!--/*@thymesVar id="logged" type=""*/-->
+                <div th:unless="${logged}" id="phoneLogin">
+                    <!--                        <a href="" style="padding: 0px">-->
+                    <li style="float: left;width: 50%;background-color: inherit;border-width: 0;color: white" ><a href="/user/login">Log In</a></li>
+                    <li style="float: left;width: 50%;background-color: inherit;border-width: 0;color: white" ><a href="/user/register">Sigh Up</a></li>
+                    <!--                    </a>-->
+                </div>
+            </ul>
+        </div>
+
+    </div>
+    <!--    <el-menu-->
+    <!--            :default-active="activeIndex2"-->
+    <!--            class="el-menu-demo"-->
+    <!--            mode="horizontal"-->
+    <!--            @select="handleSelect"-->
+    <!--            background-color="#545c64"-->
+    <!--            text-color="#fff"-->
+    <!--            active-text-color="#ffd04b">-->
+    <!--        <li class="mainBarLogo" style="width: 230px;"></li>-->
+
+    <!--        <el-submenu index="1">-->
+    <!--            <template slot="title">Resource</template>-->
+    <!--            <el-menu-item index="1-1"><a href="/list/model">Model</a></el-menu-item>-->
+    <!--            <el-menu-item index="1-2"><a href="/list/data">Data</a></el-menu-item>-->
+    <!--            <el-menu-item index="1-3"><a href="/list/compute">Computable Resource</a></el-menu-item>-->
+    <!--        </el-submenu>-->
+    <!--        <el-menu-item index="2"><a href="/adaptor">Adaptor</a></el-menu-item>-->
+    <!--        <el-submenu index="3">-->
+    <!--            <template slot="title"><a href="/home">Dispatch</a></template>-->
+    <!--            <el-menu-item index="3-1"><a href="/home">选项1</a></el-menu-item>-->
+    <!--            <el-menu-item index="3-2"><a href="/home">选项2</a></el-menu-item>-->
+    <!--            <el-menu-item index="3-3"><a href="/home">选项3</a></el-menu-item>-->
+    <!--        </el-submenu>-->
+    <!--        <div th:unless="${logged}" class="login">-->
+    <!--            <li><a class="login" href="/user/login" onclick="window.sessionStorage.setItem('history',window.location.href)">Log In</a></li>-->
+    <!--            <li><a class="login" href="/user/register">Sign Up</a></li>-->
+    <!--        </div>-->
+    <!--        <div th:if="${logged}" class="loged" >-->
+    <!--            <li id="userLoged" style="float: right">-->
+    <!--                <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">-->
+    <!--                    <img class="userIcon round_icon" src="/static/img/icon/default.png" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">-->
+    <!--                    <div class="el-badge item">-->
+    <!--                        <div id="userName" th:text="${user.name}" style="display: inline-block">Hello!!!!!!!!!</div>-->
+    <!--                        <sup class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;-->
+    <!--                                right: 0px !important;-->
+    <!--                                border-top-width: 0px;border-right-width: 0px;border-bottom-width: 0px;border-left-width: 0px;">-->
+    <!--                        </sup>-->
+    <!--                    </div>-->
+    <!--                </a>-->
+    <!--            </li>-->
+    <!--        </div>-->
+
+    <!--        <div th:if="${logged}" class="subLog zmax" id="logedSub" style="right: 0px">-->
+    <!--            <ul>-->
+    <!--                <li><a id="userSpaceDir" href="/user/userSpace">My Project</a></li>-->
+    <!--                <li>-->
+    <!--                    &lt;!&ndash;<el-badge :value="2" class="item">&ndash;&gt;-->
+    <!--                    &lt;!&ndash;<a id="userNoticeDir" href="/user/userSpace#/notice">Notice</a>&ndash;&gt;-->
+    <!--                    &lt;!&ndash;</el-badge>&ndash;&gt;-->
+    <!--                    <div class="el-badge item">-->
+    <!--                        <a id="userNoticeDir1" href="/user/userSpace#/notice">Notice</a>-->
+    <!--                        <sup class="el-badge__content is-fixed notice_num" style="top: 30%;right: 30% !important;padding-right: 6px;padding-left: 6px;"></sup>-->
+    <!--                    </div>-->
+    <!--                </li>-->
+    <!--                <li><a href="/user/out">Log Out</a></li>-->
+    <!--                &lt;!&ndash;                        <li><a href="">Thematic Center</a></li>&ndash;&gt;-->
+    <!--            </ul>-->
+    <!--        </div>-->
+
+    <!--    </el-menu>-->
+</div>
+</body>
+</html>

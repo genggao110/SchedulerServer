@@ -7,7 +7,7 @@ body {
   width: 100%;
   /*min-width: 1000px;*/
   margin: 0px;
-  /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif;
   font-size: 14px;
   color: #444;
 

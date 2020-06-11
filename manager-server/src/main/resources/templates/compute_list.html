@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/list.css">
     <link rel="stylesheet" href="/static/css/model_items.css">
-
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/vue-avatar.min.js"></script>
+    <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
 
@@ -23,20 +23,6 @@
         }
         body{
             margin: 0;
-        }
-
-        .mainBarLogo{
-            width: 220px !important;
-            height: 52px !important;
-            margin-left: 20px;
-            margin-right: auto;
-            background-image: url("/static/img/logo.png");
-            background-size: auto 45px !important;
-            background-repeat: no-repeat;
-            padding: 0px !important;
-            display: inline-block;
-            float: left;
-            margin-top: 5px;
         }
 
         .badge {
@@ -66,7 +52,7 @@
 <body>
     <div id="app">
 
-        <div th:replace="fragment/navbar :: menu"></div>
+        <div th:replace="fragments/navbar :: menu"></div>
 
         <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 20px;margin-bottom: 20px">
             <h1 align="center">
@@ -90,11 +76,11 @@
                             <div class="clearfix">
                                 <div class="pull-left">
                                     <h4 style="margin-bottom: 10px;font-weight: bold">
-                                        {{container.hardware.hostName}}
+                                        {{container.hostName}}
 
                                     </h4>
-                                    <p style="margin-bottom:5px">{{container.hardware.platform}} {{container.hardware.version}}</p>
-                                    <p>{{container.hardware.cpu_Core}} Core - {{container.hardware.totalMemory}} RAM - {{container.hardware.diskAll}} Mbps</p>
+                                    <p style="margin-bottom:5px">{{container.software_info.os}} {{container.software_info.version}}</p>
+                                    <p>{{container.hardware_info.staticInfo.cpu_core}} Core - {{container.hardware_info.staticInfo.memory_size}} RAM - {{container.hardware_info.staticInfo.disk_all}} Mbps</p>
                                 </div>
                             </div>
                             <div class="clearfix">
@@ -110,9 +96,9 @@
                                         {{container.user}}</h4></a>
                                 </div>
 
-                                <div class="serverIp pull-left">
-                                    {{container.score}}
-                                </div>
+<!--                                <div class="serverIp pull-left">-->
+<!--                                    score:{{container.score}}-->
+<!--                                </div>-->
                             </div>
                         </div>
                     </el-card>
@@ -162,8 +148,422 @@
 
 
     </div>
+<div id = "app2">
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <div class="el-col el-col-20 el-col-offset-2">
+
+            <div class="el-row">
+                <h2 class="main-title">Statistics</h2>
+                <h4 class="sub-title">OpenGMS</h4>
+                <div id="all"></div>
+                <hr>
+            </div>
+            <div class="el-row" style="margin-top:20px;font-size: 20px">
+
+                <el-tabs v-model="activeName" @tab-click="handleClick" stretch="true">
+
+
+                    <div id="echartMap" style="height: 700px"></div>
+
+                </el-tabs>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
 
 </body>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/js/common/world.js"></script>
 
+<script>
+    new Vue({
+        el: "#app2",
+        data: {
+            activeName: 'overview',
+        },
+        methods: {
+            handleClick(tab, event) {
+                console.log(tab);
+                let data=[{geoJson:{   hostName: "LAPTOP-0PNLCFNL",
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617 ",
+                        longitude: "118.7778",
+                    }},{geoJson:{   hostName: "launch-advisor-20191209",
+                        city:"Ottawa",
+                        latitude: "45.3155 ",
+                        longitude: "-75.837",
+                    }},{ geoJson:{   hostName: "iZrj9fpaid84lev5yy85m1Z",
+                        city:"Ottawa",
+                        latitude: "45.3155 ",
+                        longitude: "-75.837",
+                    }},{ geoJson:{   hostName: "iZm5e81qbhfk423he1vxovZ",
+                        city: "Beijing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "39.9289 ",
+                        longitude: "116.3883",
+                    }},{ geoJson:{   hostName: "LAPTOP-0PNLCFNL",
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617  ",
+                        longitude: "118.7778",
+                    }},{geoJson:{   hostName: "ming",
+                        city:"Ottawa",
+                        latitude: "45.3155  ",
+                        longitude: "-75.837",
+                    }},{geoJson:{   hostName: "ming",
+                        city:"Ottawa",
+                        latitude: "45.3155  ",
+                        longitude: "-75.837",
+                    }},{ geoJson: {   hostName: "Sirius",
+                        city:"Ottawa",
+                        latitude: "45.3155  ",
+                        longitude: "-75.837",
+                    }},
+
+
+                ];
+                var chartInfo = this.createChartInfo(data);
+                // this.computerNodesInfos = chartInfo.cityCount;
+                this.createChartMap(chartInfo);
+                // if(tab.name=="server"){
+                //     $.ajax({
+                //         type: "GET",
+                //         url: "/server/serverNodes",
+                //         data: {},
+                //
+                //         crossDomain: true,
+                //         xhrFields: {
+                //             withCredentials: true
+                //         },
+                //         async: true,
+                //         success: (res) => {
+                //             console.log(res);
+                //             var chartInfo = this.createChartInfo(res.data);
+                //             // this.computerNodesInfos = chartInfo.cityCount;
+                //             this.createChartMap(chartInfo);
+                //         }
+                //     })
+                //
+                // }
+
+            },
+
+            createOverview(){
+                var allStatistic = echarts.init(document.getElementById('all'),'light');
+                allStatistic.showLoading();
+
+                $.get("/static/modelItemTree.json", function (diskData) {
+                    allStatistic.hideLoading();
+
+                    function colorMappingChange(value) {
+                        var levelOption = getLevelOption(value);
+                        chart.setOption({
+                            series: [{
+                                levels: levelOption
+                            }],
+
+
+                        });
+                    }
+
+                    var formatUtil = echarts.format;
+
+                    function getLevelOption() {
+                        return [
+                            {
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#777',
+                                        borderWidth: 0,
+                                        gapWidth: 1
+                                    }
+                                },
+                                upperLabel: {
+                                    normal: {
+                                        show: false
+                                    }
+                                }
+                            },
+                            {
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#555',
+                                        borderWidth: 5,
+                                        gapWidth: 1
+                                    },
+                                    emphasis: {
+                                        borderColor: '#ddd'
+                                    }
+                                }
+                            },
+                            {
+                                colorSaturation: [0.35, 0.5],
+                                itemStyle: {
+                                    normal: {
+                                        gapWidth: 1,
+                                        borderColorSaturation: 0.6
+                                    }
+                                }
+                            }
+                        ];
+                    }
+
+                    allStatistic.setOption(option = {
+
+                        title: {
+                            text: '',
+                            left: 'center'
+                        },
+
+                        tooltip: {
+                            formatter: function (info) {
+                                var value = info.value;
+                                var treePathInfo = info.treePathInfo;
+                                var treePath = [];
+
+                                for (var i = 1; i < treePathInfo.length; i++) {
+                                    treePath.push(treePathInfo[i].name);
+                                }
+
+                                return [
+                                    '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join(' / ')) + '</div>',
+                                    'Number of models: ' + formatUtil.addCommas(value) ,
+                                ].join('');
+                            }
+                        },
+
+                        series: [
+                            {
+                                name: 'Model Classification',
+                                type: 'treemap',
+                                upperLabel: {
+                                    normal: {
+                                        show: true,
+                                        height:30
+                                    }
+                                },
+                                visibleMin: 300,
+                                roam: 'pan',
+                                label: {
+                                    show: true,
+                                    formatter: '{b}'
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#fff'
+                                    }
+                                },
+                                breadcrumb:{
+                                    top:'4%',
+                                },
+                                levels: getLevelOption(),
+                                data: diskData
+                            }
+                        ]
+                    });
+                });
+            },
+
+            createChartInfo(infoArray) {
+                var chartInfo = {};
+                var geoCoord = {};
+                //存放城市个数及城市下所在具体计算节点信息
+                var cityCount = [];
+                for (var i = 0; i < infoArray.length; i++) {
+                    var geoJson = infoArray[i].geoJson;
+                    var city = geoJson.city;
+                    var flag = false;
+                    //get the count of the same city
+                    for (let j = 0; j < cityCount.length; j++) {
+                        if (cityCount[j].name === city) {
+                            cityCount[j].value += 1;
+                            cityCount[j].computerNodeInfos.push(infoArray[i]);
+                            flag = true;
+                        }
+                    }
+                    if (!flag) {
+                        let cityObj = {
+                            name: '',
+                            value: 0,
+                            computerNodeInfos: []
+                        };
+                        cityObj.name = city;
+                        cityObj.value = 1;
+                        cityObj.computerNodeInfos.push(infoArray[i]);
+                        cityCount.push(cityObj);
+                        geoCoord[city] = [parseFloat(geoJson.longitude), parseFloat(geoJson.latitude)];
+
+                    }
+                }
+                chartInfo.geoCoord = geoCoord;
+                chartInfo.cityCount = cityCount;
+                return chartInfo;
+            },
+
+            createChartMap(chartInfo) {
+                var myChart = echarts.init(document.getElementById('echartMap'));
+                myChart.showLoading();
+                var chartdata = [];
+                for (var i = 0; i < chartInfo.cityCount.length; i++) {
+                    let cityObj = {
+                        name: '',
+                        value: 0
+                    };
+                    let city = chartInfo.cityCount[i];
+                    let geoCoord = chartInfo.geoCoord[city.name];
+                    geoCoord.push(city.value.toString());
+                    cityObj.name = city.name;
+                    cityObj.value = geoCoord;
+                    chartdata.push(cityObj);
+                }
+                myChart.hideLoading();
+                var MapOptions = {
+                    backgroundColor: "transparent",
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}'
+                    },
+                    geo: {
+                        show: true,
+                        map: 'world',
+                        label: {
+                            normal: {
+                                show: false,
+                                textStyle: {
+                                    color: 'rgba(0,0,0,0.4)'
+                                }
+                            },
+                            emphasis: {
+                                show: true,
+                                backgroundColor: '#2c3037',
+                                color: '#fff',
+                                padding: 5,
+                                fontSize: 14,
+                                borderRadius: 5
+                            }
+
+                        },
+                        roam: false,
+                        itemStyle: {
+                            normal: {
+                                areaColor: '#d8f5e8',
+                                borderColor: '#404a59',
+                                borderWidth: 0.5
+                            },
+                            emphasis: {
+                                areaColor: '#e5efff'
+                            }
+
+                        },
+
+                    },
+                    series: [
+                        {
+                            name: '点',
+                            type: 'scatter',
+                            coordinateSystem: 'geo',
+                            symbol: 'pin', //气泡
+                            symbolSize: 40
+                            ,
+                            label: {
+                                normal: {
+                                    show: true,
+                                    formatter: '{@[2]}',
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 9,
+                                    }
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#00c0ff', //标志颜色
+                                }
+                            },
+                            zlevel: 6,
+                            data: chartdata
+                        },
+                        {
+                            name: 'Top 5',
+                            type: 'effectScatter',
+                            coordinateSystem: 'geo',
+                            data: chartdata,
+                            symbolSize: 20,
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            hoverAnimation: true,
+                            label: {
+                                normal: {
+                                    formatter: '{b}',
+                                    position: 'right',
+                                    show: false
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#3daadb',
+                                    shadowBlur: 0,
+                                    shadowColor: '#3daadb'
+                                }
+                            },
+                            zlevel: 1
+                        },
+                    ]
+                };
+                // this.computerNodesMapOptions = MapOptions;
+                myChart.setOption(MapOptions);
+                console.log(chartdata);
+
+                // window.onresize = () => {
+                //     height = document.documentElement.clientHeight;
+                //     this.ScreenMinHeight = (height) + "px";
+                //     myChart.resize();
+                // };
+
+                // //添加地图点击事件
+                // myChart.on('click', function (params) {
+                //     if (params.componentType == "series") {
+                //         {
+                //             $("#pageContent").stop(true);
+                //             $("#pageContent").animate({scrollTop: $("#" + params.name).offset().top}, 500);
+                //         }
+                //     }
+                // })
+
+            },
+
+        },
+        mounted() {
+
+            //overview
+            this.createOverview();
+            this.handleClick();
+            //server
+
+        }
+    })
+</script>
+
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+
+
+</html>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/compute_list.js"></script>
+<script src="/static/js/common/navbar.js"></script>
 </html>

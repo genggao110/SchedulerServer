@@ -66,6 +66,17 @@ public class ModelResourceController {
         }
     }
 
+    @RequestMapping(value = "/getAllInfo", method = RequestMethod.GET)
+    @ApiOperation(value = "获取门户所有相关的计算资源详细信息")
+    public JsonResult getInfo(){
+        JSONObject result = modelResourceService.getModelResource();
+        if(result == null){
+            return ResultUtils.error(-1, "get model package info error!");
+        }else {
+            return ResultUtils.success(result);
+        }
+    }
+
     @RequestMapping(value = "/getComputerForDeploy", method = RequestMethod.POST)
     @ApiOperation(value = "提交模型运行环境信息，推荐合适的计算资源")
     public JsonResult getSuitableComputerForDeploy(@RequestBody ModelEnvironment modelEnvironment){

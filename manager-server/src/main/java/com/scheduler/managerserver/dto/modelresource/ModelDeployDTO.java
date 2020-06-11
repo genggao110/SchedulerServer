@@ -45,4 +45,6 @@ public class ModelDeployDTO {
      * 与门户绑定的计算模型条目
      */
     String oid;
+
+    String projectId;
 }

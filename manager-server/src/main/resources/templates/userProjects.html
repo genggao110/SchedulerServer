@@ -1,0 +1,729 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>userTask</title>
+
+
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+
+    <link href="/static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link href="/static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css/common/fileinput.min.css">
+    <link rel="stylesheet" href="/static/css/common/fileinput-rtl.min.css">
+
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">
+    <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+    <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/common/newSideBar.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+    <script src="/static/js/common/axios.min.js"></script>
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-router.js"></script>
+
+    <script th:replace="fragments/newSideBar :: headSideBar"></script>
+    <script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+
+    <style>
+        .cell{
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container" style="height: 2000px;" v-cloak>
+        <head-side-bar :user-infoin-parent="userInfo" :curIndexParent="curIndex"></head-side-bar>
+<!--        <div class="innerShadowTop" style="height: 10px">-->
+<!--        </div>-->
+<!--        <div th:replace="fragments/newSideBar :: sidebarNew"></div>-->
+        <template id="userProjects" th:fragment="userProjects">
+            <div class="innerShadowCol">
+                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack"
+                     style="margin-left: 240px;padding-bottom: 100px"
+                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                     id="pageContent">
+                    <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+                    <div class="flexColContainer mainContent" style="padding:20px 10px;max-width: 1120px">
+                        <section role="description" class="flexJustBetween flexColCenter contentSection"
+                                 style="max-width: 100%">
+                            <div class="flexRowContainer flexColCenter">
+                                <i class="el-icon-s-order" style="margin-top: 7px; font-size: 40px;color: #05c4ff;" ></i>
+                                <h3 style="margin-left: 10px" >Project</h3>
+                            </div>
+                            <!--                        <h5>You can manager your model and data here</h5>-->
+                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer">Project status:
+                                <el-select v-model="projectStatus" placeholder="task status" size="mini" @change="changeProjectStatus">
+                                    <el-option
+                                            v-for="item in options"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value">
+                                        <!--                                        v-if="isSelect(item.value)">-->
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </section>
+                        <div class="page-content-wrap container-fluid" style="margin-top:10px">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body" style="height: 61px;">
+                                            <div class="form-horizontal">
+                                                <div class="flexRowContainer flexColCenter flexJustAround">
+                                                    <div class="btn btn-secondary btn-round btn-noShadow" @click="addProject">Add project</div>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group" @keydown.enter="searchProjects()">
+                                                            <input type="text" class="form-control" name="searchText"
+                                                                   placeholder="please enter name" v-model="searchText" style="margin-top: 3px">
+                                                            <div class="input-group-btn">
+                                                                <button class="btn btn-primary" @click="searchProjects()">Search
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12" v-for="(project,index) in searchResult">
+                                    <div class="panel"
+                                         :class="project.status==1?'panel-success':'panel-info'">
+                                        <div class="panel-heading flexRowSpaceBetween">
+                                            <a class="panel-title" :href="'/project/'+project.oid" target="_blank"
+                                               style="font-weight: bold">
+                                                {{project.title}}
+                                            </a>
+
+                                            <div class="" style="display: flex;align-items: center;">
+                                                <div class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"
+                                                >
+                                                    <i class="fa fa-trash-o"></i>
+                                                    <p>Delete</p>
+                                                </div>
+                                                <el-button type="primary" size="mini"
+                                                           style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
+                                                           @click="window.open('/project/'+project.oid)">
+                                                    Check Project Info
+                                                </el-button>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="runStatus" style="margin-top: 80px;margin-left: 10px">
+                                            <h4 v-if="project.status==1"
+                                                style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                @click="expandRunInfo(index,$event)">
+                                                <span style="color: rgb(103,194,58)">Deployed</span> !</h4>
+                                            <h4 v-if="project.status==0"
+                                                style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                @click="expandRunInfo(index,$event)">
+                                                <span style="color: rgb(64,158,255)">Preparing</span>!</h4>
+                                            <span role="button" tabindex="0" class="ab"
+                                                  style="float: right;margin-top: -33px;margin-right: 70px;cursor: pointer"><a
+                                                    data-toggle="collapse" class="" aria-expanded="true"
+                                                    @click="expandRunInfo(index,$event)"><i class="fa fa-caret-down"
+                                                                                            style="font-size: 27px"></i></a></span>
+                                        </div>
+                                        <div id="" class="panel-body modelRunInfo collapse" style="padding-top: 0;margin-left: 5px">
+                                            <ul>
+                                                <h5 style="font-family: 'Open Sans';font-size: 16px">Participant users:</h5>
+                                                <li class="flagcontent clearfix" v-for="(user,key) in project.invitedUsers">
+                                                <span style="margin-top: 5px; display: inline-block;">
+                                                    userName:{{user.userName}}  Email:{{user.email}}
+                                                </span>
+                                                </li>
+                                                <div style="color: #666666">Invite waiting to be accepted:</div>
+                                                <li class="flagcontent clearfix" v-for="(user,key) in project.invitingUsers">
+                                                <span style="margin-top: 5px; display: inline-block;">
+                                                    {{user.userName}}  {{user.email}}
+                                                </span>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+
+
+
+                                        <div class="pull-right"
+                                             style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
+                                            <span style="margin-right:20px">
+                                                <b>Create Time:</b>{{formatDate(project.createDate)}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
+                                <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No projects</h4>
+                            </div>
+                            <div class="flexRowCenter">
+                                <nav v-if="searchResult.length!=0" aria-label="Page navigation example">
+                                    <ul class="pagination pagination-circle pg-blue wzhPageControl">
+                                        <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
+                                                class="page-link"
+                                                style="border-radius: 10%;background-color: inherit">First</a></li>
+                                        <li class="page-item " :class="curPage!=1?'':'disabled'"
+                                            @click="changePage(curPage-1)">
+                                            <a class="page-link" aria-label="Previous">
+                                                <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">
+                                            <a class="page-link btn-round"
+                                               @click="changePage(page)">{{page}}</a></li>
+                                        <li class="page-item" :class="curPage!=totalPage?'':'disable'"
+                                            @click="changePage(curPage+1)">
+                                            <a class="page-link" aria-label="Next">
+                                                <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item" :class="curPage!=totalPage?'':'disabled'"
+                                            @click="changePage(totalPage)">
+                                            <a class="page-link">Last</a></li>
+
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+<!--                el-dialog放在这一层-->
+                <el-dialog title="Deploy" :visible.sync="deployDialog" width="75%" class="" top="3vh" center>
+                    <div class="flexCol flexAlignCenter" style="margin-top:-20px;margin-bottom: 15px ">
+                        <h3 _ngcontent-pnd-c16="" class="f3-light mb-1">Apart from your own resources,</h3>
+                        <h3 _ngcontent-pnd-c16="" class="f3-light mb-1">We have provided sevaral Computable Resources for you to use, </h3>
+                        <h3 _ngcontent-pnd-c16="" class="f3-light mb-1">and you can invite more users to participate your project.</h3>
+                    </div>
+                    <el-steps style="margin-bottom: 15px;" align-center :active="addProjectStep" finish-status="success">
+                        <el-step icon="ms-Icon ms-Icon--AccountActivity" title="Project Info"></el-step>
+                        <el-step icon="ms-Icon ms-Icon--ModelingView" title="Select Model"></el-step>
+                        <el-step icon="ms-Icon ms-Icon--AddFriend" title="Invite User"></el-step>
+                    </el-steps>
+
+                    <div :style="{display:(addProjectStep==0?'block':'none')}">
+                        <div  style="width: 800px;margin: auto">
+                            <div class="flexAlignCenter " style="margin-bottom: 10px">
+                                <h4 style="width: 25%">Project Title: </h4>
+                                <el-input v-model="projectTitle" maxlength="35" show-word-limit></el-input>
+                            </div>
+                            <div class="flexAlignCenter">
+                                <h4 style="width: 25%">Project Description: </h4>
+                                <el-input v-model="projectDecription" type="textarea" row="2" maxlength="150" show-word-limit></el-input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div :style="{display:(addProjectStep==1?'block':'none')}" >
+                        <div class="flexRow flexAlignCenter" style="height: 50vh">
+                            <div class="flexCol flexJustCenter" style="width: 33%;height: 100%;">
+                                <div class="flexRow flexAlignCenter" style="padding-right: 5px;margin-top: -5px;margin-bottom: 3px">
+                                    <h4 style="margin: 5px auto">Models</h4>
+                                    <input placeholder="Search for ..." v-model="searchModelText" class="noBorderInput"
+                                           @keyup.enter="searchModelResourceInfo" style="width:200px;font-size: 15px ">
+                                    <i class="fa fa-search" style="font-size: 18px;" @click="searchModelResourceInfo()"></i>
+                                </div>
+
+                                <div class="overflow-scroll" style="height: 366px">
+                                    <el-table v-loading = "searchLoading"
+
+                                            :show-header="false"
+                                            :data="modelTable"
+                                            style="width: 100%">
+                                        <el-table-column style="text-align: right;" width="80">
+                                            <template slot-scope="scope">
+                                                <img style="height:40px;width:40px;border:0px;"
+                                                     src="/static/img/calcModel.png">
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column width="180">
+                                            <template slot-scope="scope" >
+
+                                                {{ scope.row.name }}
+
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column>
+                                            <template slot-scope="scope">
+                                                <el-button size="small" @click="selectModel(scope.row)">
+                                                    Select
+                                                </el-button>
+                                            </template>
+
+                                        </el-table-column>
+                                    </el-table>
+                                    <nav class="flexJustCenter" aria-label="Page navigation example ">
+                                        <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustCenter">
+                                            <li class="page-item " :class="curPageDialog!=1?'':'disabled'"
+                                                @click="changePageDialog(curPageDialog-1)">
+                                                <a class="page-link" aria-label="Previous">
+                                                    <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item " :class="curPageDialog==page?'active':''" v-for="page in pageListDialog">
+                                                <a class="page-link btn-round flexCenter" style="height: 24px;margin-top: 5px"
+                                                   @click="changePageDialog(page)">{{page}}</a></li>
+                                            <li class="page-item" :class="curPageDialog!=totalPageDialog?'':'disable'"
+                                                @click="changePageDialog(curPageDialog+1)">
+                                                <a class="page-link" aria-label="Next">
+                                                    <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </nav>
+                                </div>
+
+                            </div>
+                            <div class="innerBorderCol"></div>
+                            <div class="flexCol" style="width: 67%;max-height: 405px;">
+                                <h4 style="margin: 5px auto">Selected Model<span style="font-weight: 300"> One model for One project</span></h4>
+                                <div v-loading = "loadModel" class="scrollContainer" style="min-height: 30px">
+                                    <div class="flexRow  flexWrap " v-if="selectedModel.name != ''" >
+                                        <div v-cloak class="list-item " style="border:none">
+                                            <div class="detail_title">
+                                                <a target="_blank">{{selectedModel.name}}</a>
+                                            </div>
+                                            <div>
+
+                                                <div class="detail_overview">
+                                                    <a class="img" :href="'/selectedModel/'+ selectedModel.oid" target="_blank">
+                                                        <avatar v-if="selectedModel.image==''" :username="selectedModel.name" :size="90"
+                                                                :rounded="false"></avatar>
+                                                        <img v-if="selectedModel.image!=''" :src="selectedModel.image"
+                                                             style="width:90px;height: 90px;">
+
+                                                    </a>
+
+                                                    <div class="info">
+                                                        <!--                                            <p :style="{'-webkit-line-clamp':(selectedModel.keywords.length>0?2:4)}">{{selectedModel.description}}</p>-->
+                                                        <p>{{selectedModel.description}}</p>
+                                                        <!--                                            <div class="tags" v-if="selectedModel.keywords.length>0">-->
+                                                        <!--                                                <span class="badge badge-info" v-for="keyword in selectedModel.keywords">{{keyword.toUpperCase()}}</span>-->
+                                                        <!--                                            </div>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <table id="runtime_table" class="table table-bordered text-center">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center">Type</th>
+                                                    <th class="text-center">Property</th>
+                                                    <th class="text-center">Value</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <div >
+                                                    <tr >
+                                                        <td rowspan="4">Basic Info</td>
+                                                        <td>name</td>
+                                                        <td>SWATModelAllInOne</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>version</td>
+                                                        <td>1.1.0.0</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>baseDir</td>
+                                                        <td>$(ModelServicePath)\SWATModelAllInOne</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>entry</td>
+                                                        <td>SWATModelAllInOne.exe</td>
+                                                    </tr>
+                                                </div>
+                                                <div >
+                                                    <tr >
+                                                        <td rowspan="3">Hardware Dependencies</td>
+                                                        <td>CPU_Frequency</td>
+                                                        <td>2.8GHz</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>Memory_Size</td>
+                                                        <td>50M</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>Disk_Size</td>
+                                                        <td>100MB</td>
+                                                    </tr>
+                                                </div>
+                                                <div >
+
+                                                    <tr >
+                                                        <td rowspan="2">Software Dependencies</td>
+                                                        <td>Operation System</td>
+                                                        <td>Windows | x64</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>Third-Party Software</td>
+                                                        <td>MapWindows 4.8 | x64</td>
+                                                    </tr>
+                                                </div>
+                                                <div >
+                                                    <tr >
+                                                        <td rowspan="3">Assemblies</td>
+                                                        <td>GDALRasterMapping</td>
+                                                        <td>${MappingPath}\GDALRasterMapping\</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>OGRVectorMapping</td>
+                                                        <td>${MappingPath}\OGRVectorMapping\</td>
+                                                    </tr>
+                                                    <tr >
+                                                        <td>TauDEM_Path</td>
+                                                        <td>$(ModelServicePath)\TauDEM5Exe\</td>
+                                                    </tr>
+
+                                                </div>
+
+
+                                                </tbody>
+                                            </table>
+                                            <hr>
+                                            <div class="detail_bottom flexAlignCenter flexJustBetween" >
+                                                <div style="display:flex;float: left;">
+                                                    <a @click=""
+                                                       style="display: inline-block;margin-left: 5px;"><h4>
+                                                        {{selectedModel.author_name}} </h4></a>
+
+                                                    <h4 class="screen_view">
+                                                         contributed at {{selectedModel.createTime.substring(0,10)}} </h4>
+                                                </div>
+                                                <div class="detail_option">
+                                                    <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{selectedModel.viewCount}}
+                                                    <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{selectedModel.thumbsUpCount}}-->
+                                                </div>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div :style="{display:(addProjectStep==2?'block':'none')}" >
+                        <div class="flexRow flexAlignCenter" style="height: 50vh">
+                            <div class="flexCol flexJustCenter" style="width: 28%;height: 100%;">
+                                <h4 style="margin: 5px auto">Participant Users</h4>
+                                <div class="overflow-scroll">
+                                    <el-table
+
+                                            :show-header="false"
+                                            :data="tableData1"
+                                            style="width: 100%">
+                                        <el-table-column style="text-align: right;" width="80">
+                                            <template slot-scope="scope">
+                                                <img style="border-radius: 50%;height:40px;width:40px;border: 1px solid #C0C4CC;"
+                                                     src="/static/img/icon/default.png">
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column>
+                                            <template slot-scope="scope">
+
+                                                {{ scope.row.name }}
+
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <!--    invite的user -->
+                                    <el-table
+                                            v-if = "chosenUser.length>0"
+                                            :show-header="false"
+                                            :data="chosenUser"
+                                            style="width: 100%">
+                                        <el-table-column style="" width="80">
+                                            <template slot-scope="scope">
+                                                <img style="border-radius: 50%;height:40px;width:40px;border: 1px solid #C0C4CC;"
+                                                     src="/static/img/icon/default.png">
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column >
+                                            <template slot-scope="scope" >
+
+                                                {{ scope.row.name }}
+
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column>
+                                            <template slot-scope="scope">
+                                                <el-button type="primary" size="small" @click="cancelInvite(scope.row)">
+                                                    Cancel
+                                                </el-button>
+                                            </template>
+
+                                        </el-table-column>
+                                    </el-table>
+                                </div>
+
+                                <div class="flexCenter" style="flex: 1;">
+                                    <h3 class="noMargin" style="margin-right:10px ">Invite User</h3>
+                                    <div class="circleSmallDark flexCenter" @click="showAllUser">
+                                        <i class="fa fa-plus" aria-hidden="true" style="font-size: 15px"></i>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="innerBorderCol"></div>
+                            <div class="flexCol" style="width: 72%;max-height: 405px;">
+                                <h4 style="margin: 5px auto">Computable Resource</h4>
+                                <div class="flexCol overflow-scroll" style="height: 366px">
+                                <!--                        所有可以使用-->
+                                <div>
+                                    <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerUse.length!=0"
+                                         v-for="(container,index) in modelContainerUse" style="min-height: 201px">
+                                        <el-card class="box-card serverCard" style="cursor: pointer"
+                                                 @click.native="chooseResource($event,container)">
+                                            <div class="content">
+                                                <div class="clearfix">
+                                                    <div class="pull-left">
+                                                        <h4 style="margin-bottom: 10px;font-weight: bold">
+                                                            {{container.hostName}}
+
+                                                        </h4>
+                                                        <p style="margin-bottom:5px">{{container.software_info.os}}
+                                                            {{container.software_info.osVersion}}</p>
+                                                        <p>{{container.hardware_info.staticInfo.cpu_core}} Core -
+                                                            {{container.hardware_info.staticInfo.memory_size}} RAM -
+                                                            {{container.hardware_info.staticInfo.disk_all}} Hard
+                                                            Disk</p>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="serverStatus pull-left">
+                                                        <a>
+                                                            <img src="/static/img/icon/default.png"
+                                                                 class="round_icon"
+                                                                 style="margin-top:-5px;width:20px;height: 20px;display: inline-block;border:1px solid #ccc;border-radius: 50%">
+                                                        </a>
+
+                                                        <a @click="open"
+                                                           style="display: inline-block;margin-left: 5px;font-size:15px;">
+                                                            <h4>
+                                                                {{container.user}}</h4></a>
+                                                    </div>
+                                                    <div class="serverIp pull-right"
+                                                         style="color:red;font-size: 20px">
+                                                        <!--{{container.score}}-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                </div>
+
+                                <div class="flexRow" style="margin-top: 30px">
+                                    <div class="innerBorder" style="width: 25%"></div>
+                                    <h4 style="font-weight: 400;color: #999999">If all invites accepted, more resources you can use:</h4>
+                                    <div class="innerBorder" style="width: 25%"></div>
+                                </div>
+                                <!--                        等待接受-->
+                                <div>
+                                    <div class="col-sm-12 col-md-6 col-lg-4"
+                                         v-if="modelContainerListInviting.length!=0"
+                                         v-for="(container,index) in modelContainerListInviting">
+                                        <el-card class="box-card serverCard">
+                                            <div class="content">
+                                                <div class="clearfix">
+                                                    <div class="pull-left">
+                                                        <h4 style="margin-bottom: 10px;font-weight: bold">
+                                                            {{container.hostName}}
+
+                                                        </h4>
+                                                        <p style="margin-bottom:5px">{{container.software_info.os}}
+                                                            {{container.software_info.osVersion}}</p>
+                                                        <p>{{container.hardware_info.staticInfo.cpu_core}} Core -
+                                                            {{container.hardware_info.staticInfo.memory_size}} RAM -
+                                                            {{container.hardware_info.staticInfo.disk_all}} Hard
+                                                            Disk</p>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="serverStatus pull-left">
+                                                        <a>
+                                                            <img src="/static/img/icon/default.png"
+                                                                 class="round_icon"
+                                                                 style="margin-top:-5px;width:20px;height: 20px;display: inline-block;border:1px solid #ccc;border-radius: 50%">
+                                                        </a>
+
+                                                        <a @click="open"
+                                                           style="display: inline-block;margin-left: 5px;font-size:15px;">
+                                                            <h4>
+                                                                {{container.user}}</h4></a>
+                                                    </div>
+                                                    <div class="serverIp pull-right"
+                                                         style="color:red;font-size: 20px">
+                                                        <!--{{container.score}}-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-card>
+                                    </div>
+                                    <h3 class="f3-light mb-1" v-if="modelContainerListInviting.length==0"
+                                        style="text-align: center;margin-top: 50px">Find no computable resource</h3>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div :style="{display:(addProjectStep==3?'block':'none')}">
+                        <h4 style="text-align: center">Click button 'Confirm' to build a project.</h4>
+                    </div>
+
+                    <el-button circle icon="el-icon-arrow-left"
+                               :style="{visibility:(addProjectStep>0?'visible':'hidden')}" class="el-button--primary"
+                               style="margin-top: 12px;position: absolute;left:4%;top:55px;"
+                               @click="addProjectPre"></el-button>
+                    <el-button circle icon="el-icon-arrow-right" v-if="addProjectStep<3" class="el-button--primary"
+                               style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                               @click="addProjectNext"></el-button>
+<!--                    <el-button circle icon="el-icon-check" v-if="taskSharingActive>=3" class="el-button&#45;&#45;success"-->
+<!--                               style="margin-top: 12px;position: absolute;right:4%;top:55px;"-->
+<!--                               @click="taskSharingFinish"></el-button>-->
+                    <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="creatDeployProject" v-if="addProjectStep==3">
+                                    Confirm
+                                </el-button>
+                                 <el-button @click="deployDialog=false">
+                                    Cancel
+                                </el-button>
+                            </span>
+                </el-dialog>
+                <el-dialog title="Invite user" :visible.sync="userChooseDialog" width="40%" top="10vh" center>
+                    <div class="flexCol flexAlignCenter" style="margin-top:-15px;margin-bottom: 13px ">
+                        <h3 _ngcontent-pnd-c16="" class="f3-light mb-1">Once he/she accept your request,</h3>
+                        <h3 _ngcontent-pnd-c16="" class="f3-light mb-1">you can use his/her computable resource.</h3>
+                    </div>
+                    <div class="flexCenter" style="margin-bottom: 1px">
+                        <i class="fa fa-search" style="font-size: 18px;"></i>
+                        <input placeholder="Search for User" v-model="searchUserText" class="noBorderInput"
+                               style="width:200px;font-size: 15px ">
+                        <el-button size="small" @click="searchUser('email')">
+                            By Email
+                        </el-button>
+                        <el-button size="small" @click="searchUser('name')">
+                            By Name
+                        </el-button>
+                    </div>
+                    <div style="max-height:350px;overflow-y: scroll ">
+
+                        <el-table
+
+                                :show-header="false"
+                                :data="userAll"
+                                style="width: 100%">
+                            <el-table-column style="" width="80">
+                                <template slot-scope="scope">
+                                    <img style="border-radius: 50%;height:40px;width:40px;border: 1px solid #C0C4CC;"
+                                         src="/static/img/icon/default.png">
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="180">
+                                <template slot-scope="scope" >
+
+                                    <el-tag size="medium">{{ scope.row.email }}</el-tag>
+
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="180">
+                                <template slot-scope="scope" >
+
+                                    {{ scope.row.name }}
+
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot-scope="scope">
+                                    <el-button type="primary" size="small" @click="inviteUser(scope.row)">
+                                        Invite
+                                    </el-button>
+                                </template>
+
+                            </el-table-column>
+                        </el-table
+                        >
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="userChooseDialog=false">
+                                    Confirm
+                                </el-button>
+                                <el-button @click="userChooseDialog=false">
+                                    Cancel
+                                </el-button>
+
+
+                            </span>
+
+
+                </el-dialog>
+            </div>
+        </template>
+
+
+            <!--        </div>-->
+
+
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/jquery.rotate.min.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/mdb.min.js"></script>
+<script src="/static/js/common/piexif.min.js"></script>
+<script src="/static/js/common/fileinput.js"></script>
+<script src="/static/js/common/bootstrap-treeview.js"></script>
+
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+
+
+<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<!--<script src="/static/js/page/user_space.js"></script>-->
+<!--<script src="/static/js/page/userSpace1.js"></script>-->
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/page/userspaceTask.js"></script>
+</html>

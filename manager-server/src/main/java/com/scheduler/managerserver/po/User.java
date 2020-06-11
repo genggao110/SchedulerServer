@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: wangming
@@ -17,11 +18,10 @@ import java.util.Date;
 @NoArgsConstructor
 @Document
 public class User {
-
-    @Id
-    String id;
     String name;
-    String password;
+    String userName;
     String email;
-    Date createDate;
+    String oid;
+
 }
+

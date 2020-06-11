@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Space | OpenGMS</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <!--<link rel="stylesheet" href="/static/css/page/theme_info.css">-->
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.woff">
+    <link rel="stylesheet" href="/static/css/font-awesome/fonts/fontawesome-webfont.ttf">
+
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/common/styles.9694af830a714e8db8b1.css">
+    <link rel="stylesheet" href="/static/css/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/wzhFlexContainer.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link  rel="stylesheet" href="/static/css/common/mdb/mdb.lite.min.css">
+    <link  rel="stylesheet" href="/static/css/fluent/fluent.css">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="../../assets/css/basic.css" /> -->
+    <link rel="stylesheet" href="/static/css/user_space.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+
+    <link  rel="stylesheet" href="/static/css/common/navbar.css">
+    <link  rel="stylesheet" href="/static/css/common/newSideBar.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+
+    <script src="/static/js/common/md5.js"></script>
+    <script src="/static/js/common/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/common/bootstrap.min.js"></script>
+    <script src="/static/js/common/mdb.min.js"></script>
+    <!--<script src="/static/js/common/world.js"></script>-->
+    <script src="/static/js/common/axios.min.js"></script>
+
+    <!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+    <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+
+    <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+
+    <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-router.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+    <script src="/static/element-ui/umd/locale/en.js"></script>
+    <!--<script src="/static/js/page/user_space.js"></script>-->
+</head>
+
+<body>
+<div id="app">
+    <div id="loading" v-if="load">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container" style="height: 2000px;" v-cloak>
+        <head-side-bar :user-infoin-parent="userInfo" :curindex-parent="curIndex"></head-side-bar>
+        <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" @com-senduserinfo="updateUserInfo" :itemindex-raw="itemIndex"></router-view>
+
+    </div>
+
+</div>
+
+<!--sideBar组件-->
+<template th:replace="fragments/newSideBar :: headSideBar"></template>
+<script src="/static/js/page/newSideBar.js"></script>
+<!--userProject组件-->
+<template th:replace="userProjects :: userProjects"></template>
+<script src="/static/js/page/userProjects.js"></script>
+<!--userResource组件-->
+<template th:replace="userResource :: userResource"></template>
+<script src="/static/js/page/userResource.js"></script>
+<!--notice组件-->
+<template th:replace="message_confirm :: notice"></template>
+<script src="/static/js/page/message_confirm.js"></script>
+</body>
+
+<!--根组件-->
+<script src="/static/js/page/userSpace1.js"></script>
+</html>

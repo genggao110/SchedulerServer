@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TokenService {
-    public String getToken(User user){
-        //TODO 添加自定义信息
-        String token = "";
-        token = JWT.create().withAudience(user.getId())
-                .sign(Algorithm.HMAC256(user.getPassword()));
-        return token;
-    }
+//    public String getToken(User user){
+//        //TODO 添加自定义信息
+//        String token = "";
+//        token = JWT.create().withAudience(user.getId())
+//                .sign(Algorithm.HMAC256(user.getPassword()));
+//        return token;
+//    }
 }

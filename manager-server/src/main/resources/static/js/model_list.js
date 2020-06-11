@@ -64,5 +64,10 @@ new Vue({
     mounted() {
         //更新页面获取数据
         this.searchResult();
+
+        $(function () {
+
+
+        })
     }
 })

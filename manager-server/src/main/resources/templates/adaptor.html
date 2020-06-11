@@ -10,9 +10,13 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/list.css">
     <link rel="stylesheet" href="/static/css/model_items.css">
-
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/vue-avatar.min.js"></script>
+    <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <link rel="stylesheet" href="/static/css/fluent/fluent.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
+    <link rel="stylesheet" href="/static/css/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/wzhFlexContainer.css">
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
 
@@ -25,19 +29,6 @@
             margin: 0;
         }
 
-        .mainBarLogo{
-            width: 220px !important;
-            height: 52px !important;
-            margin-left: 20px;
-            margin-right: auto;
-            background-image: url("/static/img/logo.png");
-            background-size: auto 45px !important;
-            background-repeat: no-repeat;
-            padding: 0px !important;
-            display: inline-block;
-            float: left;
-            margin-top: 5px;
-        }
 
         .badge {
             padding: 5px 7px;
@@ -74,7 +65,7 @@
 <body>
 <div id="app">
 
-    <div th:replace="fragment/navbar :: menu"></div>
+    <div th:replace="fragments/navbar :: menu"></div>
 
     <div class="el-col-lg-offset-2 el-col-20" style="margin-top: 20px;margin-bottom: 20px">
         <div class="el-col-6" style="height:700px">
@@ -131,10 +122,34 @@
 
             </el-tabs>
         </div>
+        <div class="detailBoxContainer">
+            <el-dialog :modal="false"   :visible.sync="detailDialog" class="detailContainer">
+                <div class="osImg flexCenter">
+                    <i class="ms-Icon ms-Icon--WindowsLogo" aria-hidden="true" style="font-size: 50px" v-if="returnOsImg('Windows')"></i>
+                    <img src="../../../static/img/ubuntu.png" style="width: 65px;margin-left: -7px" v-if="returnOsImg('Ubuntu')"/>
+                    <img src="../../../static/img/centOS.png" style="width: 60px;" v-if="returnOsImg('centos')"/>
+                </div>
+                <div class="flexJustCenter flexAlignCenter flexCol" v-if="typeof(selectedContainer.ip)!='undefined'">
+                    <h4 class="f3-light" style="margin-bottom: 5px"> {{selectedContainer.hardware.hostName}}</h4>
+                    <h5>Platform: {{selectedContainer.hardware.platform}}</h5>
+                    <h5>Version: {{selectedContainer.hardware.version}}</h5>
+                    <h5>Cpu core: {{selectedContainer.hardware.cpu_Core}}</h5>
+                    <h5>Total memory: {{selectedContainer.hardware.totalMemory}}</h5>
+                    <h5>Hard disk: {{selectedContainer.hardware.diskAll}}</h5>
+                    <h5>IP: {{selectedContainer.ip}}</h5>
+                    <h5>Score: {{selectedContainer.score}}</h5>
+                    <h5>Owner: {{selectedContainer.user}}</h5>
+                </div>
+            </el-dialog>
+        </div>
+
+
         <div class="el-col-18" style="height:700px">
-            <el-tabs type="border-card" stretch="true" style="margin-left: 10px;">
+            <el-tabs type="border-card" stretch="true" style="height: 100%; margin-left: 10px;">
+
                 <el-tab-pane label="Computable Resource">
-                    <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length!=0" v-for="(container,index) in modelContainerList">
+                    <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length!=0"
+                         v-for="(container,index) in modelContainerList" @click="seeDetails(container)">
                         <el-card class="box-card serverCard" >
                             <div class="content">
                                 <div class="clearfix">
@@ -155,7 +170,7 @@
                                                  style="margin-top:-5px;width:20px;height: 20px;display: inline-block;border:1px solid #ccc;border-radius: 50%">
                                         </a>
 
-                                        <a @click="open"
+                                        <a @click="window.open('http://geomodeling.njnu.edu.cn/user/'+user.oid)"
                                            style="display: inline-block;margin-left: 5px;font-size:15px;"><h4>
                                             {{container.user}}</h4></a>
                                     </div>
@@ -173,7 +188,7 @@
                             <div v-cloak class="list-item" style="border:none">
                                 <div class="detail_title">
                                     <a target="_blank" @click="open">SWAT_Model</a>
-                                    <el-button type="primary" class="pull-right" style="margin-top: -5px;" @click="getComputerForDeploy()">Adapting</el-button>
+                                    <el-button type="primary" class="pull-right" style="margin-top: -5px;">Adapting</el-button>
                                 </div>
                                 <div>
 
@@ -310,6 +325,8 @@
 
 </body>
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/adaptor.js"></script>
 </html>

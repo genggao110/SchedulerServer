@@ -58,6 +58,9 @@ public class ModelResourceService {
     ComputerInfoService computerInfoService;
 
     @Autowired
+    ProjectService projectService;
+
+    @Autowired
     ComputerInfoDao computerInfoDao;
 
     @Autowired
@@ -142,6 +145,38 @@ public class ModelResourceService {
     public JSONObject getModelResourceByOid(String oid){
         JSONObject result_json = new JSONObject();
         String url = PORTAL_ADDRESS + "/computableModel/getInfo/" + oid;
+        String result = "";
+        try{
+            result = MyHttpUtils.GET(url, "UTF-8", null);
+            JSONObject resJson = JSON.parseObject(result);
+            if(resJson.getIntValue("code") == 0){
+                //表明是成功获取
+                JSONObject data = resJson.getJSONObject("data");
+                ModelResourceVO modelResourceVO = handleModelPackageData(data);
+                //单独对runtime节点信息进行处理
+                if(data.getString("runtime") == null){
+                    //对mdl信息进行额外处理
+                    String mdlString = data.getString("mdlJson");
+                    JSONObject mdlJson = JSON.parseObject(mdlString);
+                    JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+                    JSONObject runtime = convertMDLRuntimeToJSON(modelClass.getJSONArray("Runtime").getJSONObject(0));
+                    modelResourceVO.setRuntime(runtime.toJSONString());
+                }
+                result_json.put("info", modelResourceVO);
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+            result_json = null;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            result_json = null;
+        }
+        return result_json;
+    }
+
+    public JSONObject getModelResource(){
+        JSONObject result_json = new JSONObject();
+        String url = PORTAL_ADDRESS + "/computableModel/getAllInfo" ;
         String result = "";
         try{
             result = MyHttpUtils.GET(url, "UTF-8", null);
@@ -282,6 +317,7 @@ public class ModelResourceService {
 
     // 模型资源部署包在计算资源上的部署
     public DeployTask deployModel(ModelDeployDTO modelDeployDTO){
+
         String agentId = modelDeployDTO.getAgentId();
         DeployTask deployTask = new DeployTask();
         //1. 根据agentId 从Manager Server服务器获取到相关Task Server的ip和port
@@ -330,6 +366,10 @@ public class ModelResourceService {
                     deployTask.setTaskId(task_Id);
                     //插入数据库记录
                     deployTaskDao.insert(deployTask);
+
+                    String projectId = modelDeployDTO.getProjectId();
+                    projectService.changeStatus(projectId);
+
                     return deployTask;
                 }
             }else {

@@ -1,7 +1,9 @@
 package com.scheduler.managerserver.config;
 
+import com.scheduler.managerserver.interceptor.ModelAndViewInterceptor;
 import com.scheduler.managerserver.resolver.RequestHandlerMethodArgumentResolver;
 import com.scheduler.webCommons.interceptor.TimeCalculateInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -18,6 +20,9 @@ import java.util.List;
 @Configuration
 public class ApiWebMvcConfigurerAdapter implements WebMvcConfigurer{
 
+    @Autowired
+    private ModelAndViewInterceptor modelAndViewInterceptor;
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new RequestHandlerMethodArgumentResolver());
@@ -26,6 +31,7 @@ public class ApiWebMvcConfigurerAdapter implements WebMvcConfigurer{
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(getMyInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(modelAndViewInterceptor).addPathPatterns("/**").excludePathPatterns("/static");
     }
 
     @Bean

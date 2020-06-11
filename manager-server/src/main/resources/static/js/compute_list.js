@@ -110,127 +110,205 @@ new Vue({
                 searchResult: [],
             },
             modelContainerList:[{
-                hardware:{
-                    hostName:"iZrj9fpaid84lev5yy85m1Z",
-                    platform:"Ubuntu",
+                hostName:"iZrj9fpaid84lev5yy85m1Z",
+                software_info:{
+                    os:"Ubuntu",
                     version:"16.04",
-                    cpu_Core:"1",
-                    totalMemory:"4",
-                    diskAll:"3",
                 },
-                score:"47.254.69.78",
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Ubuntu",
+                        version: "16.04",
+                        cpu_core: "1",
+                        memory_size: "4",
+                        disk_all: "3",
+                    }
+                },
+                ip:"47.254.69.78",
+                score:"86",
                 user:"NNU_Group"
             },{
-                hardware:{
-                    hostName:"iZrj9fpaid84lev5yy85m2Z",
-                    platform:"Ubuntu",
+                hostName:"iZrj9fpaid84lev5yy85m2Z",
+                software_info:{
+                    os:"Ubuntu",
                     version:"16.04",
-                    cpu_Core:"2",
-                    totalMemory:"4",
-                    diskAll:"3",
                 },
-                score:"47.88.52.90",
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Ubuntu",
+                        version: "16.04",
+                        cpu_core: "2",
+                        memory_size: "4",
+                        disk_all: "3",
+                    }
+                },
+                ip:"47.88.52.90",
+                score:"86",
                 user:"NNU_Group"
             },{
-                hardware:{
-                    hostName:"launch-advisor-20191209",
-                    platform:"Windows Server",
+                hostName:"launch-advisor-20191209",
+                software_info:{
+                    os:"Windows Server",
                     version:"2012 R2",
-                    cpu_Core:"2",
-                    totalMemory:"4",
-                    diskAll:"3",
                 },
-                score:"47.74.66.87",
-                user:"Sirius"
-            },{
-                hardware:{
-                    hostName:"WIN-VH4GMM75DJH",
-                    platform:"Windows Server",
-                    version:"2012 R2",
-                    cpu_Core:"4",
-                    totalMemory:"8",
-                    diskAll:"20",
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Windows Server",
+                        version: "2012 R2",
+                        cpu_core: "2",
+                        memory_size: "4",
+                        disk_all: "3",
+                    }
                 },
-                score:"172.21.213.105",
+                ip:"47.74.66.87",
+                score:"86",
                 user:"NNU_Group"
             },{
-                hardware:{
-                    hostName:"WIN-DEABAKGA1HS",
-                    platform:"Windows Server",
-                    version:"2012 R2",
-                    cpu_Core:"8",
-                    totalMemory:"4",
-                    diskAll:"20",
-                },
-                score:"172.21.212.85",
-                user:"NNU_Group"
-            },{
-                hardware:{
-                    hostName:"DESKTOP-3K2K270",
-                    platform:"Windows",
-                    version:"10",
-                    cpu_Core:"12",
-                    totalMemory:"24",
-                    diskAll:"4",
-                },
-                score:"172.25.111.173",
-                user:"NNU_Group"
-            },{
-                hardware:{
-                    hostName:"localdomain",
-                    platform:"CentOS",
-                    version:"7.7",
-                    cpu_Core:"2",
-                    totalMemory:"12",
-                    diskAll:"20",
-                },
-                score:"172.21.213.66",
-                user:"wangming"
-            },{
-                hardware:{
-                    hostName:"iZm5e81qbhfk423he1vxovZ",
-                    platform:"CentOS",
+                hostName:"iZm5e81qbhfk423he1vxovZ",
+                software_info:{
+                    os:"CentOS",
                     version:"7.6",
-                    cpu_Core:"2",
-                    totalMemory:"8",
-                    diskAll:"5",
                 },
-                score:"118.190.246.198",
+                hardware_info:{
+                    staticInfo: {
+                        platform: "CentOS",
+                        version: "7.6",
+                        cpu_core: "2",
+                        memory_size: "8",
+                        disk_all: "5",
+                    }
+                },
+                ip:"118.190.246.198",
+                score:"86",
                 user:"NNU_Group"
             },{
-                hardware:{
-                    hostName:"ming",
-                    platform:"CentOS",
+                hostName:"ming",
+                software_info:{
+                    os:"CentOS",
                     version:"7.3",
-                    cpu_Core:"1",
-                    totalMemory:"2",
-                    diskAll:"1",
                 },
-                score:"47.107.155.239",
-                user:"wangming"
-            },{
-                hardware:{
-                    hostName:"shencr-CMIP",
-                    platform:"Ubuntu",
-                    version:"16.04",
-                    cpu_Core:"4",
-                    totalMemory:"4",
-                    diskAll:"20",
+                hardware_info:{
+                    staticInfo: {
+                        platform: "CentOS",
+                        version: "7.3",
+                        cpu_core: "1",
+                        memory_size: "2",
+                        disk_all: "1",
+                    }
                 },
-                score:"172.21.212.58",
-                user:"Sirius"
+                ip:"47.107.155.239",
+                score:"86",
+                user:"NNU_Group"
             },{
-                hardware:{
-                    hostName:"LAPTOP-0PNLCFNL",
-                    platform:"Windows",
+                hostName:"WIN-VH4GMM75DJH",
+                software_info:{
+                    os:"Windows Server",
+                    version:"2012 R2",
+                },
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Windows Server",
+                        version: "2012 R2",
+                        cpu_core: "4",
+                        memory_sizeemory: "8",
+                        disk_all: "20",
+                    }
+                },
+                ip:"172.21.213.105",
+                score:"86",
+                user:"NNU_Group"
+            },{
+                hostName:"WIN-DEABAKGA1HS",
+                software_info:{
+                    os:"Windows Server",
+                    version:"2012 R2",
+                },
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Windows Server",
+                        version: "2012 R2",
+                        cpu_core: "8",
+                        memory_size: "4",
+                        disk_all: "20",
+                    }
+                },
+                ip:"172.21.212.85",
+                score:"86",
+                user:"NNU_Group"
+            },{
+                hostName:"DESKTOP-3K2K270",
+                software_info:{
+                    os:"Windows",
                     version:"10",
-                    cpu_Core:"4",
-                    totalMemory:"8",
-                    diskAll:"4",
                 },
-                score:"223.2.35.64",
-                user:"wangming"
-            }]
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Windows",
+                        version: "10",
+                        cpu_core: "12",
+                        memory_size: "24",
+                        disk_all: "4",
+                    }
+                },
+                ip:"172.25.111.173",
+                score:"86",
+                user:"NNU_Group"
+            },{
+                hostName:"localdomain",
+                software_info:{
+                    os:"CentOS",
+                    version:"7.7",
+                },
+                hardware_info: {
+                    staticInfo: {
+                        platform: "CentOS",
+                        version: "7.7",
+                        cpu_core: "2",
+                        memory_size: "12",
+                        disk_all: "20",
+                    },
+                },
+                ip:"172.21.213.66",
+                score:"86",
+                user:"NNU_Group"
+            },{
+                hostName:"shencr-CMIP",
+                software_info:{
+                    os:"Ubuntu",
+                    version:"16.04",
+                },
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Ubuntu",
+                        version: "16.04",
+                        cpu_core: "4",
+                        memory_size: "4",
+                        disk_all: "20",
+                    }
+                },
+                ip:"172.21.212.58",
+                score:"86",
+                user:"NNU_Group"
+            },{
+                hostName:"LAPTOP-0PNLCFNL",
+                software_info:{
+                    os:"Windows",
+                    version:"10",
+                },
+                hardware_info:{
+                    staticInfo: {
+                        platform: "Windows",
+                        version: "10",
+                        cpu_core: "4",
+                        memory_size: "8",
+                        disk_all: "4",
+                    }
+                },
+                ip:"223.2.35.64",
+                score:"86",
+                user:"NNU_Group"
+            }],
+            modelContainerListShow:[],
         };
     },
     methods: {
@@ -239,9 +317,39 @@ new Vue({
         },
         handlePageChange() {
 
-        }
+        },
+        getComputerForDeploy(){
+            let data = this.runtimeInfo;
+            this.loadRecmd = true
+            this.activeTab='tab1'
+
+            $.ajax({
+                url: "/computer/all",
+                async: true,
+                type: "GET",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: (result) => {
+                    console.log(result);
+                    if(result.code != -1){
+
+                        this.modelContainerList =this.modelContainerList.concat(result.data) ;
+
+
+                    }else {
+                        this.$message({
+                            message: 'get computerResouce error!',
+                            type: 'error',
+                            offset: 40,
+                            showClose: true,
+                        });
+                    }
+                }
+            })
+        },
+
     },
     mounted() {
-
+        this.getComputerForDeploy();
     }
 })

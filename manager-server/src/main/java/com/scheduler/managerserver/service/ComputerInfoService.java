@@ -1,5 +1,8 @@
 package com.scheduler.managerserver.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.scheduler.managerserver.dao.ComputerInfoDao;
 import com.scheduler.managerserver.dto.computer.ComputerInfoDTO;
 import com.scheduler.managerserver.po.ComputerInfo;
@@ -12,6 +15,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: wangming
@@ -22,6 +26,9 @@ public class ComputerInfoService {
 
     @Autowired
     ComputerInfoDao computerInfoDao;
+
+    @Autowired
+    PortalUserService portalUserService;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -86,5 +93,36 @@ public class ComputerInfoService {
         computerInfoDao.save(computerInfo);
         return true;
     }
+
+    public JSONArray findAll(){
+        List<ComputerInfo> computerInfoList = computerInfoDao.findAll();
+        JSONArray result = new JSONArray();
+
+        for (int i=0; i<computerInfoList.size();i++){
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(computerInfoList.get(i));
+            JSONArray array = portalUserService.getUsersFromPortalByType(computerInfoList.get(i).getUserId(),"userName");
+            jsonObject.put("user",((JSONObject)array.get(0)).getString("name"));
+            result.add(jsonObject);
+        }
+
+        return result;
+
+    }
+
+    public JSONArray findAllByUserId(String id){
+        List<ComputerInfo> computerInfoList = computerInfoDao.findAllByUserId(id);
+        JSONArray result = new JSONArray();
+
+        for (int i=0; i<computerInfoList.size();i++){
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(computerInfoList.get(i));
+            JSONArray array = portalUserService.getUsersFromPortalByType(computerInfoList.get(i).getUserId(),"userName");
+            jsonObject.put("user",((JSONObject)array.get(0)).getString("name"));
+            result.add(jsonObject);
+        }
+
+        return result;
+
+    }
+
 
 }

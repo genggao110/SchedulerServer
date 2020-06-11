@@ -59,11 +59,8 @@ public class ResourceShowController {
 
     @RequestMapping(value="/compute",method = RequestMethod.GET)
     public ModelAndView getcomputes(HttpServletRequest req) {
-        System.out.println("compute list");
-
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("compute_list");
-
 
         return modelAndView;
 

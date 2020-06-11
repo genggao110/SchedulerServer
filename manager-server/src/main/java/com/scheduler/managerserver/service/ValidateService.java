@@ -89,7 +89,7 @@ public class ValidateService {
     }
 
     public Validate insertNewResetRecord(Validate validate, User user, String verifyCode){
-        validate.setUserId(user.getId());
+//        validate.setUserId(user.getId());
         validate.setEmail(user.getEmail());
         validate.setType("email");
         validate.setVerifyCode(verifyCode);

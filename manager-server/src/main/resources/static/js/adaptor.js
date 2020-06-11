@@ -153,6 +153,42 @@ new Vue({
                 user:"NNU_Group"
             },{
                 hardware:{
+                    hostName:"launch-advisor-20191209",
+                    platform:"Windows Server",
+                    version:"2012 R2",
+                    cpu_Core:"2",
+                    totalMemory:"4",
+                    diskAll:"3",
+                },
+                ip:"47.74.66.87",
+                score:"86",
+                user:"Sirius"
+            },{
+                hardware:{
+                    hostName:"iZm5e81qbhfk423he1vxovZ",
+                    platform:"CentOS",
+                    version:"7.6",
+                    cpu_Core:"2",
+                    totalMemory:"8",
+                    diskAll:"5",
+                },
+                ip:"118.190.246.198",
+                score:"86",
+                user:"NNU_Group"
+            },{
+                hardware:{
+                    hostName:"ming",
+                    platform:"CentOS",
+                    version:"7.3",
+                    cpu_Core:"1",
+                    totalMemory:"2",
+                    diskAll:"1",
+                },
+                ip:"47.107.155.239",
+                score:"86",
+                user:"wangming"
+            },{
+                hardware:{
                     hostName:"WIN-VH4GMM75DJH",
                     platform:"Windows Server",
                     version:"2012 R2",
@@ -189,18 +225,6 @@ new Vue({
                 user:"NNU_Group"
             },{
                 hardware:{
-                    hostName:"iZm5e81qbhfk423he1vxovZ",
-                    platform:"CentOS",
-                    version:"7.6",
-                    cpu_Core:"2",
-                    totalMemory:"8",
-                    diskAll:"5",
-                },
-                ip:"118.190.246.198",
-                score:"86",
-                user:"NNU_Group"
-            },{
-                hardware:{
                     hostName:"localdomain",
                     platform:"CentOS",
                     version:"7.7",
@@ -213,42 +237,6 @@ new Vue({
                 user:"wangming"
             },{
                 hardware:{
-                    hostName:"LAPTOP-0PNLCFNL",
-                    platform:"Windows",
-                    version:"10",
-                    cpu_Core:"4",
-                    totalMemory:"8",
-                    diskAll:"4",
-                },
-                ip:"223.2.35.64",
-                score:"86",
-                user:"wangming"
-            },{
-                hardware:{
-                    hostName:"ming",
-                    platform:"CentOS",
-                    version:"7.3",
-                    cpu_Core:"1",
-                    totalMemory:"2",
-                    diskAll:"1",
-                },
-                ip:"47.107.155.239",
-                score:"86",
-                user:"wangming"
-            },{
-                hardware:{
-                    hostName:"launch-advisor-20191209",
-                    platform:"Windows Server",
-                    version:"2012 R2",
-                    cpu_Core:"2",
-                    totalMemory:"4",
-                    diskAll:"3",
-                },
-                ip:"47.74.66.87",
-                score:"86",
-                user:"Sirius"
-            },{
-                hardware:{
                     hostName:"shencr-CMIP",
                     platform:"Ubuntu",
                     version:"16.04",
@@ -259,7 +247,33 @@ new Vue({
                 ip:"172.21.212.58",
                 score:"86",
                 user:"Sirius"
-            }]
+            },{
+                hardware:{
+                    hostName:"LAPTOP-0PNLCFNL",
+                    platform:"Windows",
+                    version:"10",
+                    cpu_Core:"4",
+                    totalMemory:"8",
+                    diskAll:"4",
+                },
+                ip:"223.2.35.64",
+                score:"86",
+                user:"wangming"
+            }],
+            detailDialog:false,
+            selectedContainer:{
+                hardware:{
+                    hostName:"",
+                    platform:"",
+                    version:"",
+                    cpu_Core:"",
+                    totalMemory:"",
+                    diskAll:"",
+                },
+                ip:"",
+                score:"",
+                user:""
+            },
         };
     },
     methods: {
@@ -384,8 +398,17 @@ new Vue({
                     }
                 }
             })
-        }
+        },
 
+        seeDetails(container){
+            this.detailDialog = true    ;
+            this.selectedContainer =  container;
+        },
+
+        returnOsImg(os){
+            if(this.selectedContainer.hardware.platform.toLowerCase().indexOf(os.toLowerCase())!=-1)
+                return true
+        }
 
     },
     mounted() {
@@ -395,5 +418,6 @@ new Vue({
         this.getModelResourceInfo(id);
         //目前这里是获取到所有的可用计算资源
         this.getAllAvailableComputerResource();
+
     }
 })

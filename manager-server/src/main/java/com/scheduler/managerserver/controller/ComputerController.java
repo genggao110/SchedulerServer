@@ -1,5 +1,6 @@
 package com.scheduler.managerserver.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.scheduler.managerserver.dao.ComputerInfoDao;
 import com.scheduler.managerserver.dto.computer.ComputerInfoDTO;
 import com.scheduler.managerserver.dto.computer.DynamicInfoDTO;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.json.Json;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: wangming
@@ -61,10 +64,24 @@ public class ComputerController {
         }
     }
 
+    @RequestMapping(value = "/getByUsers", method = RequestMethod.GET)
+    @ApiOperation(value = "获取用户的计算资源信息")
+    JsonResult getAllComputerResource(@RequestParam("userNames[]") String[] userNames) {
+        JSONArray array = new JSONArray();
+
+        for(String id : userNames){
+            array.addAll(computerInfoService.findAllByUserId(id));
+        }
+
+        return ResultUtils.success(array);
+    }
+
+
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ApiOperation(value = "获取所有的计算资源信息")
     JsonResult getAllComputerResource() {
-        return ResultUtils.success(computerInfoDao.findAll());
+
+        return ResultUtils.success(computerInfoService.findAll());
     }
 
     @RequestMapping(value = "/getByUserName", method = RequestMethod.GET)
