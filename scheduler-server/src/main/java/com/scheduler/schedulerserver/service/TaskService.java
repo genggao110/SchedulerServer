@@ -4,6 +4,7 @@ import com.scheduler.schedulerserver.SchedulerServerApplication;
 import com.scheduler.schedulerserver.dao.TaskDao;
 import com.scheduler.schedulerserver.domain.Task;
 import com.scheduler.schedulerserver.domain.xml.TaskConfiguration;
+import com.scheduler.schedulerserver.dto.ServicesMapping;
 import com.scheduler.schedulerserver.utils.XmlParseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -28,7 +30,7 @@ public class TaskService {
 
     private static final Logger log = LoggerFactory.getLogger(TaskService.class);
 
-    public String handlerTaskConfiguration(MultipartFile file, String userName){
+    public String handlerTaskConfiguration(MultipartFile file, String userName, List<ServicesMapping> servicesMappings){
         UUID taskId = UUID.randomUUID();
         //解析xml文件
         try{
@@ -42,6 +44,7 @@ public class TaskService {
             task.setModels(taskConfiguration.getModels());
             task.setTaskId(taskId.toString());
             task.setUserName(userName);
+            task.setServicesMappings(servicesMappings);
             //数据库插入记录
             String id = taskDao.insert(task).getId();
             task.setId(id);

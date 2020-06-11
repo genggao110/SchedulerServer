@@ -34,4 +34,14 @@ public class TaskAndContainerReturnInfo {
      */
     String sid;
     int count;
+
+    /**
+     * 该模型的服务质量
+     */
+    double reliability;
+
+    /**
+     * Qos服务质量
+     */
+    double qos_value;
 }

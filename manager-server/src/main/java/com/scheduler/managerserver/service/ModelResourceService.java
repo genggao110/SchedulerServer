@@ -503,6 +503,9 @@ public class ModelResourceService {
             int band_width = Integer.parseInt(hardware.getBand_width().substring(0,hardware.getBand_width().length() - 1));
             double func_net = 1 + (band_width / judgeHardware.getBand_width() - 1) * 0.1;
 
+            //5. 处理cpu实时利用率参数
+
+
             //TODO 计算性能规约值(这里4个因素所占有的权重一样，即都为25%,后期可以增添用户决策需求，也不难)
             double performance = (func_cpu+ func_memory +func_disk + func_net) * 0.25;
             RecommendComputer recommendComputer = new RecommendComputer();

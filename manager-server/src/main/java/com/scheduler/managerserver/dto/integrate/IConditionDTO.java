@@ -14,4 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IConditionDTO {
     String pid;
+    /**
+     * 不同类别所对应的权重
+     */
+    QoSFactor factor;
 }

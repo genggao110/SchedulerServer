@@ -8,6 +8,7 @@ import com.scheduler.schedulerserver.domain.Task;
 import com.scheduler.schedulerserver.domain.xml.DataTemplate;
 import com.scheduler.schedulerserver.domain.xml.Model;
 import com.scheduler.schedulerserver.domain.xml.ShareData;
+import com.scheduler.schedulerserver.dto.ServicesMapping;
 import com.scheduler.utils.MyHttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,23 @@ public class TaskHandler implements Runnable {
         List<Model> modelList = new ArrayList<>(task.getModels());
         //针对于有多少个任务，就开启多少个线程来处理任务
         for (int i = 0; i < task.getModels().size(); i++){
-            AdvanceCallable advanceCallable = new AdvanceCallable(advanceHandler,i);
+            //根据模型获取到获取模型的pid
+            Model model = task.getModels().get(i);
+            String pid = model.getPid();
+            //在ServicesMappings中查询到对应的serviceMapping
+            List<ServicesMapping> servicesMappings = task.getServicesMappings();
+            int k = -1;
+            for(int j = 0; j < servicesMappings.size(); j++){
+                if(servicesMappings.get(j).getPid().equals(pid)){
+                    k = j;
+                    break;
+                }
+            }
+            ServicesMapping servicesMapping = null;
+            if(k != -1){
+                servicesMapping = servicesMappings.get(k);
+            }
+            AdvanceCallable advanceCallable = new AdvanceCallable(advanceHandler,i, servicesMapping);
             Future<Model> future = pool.submit(advanceCallable);
             futureList.add(future);
         }

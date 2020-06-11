@@ -8,6 +8,7 @@ import com.scheduler.schedulerserver.domain.xml.Model;
 import com.scheduler.schedulerserver.domain.xml.ShareData;
 import com.scheduler.schedulerserver.dto.ExDataDTO;
 import com.scheduler.schedulerserver.dto.OutputDataDTO;
+import com.scheduler.schedulerserver.dto.ServicesMapping;
 import com.scheduler.utils.IPUtils;
 import com.scheduler.utils.MyHttpUtils;
 
@@ -39,7 +40,7 @@ public class AdvanceHandler {
         this.userName = userName;
     }
 
-    public Model runModel(int index)throws InterruptedException{
+    public Model runModel(int index,ServicesMapping servicesMapping)throws InterruptedException{
         while (true){
             /*
              * TODO check error,
@@ -68,7 +69,6 @@ public class AdvanceHandler {
                 String modelSerUrl = this.modelList.get(index).getModelServiceUrl();
                 //TODO 从url中获取task Server的ip和port(例如http://172.21.212.119:8061)
                 String taskIpAndPort = IPUtils.getIPAndPort(URI.create(modelSerUrl)).toString();
-                int port = 8061;
                 List<ExDataDTO> inputs = TemplateToExData(this.modelList.get(index).getInputData().getInputs());
                 JSONObject params = new JSONObject();
                 String inputsArray = convertItems2JSON(inputs);
@@ -114,10 +114,34 @@ public class AdvanceHandler {
                                         //表明模型还处于等待运行或者已经运行状态过程中，那么让该线程睡眠一会儿
                                         Thread.sleep(2000);
                                         continue;
-                                    }else{
+                                    }else if(taskStatus == -1){
+                                        //模型运行出错的情况，论文优化的部分，如果模型运行失败，则还可以从备选模型服务中选出可用的服务进行再次调度运行更新状态
+                                        if(servicesMapping == null){
+                                            //说明没有备选服务，直接跳出循环
+                                            JSONArray jOutputs = jData.getJSONArray("t_outputs");
+                                            updateModelOutputByTask(jOutputs,index);
+                                            break;
+                                        }else {
+                                            //默认只执行一个候选服务，防止运行时间过程
+                                            String optionalurl = servicesMapping.getServiceUrls().get(0);
+                                            JSONArray optionalOutput = getOptionalModelResult(pid,optionalurl,params);
+                                            if(optionalOutput == null){
+                                                //说明出错了的
+                                                JSONArray jOutputs = jData.getJSONArray("t_outputs");
+                                                updateModelOutputByTask(jOutputs,index);
+                                                taskStatus = -1;
+                                                break;
+                                            }else{
+                                                //更新输出和url
+                                                updateModelOutputAndUrlByTask(optionalOutput,index,optionalurl);
+                                                taskStatus = 1;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else{
                                         //失败或成功的状态跳出while循环，在break之前更新一下model里面output信息
                                         JSONArray jOutputs = jData.getJSONArray("t_outputs");
-                                        //TODO 论文优化的部分，如果模型运行失败，则还可以从备选模型服务中选出可用的服务进行再次调度运行更新状态
                                         updateModelOutputByTask(jOutputs,index);
                                         break;
                                     }
@@ -157,6 +181,55 @@ public class AdvanceHandler {
         return this.modelList.get(index);
     }
 
+    private JSONArray getOptionalModelResult(String pid,String modelSerUrl, JSONObject params){
+        String taskIpAndPort = IPUtils.getIPAndPort(URI.create(modelSerUrl)).toString();
+        //直接发起执行任务
+        try{
+            String resJson =   MyHttpUtils.POSTWithJSON(modelSerUrl, "UTF-8",null,params);
+            JSONObject jResponse = JSONObject.parseObject(resJson);
+            if(jResponse.getString("result").equals("err")){
+                //说明备选服务也为空
+                return null;
+            }else {
+                //模型开始运行
+                String taskId = jResponse.getString("data");
+                int taskStatus;
+                while (true){
+                    //直接向Task Server 发起http请求，获取模型运行结果
+                    String taskQueryUrl = taskIpAndPort + "/task/" + taskId;
+                    String taskResult = MyHttpUtils.GET(taskQueryUrl, "UTF-8",null);
+                    JSONObject taskResultResponse = JSONObject.parseObject(taskResult);
+                    if(taskResultResponse.getString("result").equals("suc")){
+                        JSONObject jData = taskResultResponse.getJSONObject("data");
+                        if(jData == null){
+                            return null;
+                        }else {
+                            String t_status = jData.getString("t_status");
+                            taskStatus = convertStatus(t_status);
+                            if(taskStatus == 0){
+                                Thread.sleep(2000);
+                                continue;
+                            }else {
+                                //失败或成功的状态跳出while循环，在break之前更新一下model里面output信息
+                                JSONArray jOutputs = jData.getJSONArray("t_outputs");
+                                return jOutputs;
+                            }
+                        }
+                    }else {
+                        return null;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 初步实现策略：
      * 只要集成流程有一个服务运行出错了，那么就会导致整个集成流程不再运行，保留现场痕迹
@@ -191,6 +264,25 @@ public class AdvanceHandler {
     // 将从TaskServer得到的模型运行记录(输出结果信息)更新到原文档中
     private void updateModelOutputByTask(JSONArray jOutputs, int index){
         List<DataTemplate> outputs = this.modelList.get(index).getOutputData().getOutputs();
+        for (int i = 0; i < jOutputs.size(); i++){
+            JSONObject temp = jOutputs.getJSONObject(i);
+            String state = temp.getString("StateName");
+            String event = temp.getString("Event");
+            //根据state和event去outputs里面查找对应的并且更新相对应的值
+            for (DataTemplate dataTemplate : outputs) {
+                if(dataTemplate.getState().equals(state) && dataTemplate.getEvent().equals(event)){
+                    dataTemplate.setValue(temp.getString("Url"));
+                    dataTemplate.setPrepared(true);
+                }
+            }
+        }
+    }
+
+    //更新模型运行的输出结果和服务url
+    private void updateModelOutputAndUrlByTask(JSONArray jOutputs, int index, String modelSerUrl){
+        Model model = this.modelList.get(index);
+        model.setModelServiceUrl(modelSerUrl);
+        List<DataTemplate> outputs = model.getOutputData().getOutputs();
         for (int i = 0; i < jOutputs.size(); i++){
             JSONObject temp = jOutputs.getJSONObject(i);
             String state = temp.getString("StateName");
