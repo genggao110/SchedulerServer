@@ -26,12 +26,18 @@ public class IntegrateTaskController {
 
     @RequestMapping(value = "/getSuitableTaskNode",method = RequestMethod.POST)
     @ApiOperation(value = "根据pid和用户提供的局部优化信息，去挑选出符合条件的模型服务")
-    public JsonResult getSuitableTaskServer(@RequestBody IConditionDTO iConditionDTO){
-        //TODO 进行处理
+    public JsonResult getSuitableTaskServer(IConditionDTO iConditionDTO){
         SelectResult suitableTaskServer = integrateTaskService.getSuitableTaskServer(iConditionDTO);
         if(suitableTaskServer == null){
             return ResultUtils.error(-1, "there is no suitable computer resource");
         }
         return ResultUtils.success(suitableTaskServer);
+    }
+
+    @RequestMapping(value = "/globalOptimize",method = RequestMethod.POST)
+    @ApiOperation(value = "利用遗传算法进行全局QoS优化")
+    public JsonResult globalOptimize(IConditionDTO iConditionDTO){
+        //TODO 全局优化
+        return ResultUtils.success(null);
     }
 }

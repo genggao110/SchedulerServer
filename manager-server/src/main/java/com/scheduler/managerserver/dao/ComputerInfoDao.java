@@ -11,4 +11,6 @@ public interface ComputerInfoDao extends MongoRepository<ComputerInfo,String> {
     List<ComputerInfo> findAllByUserId(String userName);
 
     List<ComputerInfo> findAllByStatus(boolean status);
+
+    ComputerInfo findFirstByMacAndStatus(String mac, boolean status);
 }

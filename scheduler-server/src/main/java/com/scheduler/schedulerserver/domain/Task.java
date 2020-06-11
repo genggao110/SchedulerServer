@@ -1,6 +1,7 @@
 package com.scheduler.schedulerserver.domain;
 
 import com.scheduler.schedulerserver.domain.xml.Model;
+import com.scheduler.schedulerserver.dto.ServicesMapping;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,4 +38,5 @@ public class Task {
     private Date date;
     private String userName;
     private Date finish;
+    private List<ServicesMapping> servicesMappings;
 }

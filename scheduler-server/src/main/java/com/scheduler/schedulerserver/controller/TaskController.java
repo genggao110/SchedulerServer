@@ -1,6 +1,10 @@
 package com.scheduler.schedulerserver.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.scheduler.schedulerserver.domain.Task;
+import com.scheduler.schedulerserver.dto.OptionalDTO;
+import com.scheduler.schedulerserver.dto.ServicesMapping;
 import com.scheduler.schedulerserver.service.TaskService;
 import com.scheduler.webCommons.bean.JsonResult;
 import com.scheduler.webCommons.utils.ResultUtils;
@@ -14,6 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 集成任务提交controller层
@@ -41,7 +48,7 @@ public class TaskController {
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "提交模型运行任务")
-    JsonResult submitTask(@RequestParam("file")MultipartFile file, @RequestParam("userName") String userName){
+    JsonResult submitTask(@RequestParam("file")MultipartFile file, @RequestParam("userName") String userName, @RequestParam("optional") String optional){
         if (file.isEmpty()) {
             return ResultUtils.error(-1, "上传文件为空");
         }else{
@@ -51,7 +58,23 @@ public class TaskController {
             if (!suffix.equals("xml") || false){
                 return ResultUtils.error(-1, "上传的文件不是xml或者文件不符合规定的xml格式");
             }else{
-                String uid = taskService.handlerTaskConfiguration(file, userName);
+                //解析Optional
+                List<ServicesMapping> servicesMappings = new ArrayList<>();
+                JSONArray optional_array = JSONArray.parseArray(optional);
+                for(int i = 0; i < optional_array.size(); i++){
+                    JSONObject object = optional_array.getJSONObject(i);
+                    String pid = object.getString("pid");
+                    JSONArray servicesUrl = object.getJSONArray("serviceUrls");
+                    ServicesMapping servicesMapping = new ServicesMapping();
+                    servicesMapping.setPid(pid);
+                    List<String> services = new ArrayList<>();
+                    for(int j = 0; j < servicesUrl.size(); j++){
+                        services.add(servicesUrl.getString(j));
+                    }
+                    servicesMapping.setServiceUrls(services);
+                    servicesMappings.add(servicesMapping);
+                }
+                String uid = taskService.handlerTaskConfiguration(file, userName, servicesMappings);
                 if (uid == null){
                     return ResultUtils.error(-1,"解析xml文件或者任务放置出现问题！");
                 }else{
@@ -70,6 +93,10 @@ public class TaskController {
             return ResultUtils.success(true);
         }
     }
+
+
+
+
 
 
 
